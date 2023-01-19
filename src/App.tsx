@@ -43,9 +43,9 @@ function App() {
                 </Route>
 
                 <Route path="/users" element={<AuthLayout />} >
-                  <Route index element={<Login />} />
-                  <Route path="login" element={<Login />}/>
-                  <Route path="register" element={<Register />}/>
+                    <Route index element={<Login />} />
+                    <Route path="login" element={<Login />}/>
+                    <Route path="register" element={<Register />}/>
                 </Route>
 
                 <Route path="*" element={<Error404 />}></Route>
