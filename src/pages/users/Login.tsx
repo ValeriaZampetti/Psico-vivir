@@ -88,7 +88,6 @@ export const LogIn = (props: any) => {
           </button>
         </div>
       </div>
-      <Footer />
     </React.Fragment>
   );
 };
