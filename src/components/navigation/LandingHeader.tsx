@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import Menu from "../assets/icons/menu.svg";
+import Menu from "../../assets/icons/menu.svg";
 
-import Logo from "../assets/react.svg";
+import Logo from "../../assets/react.svg";
 
 function LandingHeader() {
   let links = [
-    { name: "Sobre nosotros", link: "/" },
-    { name: "Servicios", link: "/" },
-    { name: "Opiniones", link: "/" },
-    { name: "Contacto", link: "/" },
+    { name: "Sobre nosotros", link: "#AboutUs" },
+    { name: "Servicios", link: "#Services" },
+    { name: "Opiniones", link: "#Opinions" },
+    { name: "Contacto", link: "#Contact" },
   ];
   let [open, setOpen] = useState(false);
   return (
@@ -37,13 +37,13 @@ function LandingHeader() {
             open ? "top-18 " : "top-[-20rem]"
           }`}
         >
-          {links.map((link) => (
-            <li key={link.name} className="md:ml-8 text-xl md:my-0 my-7">
+          {links.map((section) => (
+            <li key={section.name} className="md:ml-8 text-xl md:my-0 my-7">
               <a
-                href={link.link}
+                href={section.link}
                 className="text-gray-800 hover:text-gray-400 duration-500"
               >
-                {link.name}
+                {section.name}
               </a>
             </li>
           ))}
