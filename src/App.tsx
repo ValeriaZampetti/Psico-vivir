@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import reactLogo from "./assets/react.svg";
-import AuthLayout from "./layouts/AuthLayout";
+import LandingLayout from "./layouts/LandingLayout";
 import Error404 from "./pages/Error404";
 import Landing from "./pages/Landing";
 import Chat from "./pages/psico/Chat";
-import Profile from "./pages/psico/profile";
+import Profile from "./pages/psico/Profile";
 import Schedule from "./pages/psico/Schedule";
 import Searcher from "./pages/psico/Searcher";
 import Login from "./pages/users/Login";
@@ -42,17 +42,17 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/landing" element={<AuthLayout />}>
+                <Route path="/landing" element={<LandingLayout />}>
                     <Route index element={<Landing />} />
                 </Route>
 
-                <Route path="/users" element={<AuthLayout />}>
+                <Route path="/users" element={<LandingLayout />}>
                     <Route index element={<Login />} />
                     <Route path="login" element={<Login />} />
                     <Route path="register" element={<Register />} />
                 </Route>
 
-                <Route path="/psico" element={<AuthLayout />}>
+                <Route path="/psico" element={<LandingLayout />}>
                     <Route index element={<Searcher />} />
                     <Route path="profile/:id" element={<Profile />} />
                     <Route path="schedule" element={<Schedule />} />
