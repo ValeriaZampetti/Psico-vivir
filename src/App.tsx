@@ -52,12 +52,6 @@ function App() {
                     <Route path="register" element={<Register />} />
                 </Route>
 
-                <Route path="/users" element={<AuthLayout />}>
-                    <Route index element={<Login />} />
-                    <Route path="login" element={<Login />} />
-                    <Route path="register" element={<Register />} />
-                </Route>
-
                 <Route path="/psico" element={<AuthLayout />}>
                     <Route index element={<Searcher />} />
                     <Route path="profile/:id" element={<Profile />} />
