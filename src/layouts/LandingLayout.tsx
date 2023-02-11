@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import { Footer } from "../components/Footer";
-import LandingHeader from "../components/LandingHeader";
+import { Footer } from "../components/navigation/Footer";
+import LandingHeader from "../components/navigation/LandingHeader";
 
 function LandingLayout() {
   return (
