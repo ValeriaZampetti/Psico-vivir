@@ -4,6 +4,10 @@ import reactLogo from "./assets/react.svg";
 import AuthLayout from "./layouts/AuthLayout";
 import Error404 from "./pages/Error404";
 import Landing from "./pages/Landing";
+import Chat from "./pages/psico/Chat";
+import Profile from "./pages/psico/profile";
+import Schedule from "./pages/psico/Schedule";
+import Searcher from "./pages/psico/Searcher";
 import Login from "./pages/users/Login";
 import Register from "./pages/users/Register";
 
@@ -42,12 +46,24 @@ function App() {
                     <Route index element={<Landing />} />
                 </Route>
 
-                <Route path="/users" element={<AuthLayout />} >
-                  <Route index element={<Login />} />
-                  <Route path="login" element={<Login />}/>
-                  <Route path="register" element={<Register />}/>
+                <Route path="/users" element={<AuthLayout />}>
+                    <Route index element={<Login />} />
+                    <Route path="login" element={<Login />} />
+                    <Route path="register" element={<Register />} />
                 </Route>
 
+                <Route path="/users" element={<AuthLayout />}>
+                    <Route index element={<Login />} />
+                    <Route path="login" element={<Login />} />
+                    <Route path="register" element={<Register />} />
+                </Route>
+
+                <Route path="/psico" element={<AuthLayout />}>
+                    <Route index element={<Searcher />} />
+                    <Route path="profile/:id" element={<Profile />} />
+                    <Route path="schedule" element={<Schedule />} />
+                    <Route path="chat" element={<Chat />} />
+                </Route>
                 <Route path="*" element={<Error404 />}></Route>
             </Routes>
         </BrowserRouter>
