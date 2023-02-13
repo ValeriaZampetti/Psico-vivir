@@ -58,7 +58,9 @@ function App() {
                     <Route path="schedule" element={<Schedule />} />
                     <Route path="chat" element={<Chat />} />
                 </Route>
-                <Route path="*" element={<Error404 />}></Route>
+                <Route path="*" element={<LandingLayout />}>
+                    <Route index element={<Error404 />} />
+                </Route>
             </Routes>
         </BrowserRouter>
     );
