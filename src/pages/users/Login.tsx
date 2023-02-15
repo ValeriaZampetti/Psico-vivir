@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Footer } from "../../components/Footer";
+import { Footer } from "../../components/navigation/Footer";
 import { NavLog } from "../../components/NavLog";
 //import { Context } from "../store/appContext";
 //import Swal from "sweetalert2";
@@ -88,7 +88,6 @@ export const LogIn = (props: any) => {
           </button>
         </div>
       </div>
-      <Footer />
     </React.Fragment>
   );
 };
