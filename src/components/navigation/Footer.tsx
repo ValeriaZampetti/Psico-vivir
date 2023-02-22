@@ -1,21 +1,51 @@
 import React, { Component } from "react";
 
 export const Footer = () => (
-<footer
-    className="footer mt-auto py-3 text-center"
-    style={{ backgroundColor: "#211224" }}
->
-    <p className="text-light">
-    Copyright 2022, Seguros BonPland,C.A.Rif: J-029744531-2 Todos los derechos
-    reservados
-    </p>
-    <div className="d-block">
-    <div>
-        <a href="https://github.com/iTz-samuel11">{"Samuel Faraco   "}</a>
-    </div>
-    <div>
-        <a href="https://github.com/ValeriaZampetti">{"  Valeria Zampetti"}</a>
-    </div>
-    </div>
-</footer>
+  <footer className="bg-primary flex flex-row text-lg justify-between">
+    <ul className="flex flex-col gap-4">
+      <li>
+        <h2 className="font-bold">Atencion al cliente</h2>
+        <p>citas@psicovivir.com</p>
+      </li>
+
+      <li>
+        <h2 className="font-bold">Información de psicologos</h2>
+        <p>psicologo@psicovivir.com</p>
+      </li>
+    </ul>
+
+    <ul className="flex flex-col gap-4">
+      <li>
+        <h2 className="font-bold">Atencion al cliente</h2>
+        <p>citas@psicovivir.com</p>
+      </li>
+
+      <li>
+        <h2 className="font-bold">Información de psicologos</h2>
+        <p>psicologo@psicovivir.com</p>
+      </li>
+    </ul>
+
+    <ul className="flex flex-col">
+      <li>
+        <a href="#">Home</a>
+      </li>
+
+      <li>
+        <a href="#">Home</a>
+      </li>
+
+      <li>
+        <a href="#">Sobre Nosotros</a>
+      </li>
+
+      <li>
+        <a href="#">Reseñas</a>
+      </li>
+
+      <li>
+        <a href="#">Preguntas frecuentas</a>
+      </li>
+    </ul>
+  </footer>
 );
