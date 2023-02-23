@@ -63,7 +63,7 @@ function Landing() {
               Bienvenido al cambio!
             </h1>
 
-            <div className="flex flex-col gap-2 justify-center text-lg w-[25rem] self-center lg:self-auto">
+            <div className="flex flex-col gap-2 justify-center text-lg w-[25rem] self-center min-[1100px]:self-auto">
               {/* TODO - En el responsive se debe centrar */}
               <p>
                 Prepárate para la{" "}
