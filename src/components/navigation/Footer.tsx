@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 export const Footer = () => (
-  <footer className="bg-primary flex flex-row text-lg justify-between">
+  <footer className="bg-primary flex flex-row text-lg justify-between border-t-[1px] p-4 border-[black]">
     <ul className="flex flex-col gap-4">
       <li>
         <h2 className="font-bold">Atencion al cliente</h2>
@@ -31,21 +31,20 @@ export const Footer = () => (
         <a href="#">Home</a>
       </li>
 
-      <li>
-        <a href="#">Home</a>
-      </li>
 
       <li>
         <a href="#">Sobre Nosotros</a>
       </li>
-
+      
       <li>
-        <a href="#">Reseñas</a>
+        <a href="#">Servicios</a>
       </li>
 
       <li>
-        <a href="#">Preguntas frecuentas</a>
+        <a href="#">Opiniones</a>
       </li>
+
+
     </ul>
   </footer>
 );
