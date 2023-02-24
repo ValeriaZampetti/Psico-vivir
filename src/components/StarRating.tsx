@@ -18,7 +18,6 @@ function StarRating(props: StarRatingProps) {
 
         return (
           <label key={star}>
-            {currentRating}
             <input
               className="hidden"
               type="radio"
