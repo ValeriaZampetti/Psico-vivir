@@ -5,19 +5,18 @@ import { getFirestore } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 // Your web app's Firebase configuration
+
+
 const firebaseConfig = {
-  apiKey: "AIzaSyCBEvBZUyYLR0BsubJTzusjUJi4CFyprzg",
-  authDomain: "psico-vivir.firebaseapp.com",
-  databaseURL: "https://psico-vivir-default-rtdb.firebaseio.com",
-  projectId: "psico-vivir",
-  storageBucket: "psico-vivir.appspot.com",
-  messagingSenderId: "424481754577",
-  appId: "1:424481754577:web:22efe3d711e0458688a4f0"
+  apiKey: import.meta.env.VITE_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  databaseURL: import.meta.env.VITE_DATABASE_URL,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_APP_ID,
 };
-// Initialize Firebase
 
 const app = initializeApp(firebaseConfig);
-// Export firestore database
-// It will be imported into your react app whenever it is needed
 export const db = getFirestore(app);
 export const auth = getAuth(app);
