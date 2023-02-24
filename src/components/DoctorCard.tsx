@@ -1,6 +1,7 @@
 import React from "react";
-import Profile from "../assets/mock/profile.png"; 
+import Profile from "../assets/mock/profile.png";
 import { Doctor } from "../interfaces/Client";
+import StarRating from "./StarRating";
 
 interface DoctorCardProps {
   doctor: Doctor;
@@ -16,8 +17,8 @@ function DoctorCard(props: DoctorCardProps) {
       <h1 className="font-bold text-3xl self-center">{props.doctor.name}</h1>
       <p className="self-center">{props.doctor.specialties.join(", ")}</p>
       {/* TODO - Componente readonly de ranking */}
-      <span className="self-center">{props.doctor.ranking}</span>
-      <p className="text-gray-700">{props.doctor.biography}</p>
+      <StarRating height={2} rating={props.doctor.ranking} readonly={true} />
+      <p className="text-gray-700 text-center">{props.doctor.biography}</p>
     </div>
   );
 }
