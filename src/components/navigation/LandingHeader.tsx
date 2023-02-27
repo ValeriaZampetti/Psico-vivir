@@ -13,7 +13,7 @@ function LandingHeader() {
   let [open, setOpen] = useState(false);
   return (
     <nav className="shadow-md w-full fixed top-0 left-0 z-[99]">
-      <header className="md:flex items-center justify-between bg-white py-4 md:px-10 px-7">
+      <header className="md:flex items-center justify-between bg-secondary py-4 md:px-10 px-7">
         <div
           className="font-bold text-2xl cursor-pointer flex items-center font-[Poppins] 
     text-gray-800"
@@ -33,7 +33,7 @@ function LandingHeader() {
 
         <ul
           className={`md:flex md:items-center md:pb-0 pb-12 absolute md:static
-          bg-white md:z-auto z-[-1] left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${
+          bg-secondary md:z-auto z-[-1] left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${
             open ? "top-18 " : "top-[-20rem]"
           }`}
         >
