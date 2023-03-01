@@ -81,23 +81,18 @@ export function addFeedback(
 }
 
 export function createUser(
-  email: string,
-  password: string,
-  name: string,
-  type: number
+  client: Client,
+  password: string
 ) {
   const collectionRef = collection(db, "users");
-  createUserWithEmailAndPassword(auth, email, password).then(
+  console.log("Creating user", client.email);
+  createUserWithEmailAndPassword(auth, client.email, password).then(
     (userCredential) => {
       const user = userCredential.user;
-      const clientObj: Client = {
-        email: user.email!,
-        name,
-        type,
-      };
 
       const clientRef = doc(collectionRef, user.uid);
-      setDoc(clientRef, clientObj);
+      setDoc(clientRef, client);
+      console.log("User created", user.uid);
     }
   );
 }
