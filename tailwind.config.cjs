@@ -5,6 +5,10 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    screens: {
+      "smax1": {"max": "1080px"},
+      "smax2": {"max": "900px"},
+    },
     extend: {
       colors: {
         primary: "#FFEAEC",
