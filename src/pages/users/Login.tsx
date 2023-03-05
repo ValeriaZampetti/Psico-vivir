@@ -35,7 +35,7 @@ export const LogIn = (props: any) => {
           <div className="w-[50%] lg:flex hidden justify-center">
             <img
               src={psicoLogin}
-              className="w-auto h-[32rem] rounded-2xl bg-primary-normal"
+              className="w-auto h-[37rem] rounded-2xl bg-primary-normal"
             />
           </div>
           <main className="flex flex-col  justify-center lg:w-[50%]">
@@ -75,19 +75,21 @@ export const LogIn = (props: any) => {
                 type="submit"
                 value="Iniciar Sesión"
                 className="w-full py-3 text-black font-bold uppercase rounded  transition-colors mb-5 
-                  bg-primary-light hover:bg-primary-normal active:bg-primary-strong shadow-lg cursor-pointer"
+                  bg-primary-light hover:bg-primary-normal active:ring-1 ring-black shadow-lg cursor-pointer"
               />
             </form>
 
             <footer className="mb-5">
               <p className="text-center">O inicia sesión con</p>
               <div className="flex justify-center gap-5 mt-5">
-                <button className="bg-white hover:bg-gray-100 active:bg-gray-200 font-bold py-2 px-4 rounded-full 
-                drop-shadow-md hover:drop-shadow-lg">
+                <button
+                  className="bg-white hover:bg-gray-100 active:ring-1 ring-black font-bold py-2 px-4 rounded-full 
+                drop-shadow-md hover:drop-shadow-lg"
+                >
                   <img src={facebookIcon} />
                 </button>
                 <button
-                  className="bg-white hover:bg-gray-100 active:bg-gray-200 font-bold py-2 px-4 rounded-full 
+                  className="bg-white hover:bg-gray-100 active:ring-1 ring-black font-bold py-2 px-4 rounded-full 
                 drop-shadow-md hover:drop-shadow-lg"
                 >
                   <img src={googleIcon} />
