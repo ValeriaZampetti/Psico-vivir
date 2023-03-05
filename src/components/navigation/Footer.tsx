@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 export const Footer = () => (
-    <footer className="bg-primary flex flex-row text-lg justify-between border-t-[1px] p-4 border-[black]">
+    <footer className="bg-primary-light flex flex-row text-lg justify-between border-t-[1px] p-4 border-[black]">
         <ul className="flex flex-col gap-4">
             <li>
                 <h2 className="font-bold">Atencion al cliente</h2>

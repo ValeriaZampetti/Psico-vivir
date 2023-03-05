@@ -109,7 +109,7 @@ export const Register = (prop: any) => {
                         <input
                             type="submit"
                             value="Iniciar Sesión"
-                            className="w-full py-3 text-black font-bold uppercase rounded bg-primary hover:bg-secondary active:bg-green-400 hover:shadow-lg cursor-pointer
+                            className="w-full py-3 text-black font-bold uppercase rounded bg-primary-light hover:bg-secondary active:bg-green-400 hover:shadow-lg cursor-pointer
                       hover:cursos-pointer hover:cursor-pointer  transition-colors mb-5"
                         />
                     </form>

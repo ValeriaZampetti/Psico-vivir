@@ -55,7 +55,7 @@ function Landing() {
   ];
 
   return (
-    <div className="flex flex-col bg-primary justify-center">
+    <div className="flex flex-col bg-primary-light justify-center">
       <section className="mt-3">
         <div className="flex flex-col lg:flex-row gap-10 justify-center">
           <div className="flex flex-col gap-3">
@@ -76,11 +76,17 @@ function Landing() {
             </div>
 
             <div className="flex flex-wrap gap-3 justify-center">
-              <button className="bg-secondary rounded-lg py-2 px-10 text-lg w-[18rem]">
+              <button
+                className="bg-secondary-normal hover:bg-secondary-strong active:ring-1 ring-black drop-shadow-md
+                rounded-lg py-2 px-10 text-lg w-[18rem]"
+              >
                 <span className="font-bold">Registrarse con email</span>
               </button>
 
-              <button className="flex gap-1 bg-white rounded-lg py-2 px-4  text-lg w-[18rem]">
+              <button
+                className="flex gap-1 bg-white hover:bg-gray-100 active:ring-1 ring-black drop-shadow-md
+                rounded-lg py-2 px-4  text-lg w-[18rem]"
+              >
                 <img src={Google} />
                 <span className="font-bold">Registrarse con Google</span>
               </button>
