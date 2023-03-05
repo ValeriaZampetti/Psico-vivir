@@ -8,7 +8,7 @@ function LandingLayout() {
         <>
             <div>
                 <LandingHeader />
-                <div className="bg-white min-[768px]:max-[868px]:mt-[6rem] mt-[4.5rem]">
+                <div className="min-[768px]:max-[868px]:mt-[6rem] mt-[4.5rem]">
                     <Outlet />
                 </div>
                 <Footer />
