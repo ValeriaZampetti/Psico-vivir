@@ -5,13 +5,14 @@ import { NavLog } from "../../components/NavLog";
 import psicoLogin from "../../assets/images/psicoLogin.png";
 import googleIcon from "../../assets/icons/google.svg";
 import facebookIcon from "../../assets/icons/facebook.svg";
+import { useAuth } from "../../hooks/useAuth";
 //import { Context } from "../store/appContext";
 //import Swal from "sweetalert2";
 
 export const LogIn = (props: any) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  //const { store, actions } = useContext<any>(Context);
+  const { login } = useAuth();
   const navigate = useNavigate();
   const notUser = () => {
     //Swal.fire({
@@ -23,6 +24,23 @@ export const LogIn = (props: any) => {
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    console.log("handleSubmit");
+    login(email, password).then((userCredential) => {
+      console.log("lo logre", userCredential);
+    });
+
+    // console.log(userCredential);
+    // console.log("login");
+
+    // if (userCredential) {
+    //   setTimeout(() => {
+    //     console.log("userCredential", userCredential);
+    //     navigate("/psico");
+    //   }, 1000);
+    // } else {
+    //   console.log("no user");
+    // }
   }
 
   return (
@@ -42,7 +60,7 @@ export const LogIn = (props: any) => {
             <p className="text-end mb-12  ">
               ¿No tienes una cuenta?{" "}
               <Link
-                to="/register"
+                to="/users/register"
                 className="text-blue-500 hover:text-blue-700 cursor-pointer"
               >
                 Registrate
