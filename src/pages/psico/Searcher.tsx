@@ -7,14 +7,7 @@ function Searcher() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
 
   const initializeDoctors = async () => {
-    const doctorsSnapshot = await getDoctors();
-
-    const docs: Doctor[] = [];
-    doctorsSnapshot.forEach((doctor) => {
-      docs.push({ id: doctor.id, ...doctor.data() } as Doctor);
-    });
-    
-    setDoctors(docs);
+    setDoctors(await getDoctors());
   };
 
   useEffect(() => {
@@ -32,9 +25,7 @@ function Searcher() {
       <section>
         <div className="flex flex-wrap px-16 mt-10">
           {doctors.map((doctor) => (
-            <DoctorCard 
-            key={doctor.id}
-            doctor={doctor} />
+            <DoctorCard key={doctor.id} doctor={doctor} />
           ))}
         </div>
       </section>

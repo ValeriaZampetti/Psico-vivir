@@ -1,4 +1,9 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { UserCredential } from "@firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import {
   collection,
   addDoc,
@@ -15,12 +20,13 @@ import {
   DocumentSnapshot,
   setDoc,
 } from "firebase/firestore";
-import { Client } from "../interfaces/Client";
+import { Appointment } from "../interfaces/Appointment";
+import { Client, Doctor } from "../interfaces/Client";
 import { Feedback } from "../interfaces/feedback";
 
-import { auth, db } from "./config";
+import { auth, db, googleAuthProvider } from "./config";
 
-export function getDoctors(): Promise<QuerySnapshot<DocumentData>> {
+export async function getDoctors(): Promise<Doctor[]> {
   const collectionRef = collection(db, "users");
   const q = query(collectionRef, where("type", "==", 2));
 
@@ -33,7 +39,14 @@ export function getDoctors(): Promise<QuerySnapshot<DocumentData>> {
   //   console.log("Current cities in CA: ", cities.join(", "));
   // });
 
-  return getDocs(q);
+  const querySnapshot = await getDocs(q);
+  const doctors: Doctor[] = [];
+
+  querySnapshot.forEach((doc) => {
+    doctors.push({ id: doc.id, ...doc.data() } as Doctor);
+  });
+
+  return doctors;
 }
 
 export function getDoctorById(
@@ -44,7 +57,9 @@ export function getDoctorById(
   return getDoc(doc(collectionRef, doctorId));
 }
 
-export function getAppointmentsDoctor(id: string) {
+export async function getAppointmentsDoctor(
+  id: string
+): Promise<Appointment[]> {
   const collectionRef = collection(db, "appointments");
   const q = query(
     collectionRef,
@@ -52,10 +67,18 @@ export function getAppointmentsDoctor(id: string) {
     where("doctor", "==", id)
   );
 
-  return getDocs(q);
+  const querySnapshot = await getDocs(q);
+  const appointments: Appointment[] = [];
+
+  querySnapshot.forEach((doc) => {
+    appointments.push({ id: doc.id, ...doc.data() } as Appointment);
+  });
+  return appointments;
 }
 
-export function getAppointmentsClient(id: string) {
+export async function getAppointmentsClient(
+  id: string
+): Promise<Appointment[]> {
   const collectionRef = collection(db, "appointments");
   const q = query(
     collectionRef,
@@ -63,7 +86,13 @@ export function getAppointmentsClient(id: string) {
     where("client", "==", id)
   );
 
-  return getDocs(q);
+  const querySnapshot = await getDocs(q);
+  const appointments: Appointment[] = [];
+
+  querySnapshot.forEach((doc) => {
+    appointments.push({ id: doc.id, ...doc.data() } as Appointment);
+  });
+  return appointments;
 }
 
 export function addFeedback(
@@ -80,10 +109,7 @@ export function addFeedback(
   return addDoc(collectionRef, feedbackObj);
 }
 
-export function createUser(
-  client: Client,
-  password: string
-) {
+export function createUser(client: Client, password: string) {
   const collectionRef = collection(db, "users");
   console.log("Creating user", client.email);
   createUserWithEmailAndPassword(auth, client.email, password).then(
@@ -97,6 +123,30 @@ export function createUser(
   );
 }
 
-export function signIn(email: string, password: string) {
-  return signInWithEmailAndPassword(auth,email, password);
+export async function signIn(email: string, password: string): Promise<UserCredential | null> {
+  try {
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    console.log("result", result);
+    return result;
+  } catch (error) {
+    console.log("error", error);
+    return null;
+  }
+}
+
+export async function signInWithGoogle() {
+  try {
+    const result = await signInWithPopup(auth, googleAuthProvider);
+    console.log("result", result);
+  } catch (error) {
+    console.log("error", error);
+  }
+}
+
+export async function getUserById(userId: string): Promise<Client | Doctor> {
+  const collectionRef = collection(db, "users");
+
+  const document = await getDoc(doc(collectionRef, userId));
+  const client = document.data()!;
+  return client.type === 1 ? (client as Client) : (client as Doctor);
 }
