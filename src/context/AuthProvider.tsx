@@ -4,7 +4,7 @@ import {
   UserCredential,
 } from "firebase/auth";
 import React, { createContext, useEffect, useState } from "react";
-import { getUserById } from "../firebase/api";
+import { getUserById, signIn } from "../firebase/api";
 import { auth } from "../firebase/config";
 import { Client } from "../interfaces/Client";
 import { IAuthProvider } from "../interfaces/providers/IAuthProvider";
@@ -16,7 +16,10 @@ interface IProps {
 export const AuthContext = createContext<IAuthProvider>({
   user: null,
   loading: true,
-  login: () => new Promise(() => {}),
+  login: (email: string, password: string) => {
+    console.log("no estas usando la funcion que es");
+    return new Promise(() => {});
+  },
 });
 
 function AuthProvider({ children }: IProps) {
@@ -25,22 +28,32 @@ function AuthProvider({ children }: IProps) {
 
   useEffect(() => {
     const unsubuscribe = onAuthStateChanged(auth, async (currentUser) => {
-      console.log({ currentUser });
-      setUser(await getUserById(currentUser?.uid || ""));
-      console.log(user);
-      setLoading(false);
+      try {
+        if (!currentUser) {
+          setLoading(false);
+          console.log("No hay usuario", loading);
+          return;
+        }
+        setLoading(true);
+        getUserById(currentUser?.uid || "").then((user) => {
+          setUser(user);
+          setLoading(false);
+          console.log("loading", loading);
+        });
+      } catch (error) {
+        console.log(error);
+      }
     });
 
-    console.log(loading);
     return () => unsubuscribe();
   }, []);
 
   async function login(
     email: string,
     password: string
-  ): Promise<UserCredential> {
+  ): Promise<UserCredential | null> {
     console.log("login", email, password);
-    return signInWithEmailAndPassword(auth, email, password);
+    return signIn(email, password);
   }
 
   const value: IAuthProvider = {

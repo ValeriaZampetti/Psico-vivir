@@ -22,25 +22,24 @@ export const LogIn = (props: any) => {
         //});
     };
 
-    function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
-        console.log("handleSubmit");
-        login(email, password).then((userCredential) => {
-            console.log("lo logre", userCredential);
-        });
+        try {
+            const userCredential = await login(email, password);
 
-        // console.log(userCredential);
-        // console.log("login");
-
-        // if (userCredential) {
-        //   setTimeout(() => {
-        //     console.log("userCredential", userCredential);
-        //     navigate("/psico");
-        //   }, 1000);
-        // } else {
-        //   console.log("no user");
-        // }
+            if (userCredential) {
+                setTimeout(() => {
+                    // TODO - Avisar que sera redirigido
+                    console.log("me voy");
+                    navigate("/psico");
+                }, 2000);
+            } else {
+                console.log("no user");
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
