@@ -20,7 +20,7 @@ import {
 } from "firebase/firestore";
 import { Appointment } from "../interfaces/Appointment";
 import { Client, Doctor } from "../interfaces/Client";
-import { Feedback } from "../interfaces/Feedback";
+import { Feedback } from "../interfaces/feedback";
 
 import { auth, db } from "./config";
 
