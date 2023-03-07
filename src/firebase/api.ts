@@ -1,6 +1,8 @@
+import { UserCredential } from "@firebase/auth";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInWithPopup,
 } from "firebase/auth";
 import {
   collection,
@@ -22,7 +24,7 @@ import { Appointment } from "../interfaces/Appointment";
 import { Client, Doctor } from "../interfaces/Client";
 import { Feedback } from "../interfaces/Feedback";
 
-import { auth, db } from "./config";
+import { auth, db, googleAuthProvider } from "./config";
 
 export async function getDoctors(): Promise<Doctor[]> {
   const collectionRef = collection(db, "users");
@@ -121,8 +123,24 @@ export function createUser(client: Client, password: string) {
   );
 }
 
-export function signIn(email: string, password: string) {
-  return signInWithEmailAndPassword(auth, email, password);
+export async function signIn(email: string, password: string): Promise<UserCredential | null> {
+  try {
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    console.log("result", result);
+    return result;
+  } catch (error) {
+    console.log("error", error);
+    return null;
+  }
+}
+
+export async function signInWithGoogle() {
+  try {
+    const result = await signInWithPopup(auth, googleAuthProvider);
+    console.log("result", result);
+  } catch (error) {
+    console.log("error", error);
+  }
 }
 
 export async function getUserById(userId: string): Promise<Client | Doctor> {
