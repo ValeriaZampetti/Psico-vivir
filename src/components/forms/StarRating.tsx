@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { ReactComponent as StarIcon } from "../../assets/icons/star.svg";
 
 interface StarRatingProps {
-  rating: number;
-  height: number;
+  currentRating: number;
+  handleCurrentRating: (rating: number) => void;
+  svgClass?: string;
   readonly?: boolean;
 }
 
 function StarRating(props: StarRatingProps) {
-  const [currentRating, setCurrentRating] = useState<number>(props.rating);
   const [hover, setHover] = useState<number>(0);
 
   return (
@@ -25,15 +25,18 @@ function StarRating(props: StarRatingProps) {
               value={ratingValue}
               onClick={() => {
                 if (!props.readonly) {
-                  setCurrentRating(ratingValue);
+                  props.handleCurrentRating(ratingValue);
                 }
               }}
             />
             <StarIcon
-              fill={ratingValue <= (hover || currentRating) ? "#EF5DA8" : "#e4e5e9"}
-              className={`w-auto h-[${props.height}rem] ${
+              fill={
+                ratingValue <= (hover || props.currentRating) ? "#EF5DA8" : "#e4e5e9"
+              }
+              className={`w-auto ${props.svgClass} ${
                 props.readonly ? "cursor-default" : "cursor-pointer"
-              }`}
+              }
+              ${(ratingValue <= hover && hover != 0) ? "scale-125" : ""}`}
               onMouseEnter={() => {
                 if (!props.readonly) {
                   setHover(ratingValue);
@@ -45,13 +48,6 @@ function StarRating(props: StarRatingProps) {
                 }
               }}
             />
-            {/* <img
-              color={ratingValue <= rating ? "#ffc107" : "#e4e5e9"}
-              className={`w-auto h-[${props.height}rem] ${
-                props.readonly ? "cursor-default" : "cursor-pointer"
-              }`}
-              src={starIcon}
-            ></img> */}
           </label>
         );
       })}
