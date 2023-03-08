@@ -1,11 +1,16 @@
 import React from "react"
+import { Client } from "../interfaces/Client";
 
-export const ReservationCard = () => {
+interface ReservationCardProps {
+    pacient: Client;
+  }
+
+export const ReservationCard = (props: ReservationCardProps) => {
     return (
         <div className="h-48 m-0 flex justify-around items-center smax2:h-auto smax2:flex-col smax2:gap-4 smax2:p-8">
             <img src="../../src/assets/mock/pic.jpg" alt="profile-pic" className="h-32 aspect-square rounded-full border-rose-400 border-8 smax2:h-52"/>
             <div className="h-1/2 w-1/5 flex flex-col gap-1 bg-white smax2:w-full">
-                <div className="font-semibold text-3xl relative smax1:font-bold smax1:text-xl smax2:flex smax2:justify-center smax2:text-5xl">Andres Ramirez</div>
+                <div className="font-semibold text-3xl relative smax1:font-bold smax1:text-xl smax2:flex smax2:justify-center smax2:text-4xl">{props.pacient.name}</div>
                 <div className="relative left-5 text-lg smax2:inset-x-0 smax2:flex smax2:justify-center smax2:text-3xl">20 de enero de 2023</div>
             </div>
             <div className="h-2/3 w-2/6 flex flex-col justify-center text-gray-500 smax2:w-full smax2:pb-8">

@@ -36,6 +36,13 @@ export function getDoctors(): Promise<QuerySnapshot<DocumentData>> {
   return getDocs(q);
 }
 
+export function getClients () {
+  const collectionRef = collection(db, "users");
+  const q = query(collectionRef, where("type", "==", 1));
+
+  return getDocs(q);
+}
+
 export function getDoctorById(
   doctorId: string
 ): Promise<DocumentSnapshot<DocumentData>> {
