@@ -3,6 +3,7 @@ import Landing1 from "../assets/images/Landing1.jpg";
 import Google from "../assets/icons/google.svg";
 import Arrow from "../assets/icons/arrow.svg";
 import Opinion from "../assets/images/opinion.png";
+import { Link } from "react-router-dom";
 
 function Landing() {
   const circleSteps = [
@@ -55,7 +56,7 @@ function Landing() {
   ];
 
   return (
-    <div className="flex flex-col bg-primary justify-center">
+    <div className="flex flex-col bg-primary-light justify-center">
       <section className="mt-3">
         <div className="flex flex-col lg:flex-row gap-10 justify-center">
           <div className="flex flex-col gap-3">
@@ -76,11 +77,18 @@ function Landing() {
             </div>
 
             <div className="flex flex-wrap gap-3 justify-center">
-              <button className="bg-secondary rounded-lg py-2 px-10 text-lg w-[18rem]">
+              <Link
+                className="bg-secondary-normal hover:bg-secondary-strong active:ring-1 ring-black drop-shadow-md
+                rounded-lg py-2 px-10 text-lg w-[18rem] text-center"
+                to="users/register"
+              >
                 <span className="font-bold">Registrarse con email</span>
-              </button>
+              </Link>
 
-              <button className="flex gap-1 bg-white rounded-lg py-2 px-4  text-lg w-[18rem]">
+              <button
+                className="flex gap-1 bg-white hover:bg-gray-100 active:ring-1 ring-black drop-shadow-md
+                rounded-lg py-2 px-4  text-lg w-[18rem]"
+              >
                 <img src={Google} />
                 <span className="font-bold">Registrarse con Google</span>
               </button>
