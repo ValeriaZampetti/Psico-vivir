@@ -7,13 +7,14 @@ import googleIcon from "../../assets/icons/google.svg";
 import facebookIcon from "../../assets/icons/facebook.svg";
 import { useAuth } from "../../hooks/useAuth";
 //import { Context } from "../store/appContext";
-//import Swal from "sweetalert2";
+//import Swal from "sweetalert2";\
 
 export const LogIn = (props: any) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const { login } = useAuth();
     const navigate = useNavigate();
+
     const notUser = () => {
         //Swal.fire({
         //icon: "error",

@@ -61,7 +61,7 @@ export const Register = (prop: any) => {
                             <section className="my-10 flex flex-col sm:flex-row justify-center gap-5 w-64 self-center ">
                                 <div className="flex flex-col gap-5">
                                     <input
-                                        className="rounded-lg p-4 border-2 border-primary-strong"
+                                        className="rounded-lg p-4 ring-2 ring-primary-strong focus:ring-secondary-strong "
                                         placeholder="Ingrese su nombre y apellido"
                                         value={nombre}
                                         onChange={(e) =>
@@ -70,7 +70,7 @@ export const Register = (prop: any) => {
                                     ></input>
 
                                     <input
-                                        className="rounded-lg p-4 border-2 border-primary-strong"
+                                        className="rounded-lg p-4 ring-2 ring-primary-strong focus:ring-secondary-strong"
                                         placeholder="Email"
                                         type="email"
                                         value={email}
@@ -80,7 +80,7 @@ export const Register = (prop: any) => {
                                     ></input>
 
                                     <input
-                                        className="rounded-lg p-4 border-2 border-primary-strong"
+                                        className="rounded-lg p-4 ring-2 ring-primary-strong focus:ring-secondary-strong"
                                         placeholder="Tipo de usuario"
                                         value={tipousuario}
                                         onChange={(e) =>
@@ -91,7 +91,7 @@ export const Register = (prop: any) => {
 
                                 <div className="flex flex-col gap-5">
                                     <input
-                                        className="rounded-lg p-4 border-2 border-primary-strong"
+                                        className="rounded-lg p-4 ring-2 ring-primary-strong focus:ring-secondary-strong"
                                         placeholder="Número de teléfono"
                                         value={number}
                                         onChange={(e) =>
@@ -100,7 +100,7 @@ export const Register = (prop: any) => {
                                     ></input>
 
                                     <input
-                                        className="rounded-lg p-4 border-2 border-primary-strong"
+                                        className="rounded-lg p-4 ring-2 ring-primary-strong focus:ring-secondary-strong"
                                         placeholder="Contraseña"
                                         value={password}
                                         type="password"
@@ -110,7 +110,7 @@ export const Register = (prop: any) => {
                                     ></input>
 
                                     <input
-                                        className="rounded-lg p-4 border-2 border-primary-strong"
+                                        className="rounded-lg p-4 ring-2 ring-primary-strong focus:ring-secondary-strong"
                                         placeholder="Confirmar contraseña"
                                         value={confirmarcontraseña}
                                         type="password"
@@ -136,13 +136,13 @@ export const Register = (prop: any) => {
                             <p className="text-center">O inicia sesión con</p>
                             <div className="flex justify-center gap-5 mt-5">
                                 <button
-                                    className="bg-white hover:bg-gray-100 active:ring-1 ring-black font-bold py-2 px-4 rounded-full 
+                                    className="bg-white hover:bg-gray-100 active:ring-1 active:ring-secondary-strong font-bold py-2 px-4 rounded-full 
                 drop-shadow-md hover:drop-shadow-lg"
                                 >
                                     <img src={facebookIcon} />
                                 </button>
                                 <button
-                                    className="bg-white hover:bg-gray-100 active:ring-1 ring-black font-bold py-2 px-4 rounded-full 
+                                    className="bg-white hover:bg-gray-100 active:ring-1 active:ring-secondary-strong font-bold py-2 px-4 rounded-full 
                 drop-shadow-md hover:drop-shadow-lg"
                                 >
                                     <img src={googleIcon} />
