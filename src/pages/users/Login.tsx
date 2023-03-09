@@ -14,7 +14,6 @@ export const LogIn = (props: any) => {
     const [password, setPassword] = useState("");
     const { login } = useAuth();
     const navigate = useNavigate();
-
     const notUser = () => {
         //Swal.fire({
         //icon: "error",
@@ -47,8 +46,8 @@ export const LogIn = (props: any) => {
         <>
             <div className="bg-gray-300/40 px-14 py-7">
                 <div
-                    className="backdrop-blur-lg bg-white  drop-shadow-lg
-            flex flex-row p-6 rounded-2xl justify-center"
+                    className="backdrop-blur-lg bg-white drop-shadow-lg
+                      flex flex-row p-6 rounded-2xl justify-center"
                 >
                     <div className="w-[50%] lg:flex hidden justify-center">
                         <img
@@ -90,13 +89,14 @@ export const LogIn = (props: any) => {
                             ></input>
                             <p>Olvidaste tu contraseña?</p>
 
-                            {/* TODO - Cambiar bg-green */}
-                            <input
+                            <button
                                 type="submit"
-                                value="Iniciar Sesión"
-                                className="w-full py-3 text-black font-bold uppercase rounded  transition-colors mb-5 
-                  bg-primary-light hover:bg-primary-normal active:ring-1 ring-black shadow-lg cursor-pointer"
-                            />
+                                className="w-full py-3 text-black font-bold rounded-lg shadow-lg
+                bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90
+                  hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
+                            >
+                                INICIA SESIÓN
+                            </button>
                         </form>
 
                         <footer className="mb-5">
