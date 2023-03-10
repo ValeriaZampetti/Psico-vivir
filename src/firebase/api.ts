@@ -24,6 +24,7 @@ import { Appointment } from "../interfaces/Appointment";
 import { Client, Doctor } from "../interfaces/Client";
 import { Feedback } from "../interfaces/Feedback";
 
+
 import { auth, db, googleAuthProvider } from "./config";
 
 export async function getDoctors(): Promise<Doctor[]> {

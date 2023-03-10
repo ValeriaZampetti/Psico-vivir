@@ -6,6 +6,7 @@ import UserLayout from "./layouts/UserLayout";
 import Error404 from "./pages/Error404";
 import Landing from "./pages/Landing";
 import Chat from "./pages/psico/Chat";
+import Checkout from "./pages/psico/Checkout";
 import Profile from "./pages/psico/Profile";
 import Schedule from "./pages/psico/Schedule";
 import Searcher from "./pages/psico/Searcher";
@@ -36,6 +37,7 @@ function App() {
             <Route path="profile/:id" element={<Profile />} />
             <Route path="schedule" element={<Schedule />} />
             <Route path="chat" element={<Chat />} />
+            <Route path="checkout" element={<Checkout />} />
           </Route>
           <Route path="*" element={<LandingLayout />}>
             <Route index element={<Error404 />} />

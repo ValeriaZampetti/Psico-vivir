@@ -5,6 +5,7 @@ module.exports = {
     screens: {
       "smax1": {"max": "1080px"},
       "smax2": {"max": "900px"},
+      "smin1": {"min": "380px"}
     },
     extend: {
       colors: {

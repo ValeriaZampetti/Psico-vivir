@@ -8,4 +8,5 @@ export interface Appointment {
   date: Timestamp;
   duration: number;
   completed: boolean;
+  paid: boolean;
 }
