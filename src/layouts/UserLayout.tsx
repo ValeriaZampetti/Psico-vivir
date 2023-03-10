@@ -9,15 +9,15 @@ function UserLayout() {
   const { user, loading } = useAuth();
 
   // TODO - Crear componente para cargar
-  // if (loading) {
-  //   return (
-  //     <>
-  //       <AuthProvider>
-  //         <h1>Loading</h1>
-  //       </AuthProvider>
-  //     </>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <>
+        <AuthProvider>
+          <h1>Loading</h1>
+        </AuthProvider>
+      </>
+    );
+  }
 
 
   return (
