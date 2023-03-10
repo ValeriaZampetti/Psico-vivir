@@ -67,11 +67,11 @@ export function getDoctorById(
 export async function getAppointmentsDoctor(
   id: string
 ): Promise<Appointment[]> {
-  const collectionRef = collection(db, "appointments");
+  const collectionRef = collection(db, "appointment");
   const q = query(
     collectionRef,
     where("completed", "==", false),
-    where("doctor", "==", id)
+    where("doctorId", "==", id)
   );
 
   const querySnapshot = await getDocs(q);
@@ -86,7 +86,7 @@ export async function getAppointmentsDoctor(
 export async function getAppointmentsClient(
   id: string
 ): Promise<Appointment[]> {
-  const collectionRef = collection(db, "appointments");
+  const collectionRef = collection(db, "appointment");
   const q = query(
     collectionRef,
     where("completed", "==", false),

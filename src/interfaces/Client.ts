@@ -3,11 +3,12 @@ export interface Client{
   email: string
   name: string
   type: number
+  img: string
 }
 
 export interface Doctor extends Client{
   specialties: string[]
-  telephone: string
+  telephone: string 
   ranking: number
   biography: string
 }
