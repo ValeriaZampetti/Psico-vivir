@@ -20,7 +20,7 @@ function useInfiniteLoading(props: Props) {
     useState<DocumentSnapshot<DocumentData> | null>(null);
   const initialPageLoaded = useRef(false);
   const [hasMore, setHasMore] = useState(true);
-  const isLoading = useRef(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (initialPageLoaded.current) {
@@ -35,13 +35,13 @@ function useInfiniteLoading(props: Props) {
   // TODO - Tener una manera de mostrar algo cuando ya no hay mas items
   // TODO - Considerar crear un segundo batch para que el tiempo de carga sea menor
   async function loadItems(): Promise<DocumentSnapshot<DocumentData>[]> {
-    if (!hasMore || isLoading.current) {
+    if (!hasMore || isLoading) {
       return items;
     }
-    isLoading.current = true;
+    setIsLoading(true);
     const { snapShot, lastVisible } = await getItems(lastItem);
     console.log(lastVisible);
-    setHasMore(lastVisible !== null);
+    setHasMore(lastVisible != null);
 
     const data = snapShot.docs.map((doc) => ({
       ...doc.data(),
@@ -49,26 +49,29 @@ function useInfiniteLoading(props: Props) {
     }));
     setItems((prevItems) => [...prevItems, ...data]);
     setLastItem(lastVisible);
-    isLoading.current = false;
+    setIsLoading(false);
+
     return items;
   }
 
   const intersectionObserver = useRef<IntersectionObserver | null>(null);
-  const lastItemRef = useCallback((item: any) => {
-    if (isLoading.current) return
+  const lastItemRef = useCallback(
+    (item: any) => {
+      if (isLoading) return;
 
+      if (intersectionObserver.current)
+        intersectionObserver.current.disconnect();
 
-    if (intersectionObserver.current) intersectionObserver.current.disconnect()
-
-    intersectionObserver.current = new IntersectionObserver(posts => {
-        if (posts[0].isIntersecting && hasMore) {
-            console.log('We are near the last post!')
-            // loadItems()
+      intersectionObserver.current = new IntersectionObserver((items) => {
+        if (items[0].isIntersecting && hasMore) {
+          loadItems();
         }
-    })
+      });
 
-    if (item) intersectionObserver.current.observe(item)
-}, [isLoading, hasMore])
+      if (item) intersectionObserver.current.observe(item);
+    },
+    [isLoading, hasMore]
+  );
   return {
     items,
     hasMore,
