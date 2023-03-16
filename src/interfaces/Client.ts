@@ -1,8 +1,11 @@
+import { Timestamp } from "firebase/firestore"
+
 export interface Client{
   id?: string
   email: string
   name: string
-  type: number
+  type: number,
+  createdAt: Timestamp
 }
 
 export interface Doctor extends Client{
