@@ -6,11 +6,12 @@ export interface Client{
   name: string
   type: number,
   createdAt: Timestamp
+  img: string
 }
 
 export interface Doctor extends Client{
   specialties: string[]
-  telephone: string
+  telephone: string 
   ranking: number
   biography: string
 }

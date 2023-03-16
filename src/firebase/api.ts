@@ -28,6 +28,7 @@ import { Appointment } from "../interfaces/Appointment";
 import { Client, Doctor } from "../interfaces/Client";
 import { Feedback } from "../interfaces/Feedback";
 
+
 import { auth, db, googleAuthProvider } from "./config";
 
 export async function getDoctors(): Promise<Doctor[]> {
@@ -51,6 +52,20 @@ export async function getDoctors(): Promise<Doctor[]> {
   });
 
   return doctors;
+}
+
+export function getClients () {
+  const collectionRef = collection(db, "users");
+  const q = query(collectionRef, where("type", "==", 1));
+
+  return getDocs(q);
+}
+
+export function getClients () {
+  const collectionRef = collection(db, "users");
+  const q = query(collectionRef, where("type", "==", 1));
+
+  return getDocs(q);
 }
 
 export async function getDoctorsPaginated(
@@ -102,11 +117,11 @@ export async function getDoctorById(doctorId: string): Promise<Doctor> {
 export async function getAppointmentsDoctor(
   id: string
 ): Promise<Appointment[]> {
-  const collectionRef = collection(db, "appointments");
+  const collectionRef = collection(db, "appointment");
   const q = query(
     collectionRef,
     where("completed", "==", false),
-    where("doctor", "==", id)
+    where("doctorId", "==", id)
   );
 
   const querySnapshot = await getDocs(q);
@@ -121,7 +136,7 @@ export async function getAppointmentsDoctor(
 export async function getAppointmentsClient(
   id: string
 ): Promise<Appointment[]> {
-  const collectionRef = collection(db, "appointments");
+  const collectionRef = collection(db, "appointment");
   const q = query(
     collectionRef,
     where("completed", "==", false),
