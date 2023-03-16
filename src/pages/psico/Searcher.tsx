@@ -1,18 +1,37 @@
-import React, { useEffect, useState } from "react";
+import { DocumentData, DocumentSnapshot } from "firebase/firestore";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import DoctorCard from "../../components/DoctorCard";
-import { getDoctors } from "../../firebase/api";
+import {
+  createMocked10Doctors,
+  getDoctors,
+  getDoctorsPaginated,
+} from "../../firebase/api";
+import useInfiniteLoading from "../../hooks/useInfiniteLoading";
 import { Doctor } from "../../interfaces/Client";
 
 function Searcher() {
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const {
+    items,
+    lastItemRef,
+  }: {
+    items: Doctor[];
+    loadItems: () => Promise<DocumentSnapshot<DocumentData>[]>;
+    lastItemRef: (node: any) => void;
+  } = useInfiniteLoading({
+    getItems: getDoctorsPaginated,
+  });
 
-  const initializeDoctors = async () => {
-    setDoctors(await getDoctors());
-  };
-
-  useEffect(() => {
-    initializeDoctors();
-  }, []);
+  const cards = items.map((doctor, index) => {
+    if (index === items.length - 1) {
+      return (
+        <div ref={lastItemRef} key={doctor.id}>
+          <DoctorCard doctor={doctor} />
+        </div>
+      );
+    } else {
+      return <DoctorCard key={doctor.id} doctor={doctor} />;
+    }
+  });
 
   return (
     <>
@@ -23,11 +42,11 @@ function Searcher() {
       </div>
 
       <section>
-        <div className="flex flex-wrap px-16 mt-10">
-          {doctors.map((doctor) => (
-            <DoctorCard key={doctor.id} doctor={doctor} />
-          ))}
+        <div className="flex flex-wrap px-16 mt-10 gap-4 justify-center">
+          {cards}
         </div>
+
+        {/* <button onClick={loadItems}>Load More</button> */}
       </section>
     </>
   );

@@ -38,16 +38,16 @@ export const Dropdown = (props: Props) => {
       <section>
         <button
           onClick={() => setShowOptions(!showOptions)}
-          className="inline-flex w-full justify-between gap-x-1.5 rounded-md outline-none
-            bg-white px-3 py-2 font-semibold text-gray-900 shadow-sm ring-2 hover:bg-gray-50
-            hover:ring-[3px] ring-primary-strong ring-offset-2 ring-offset-gray-100  focus:ring-4 active:ring-4"
+          className={`inline-flex w-full justify-between gap-x-1.5 rounded-md outline-none 
+            bg-white px-3 py-3 ${optionSelected ? 'font-semibold text-gray-900' : 'text-gray-500'}  shadow-sm ring-2 hover:bg-gray-50
+            hover:ring-[3px] ring-primary-strong ring-offset-2 ring-offset-gray-100  focus:ring-4 active:ring-4}`}
           id="menu-button"
           aria-expanded="true"
           aria-haspopup="true"
         >
           {optionSelected ? optionSelected : props.title}
           <svg
-            className="-mr-1 ml-2 h-5 w-5"
+            className="-mr-1 ml-2 h-7 w-7"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"

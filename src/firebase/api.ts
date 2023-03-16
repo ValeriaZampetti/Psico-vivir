@@ -19,6 +19,10 @@ import {
   query,
   DocumentSnapshot,
   setDoc,
+  orderBy,
+  Timestamp,
+  limit,
+  startAfter,
 } from "firebase/firestore";
 import { Appointment } from "../interfaces/Appointment";
 import { Client, Doctor } from "../interfaces/Client";
@@ -57,12 +61,50 @@ export function getClients () {
   return getDocs(q);
 }
 
-export function getDoctorById(
-  doctorId: string
-): Promise<DocumentSnapshot<DocumentData>> {
+export async function getDoctorsPaginated(
+  docDoctorToStart?: DocumentSnapshot<DocumentData> | null
+): Promise<{
+  snapShot: QuerySnapshot<DocumentData>;
+  lastVisible: DocumentSnapshot<DocumentData> | null;
+}> {
   const collectionRef = collection(db, "users");
 
-  return getDoc(doc(collectionRef, doctorId));
+  const numerOfEntitiesByPage = 10;
+  const q = docDoctorToStart
+    ? query(
+        collectionRef,
+        where("type", "==", 2),
+        orderBy("ranking", "desc"), 
+        startAfter(docDoctorToStart),
+        limit(numerOfEntitiesByPage)
+      )
+    : query(
+        collectionRef,
+        where("type", "==", 2),
+        orderBy("ranking", "desc"),
+        limit(numerOfEntitiesByPage)
+      );
+
+  // REVIEW - Para Sergio ver si lo hago en tiempo real
+  // const unsubscribe = onSnapshot(q, (querySnapshot) => {
+  //   const cities = [];
+  //   querySnapshot.forEach((doc) => {
+  //       cities.push(doc.data().name);
+  //   });
+  //   console.log("Current cities in CA: ", cities.join(", "));
+  // });
+
+  const querySnapshot = await getDocs(q);
+  const lastVisible = querySnapshot.docs[querySnapshot.docs.length -1];
+
+  return { snapShot: querySnapshot, lastVisible };
+}
+
+export async function getDoctorById(doctorId: string): Promise<Doctor> {
+  const collectionRef = collection(db, "users");
+
+  const documentSnapshot = await getDoc(doc(collectionRef, doctorId));
+  return { id: documentSnapshot.id, ...documentSnapshot.data() } as Doctor;
 }
 
 export async function getAppointmentsDoctor(
@@ -125,13 +167,18 @@ export function createUser(client: Client, password: string) {
       const user = userCredential.user;
 
       const clientRef = doc(collectionRef, user.uid);
+
+      client.createdAt = Timestamp.now();
       setDoc(clientRef, client);
       console.log("User created", user.uid);
     }
   );
 }
 
-export async function signIn(email: string, password: string): Promise<UserCredential | null> {
+export async function signIn(
+  email: string,
+  password: string
+): Promise<UserCredential | null> {
   try {
     const result = await signInWithEmailAndPassword(auth, email, password);
     console.log("result", result);
@@ -139,6 +186,14 @@ export async function signIn(email: string, password: string): Promise<UserCrede
   } catch (error) {
     console.log("error", error);
     return null;
+  }
+}
+
+export async function logOut() {
+  try {
+    await auth.signOut();
+  } catch (error) {
+    console.log("error", error);
   }
 }
 
@@ -157,4 +212,23 @@ export async function getUserById(userId: string): Promise<Client | Doctor> {
   const document = await getDoc(doc(collectionRef, userId));
   const client = document.data()!;
   return client.type === 1 ? (client as Client) : (client as Doctor);
+}
+
+export async function createMocked10Doctors(){
+  const collectionRef = collection(db, "users");
+  for (let i = 0; i < 10; i++) {
+    const doctor: Doctor = {
+      name: `Doctor ${i}`,
+      email: `${i}@gmail.com`,
+      type: 2,
+      specialties: ["hola", "fafaf"],
+      telephone: `${i}`,
+      ranking: 3,
+      biography: `biography ${i}`,
+      createdAt: Timestamp.now(),
+      img: ""
+    }
+    const docRef = await addDoc(collectionRef, doctor);
+  }
+
 }
