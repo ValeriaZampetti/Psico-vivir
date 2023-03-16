@@ -61,13 +61,6 @@ export function getClients () {
   return getDocs(q);
 }
 
-export function getClients () {
-  const collectionRef = collection(db, "users");
-  const q = query(collectionRef, where("type", "==", 1));
-
-  return getDocs(q);
-}
-
 export async function getDoctorsPaginated(
   docDoctorToStart?: DocumentSnapshot<DocumentData> | null
 ): Promise<{
@@ -232,7 +225,8 @@ export async function createMocked10Doctors(){
       telephone: `${i}`,
       ranking: 3,
       biography: `biography ${i}`,
-      createdAt: Timestamp.now()
+      createdAt: Timestamp.now(),
+      img: ""
     }
     const docRef = await addDoc(collectionRef, doctor);
   }
