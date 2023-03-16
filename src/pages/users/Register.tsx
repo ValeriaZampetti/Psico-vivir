@@ -13,7 +13,7 @@ export const Register = (prop: any) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmarcontraseña, setconfirmarcontraseña] = useState("");
-  const [tipoUsuario, setTipoUsuario] = useState(5);
+  const [tipoUsuario, setTipoUsuario] = useState(0);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -51,6 +51,7 @@ export const Register = (prop: any) => {
             <h2 className="text-center text-xl font-medium">
               Registrate ingresando los siguientes datos
             </h2>
+            
             <form className="self-center" onSubmit={handleSubmit}>
               <section className="my-10 flex flex-col sm:flex-row justify-center gap-5 w-64 self-center ">
                 <div className="flex flex-col gap-5">
@@ -115,7 +116,7 @@ export const Register = (prop: any) => {
               {/* TODO - Cambiar bg-green */}
               <button
                 type="submit"
-                className="w-full py-3 text-black font-bold rounded-lg shadow-lg
+                className="w-full py-3 text-black font-bold rounded-lg shadow-lg duration-300
                 bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90
                   hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
               >
