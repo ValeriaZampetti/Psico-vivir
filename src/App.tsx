@@ -15,37 +15,40 @@ import Register from "./pages/users/Register";
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="*" element={<LandingLayout />}>
-            <Route index element={<Landing />} />
-          </Route>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="*" element={<LandingLayout />}>
+              <Route index element={<Landing />} />
+            </Route>
 
-          <Route path="/landing" element={<LandingLayout />}>
-            <Route index element={<Landing />} />
-          </Route>
+            <Route path="/landing" element={<LandingLayout />}>
+              <Route index element={<Landing />} />
+            </Route>
 
-          <Route path="/users" element={<UserLayout />}>
-            <Route index element={<Navigate to="login" />} />
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<Register />} />
-          </Route>
+            <Route path="/users" element={<UserLayout />}>
+              <Route index element={<Navigate to="login" />} />
+              <Route path="login" element={<Login />} />
+              <Route path="register" element={<Register />} />
+              <Route path="checkout" element={<Checkout />} />
+              <Route path="schedule" element={<Schedule />} />
+            </Route>
 
-          <Route path="/psico" element={<ProtectedLayout />}>
-            <Route index element={<Searcher />} />
-            <Route path="profile/:id" element={<Profile />} />
-            <Route path="schedule" element={<Schedule />} />
-            <Route path="chat" element={<Chat />} />
-            <Route path="checkout" element={<Checkout />} />
-          </Route>
-          <Route path="*" element={<LandingLayout />}>
-            <Route index element={<Error404 />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+            <Route path="/psico" element={<ProtectedLayout />}>
+              <Route index element={<Searcher />} />
+              <Route path="profile/:id" element={<Profile />} />
+              <Route path="schedule" element={<Schedule />} />
+              <Route path="chat" element={<Chat />} />
+              <Route path="checkout" element={<Checkout />} />
+            </Route>
+            <Route path="*" element={<LandingLayout />}>
+              <Route index element={<Error404 />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
   );
 }
 
 export default App;
+
