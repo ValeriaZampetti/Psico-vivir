@@ -1,13 +1,9 @@
 import React from 'react';
 import paypalLogo from "../../assets/images/logo-Paypal.png";
-// import PaypalButton from '../../components/PaypalButton';
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { useNavigate } from 'react-router-dom';
 
 function Checkout() {
-    // const PaymentInfo = {
-    //     amount: 90,
-    // };
 
     const navigate = useNavigate();
 
