@@ -23,11 +23,16 @@ import {
   Timestamp,
   limit,
   startAfter,
+  serverTimestamp,
 } from "firebase/firestore";
 import { Appointment } from "../interfaces/Appointment";
-import { Client, Doctor } from "../interfaces/Client";
+import {
+  Client,
+  ClientCreate,
+  Doctor,
+  DoctorCreate,
+} from "../interfaces/Client";
 import { Feedback } from "../interfaces/Feedback";
-
 
 import { auth, db, googleAuthProvider } from "./config";
 
@@ -54,7 +59,7 @@ export async function getDoctors(): Promise<Doctor[]> {
   return doctors;
 }
 
-export function getClients () {
+export function getClients() {
   const collectionRef = collection(db, "users");
   const q = query(collectionRef, where("type", "==", 1));
 
@@ -74,7 +79,7 @@ export async function getDoctorsPaginated(
     ? query(
         collectionRef,
         where("type", "==", 2),
-        orderBy("ranking", "desc"), 
+        orderBy("ranking", "desc"),
         startAfter(docDoctorToStart),
         limit(numerOfEntitiesByPage)
       )
@@ -95,7 +100,52 @@ export async function getDoctorsPaginated(
   // });
 
   const querySnapshot = await getDocs(q);
-  const lastVisible = querySnapshot.docs[querySnapshot.docs.length -1];
+  const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+
+  return { snapShot: querySnapshot, lastVisible };
+}
+
+export async function getAppointmentsDoctorPaginated(
+  id: string,
+  docAppointmentToStart?: DocumentSnapshot<DocumentData> | null
+): Promise<{
+  snapShot: QuerySnapshot<DocumentData>;
+  lastVisible: DocumentSnapshot<DocumentData> | null;
+}> {
+  const collectionRef = collection(db, "appointment");
+
+  const numerOfEntitiesByPage = 10;
+  const q = docAppointmentToStart
+    ? query(
+        collectionRef,
+        where("completed", "==", false),
+        where("doctorId", "==", id),
+        orderBy("createdAt", "desc"),
+        startAfter(docAppointmentToStart),
+        limit(numerOfEntitiesByPage)
+      )
+    : query(
+        collectionRef,
+        where("completed", "==", false),
+        where("doctorId", "==", id),
+        orderBy("createdAt", "desc"),
+        limit(numerOfEntitiesByPage)
+      );
+
+  // REVIEW - Para Sergio ver si lo hago en tiempo real
+  // const unsubscribe = onSnapshot(q, (querySnapshot) => {
+  //   const cities = [];
+  //   querySnapshot.forEach((doc) => {
+  //       cities.push(doc.data().name);
+  //   });
+  //   console.log("Current cities in CA: ", cities.join(", "));
+  // });
+
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    console.log(doc.data());
+  });
+  const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
 
   return { snapShot: querySnapshot, lastVisible };
 }
@@ -108,13 +158,13 @@ export async function getDoctorById(doctorId: string): Promise<Doctor> {
 }
 
 export async function getAppointmentsDoctor(
-  id: string
+  doctorId: string
 ): Promise<Appointment[]> {
   const collectionRef = collection(db, "appointment");
   const q = query(
     collectionRef,
     where("completed", "==", false),
-    where("doctorId", "==", id)
+    where("doctorId", "==", doctorId)
   );
 
   const querySnapshot = await getDocs(q);
@@ -159,7 +209,7 @@ export function addFeedback(
   return addDoc(collectionRef, feedbackObj);
 }
 
-export function createUser(client: Client, password: string) {
+export function createUser(client: ClientCreate, password: string) {
   const collectionRef = collection(db, "users");
   console.log("Creating user", client.email);
   createUserWithEmailAndPassword(auth, client.email, password).then(
@@ -168,8 +218,10 @@ export function createUser(client: Client, password: string) {
 
       const clientRef = doc(collectionRef, user.uid);
 
-      client.createdAt = Timestamp.now();
-      setDoc(clientRef, client);
+      setDoc(clientRef, {
+        ...client,
+        createdAt: serverTimestamp(),
+      });
       console.log("User created", user.uid);
     }
   );
@@ -214,10 +266,10 @@ export async function getUserById(userId: string): Promise<Client | Doctor> {
   return client.type === 1 ? (client as Client) : (client as Doctor);
 }
 
-export async function createMocked10Doctors(){
+export async function createMocked10Doctors() {
   const collectionRef = collection(db, "users");
   for (let i = 0; i < 10; i++) {
-    const doctor: Doctor = {
+    const doctor: DoctorCreate = {
       name: `Doctor ${i}`,
       email: `${i}@gmail.com`,
       type: 2,
@@ -225,10 +277,11 @@ export async function createMocked10Doctors(){
       telephone: `${i}`,
       ranking: 3,
       biography: `biography ${i}`,
-      createdAt: Timestamp.now(),
-      img: ""
-    }
-    const docRef = await addDoc(collectionRef, doctor);
+    };
+    const docRef = await addDoc(collectionRef, {
+      ...doctor,
+      createdAt: serverTimestamp(),
+      image: "https://picsum.photos/200",
+    });
   }
-
 }
