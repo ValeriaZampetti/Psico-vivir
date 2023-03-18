@@ -8,11 +8,12 @@ import Landing from "./pages/Landing";
 import Chat from "./pages/psico/Chat";
 import Checkout from "./pages/psico/Checkout";
 import Profile from "./pages/psico/Profile";
-import Schedule from "./pages/psico/Schedule";
+import Reservations from "./pages/psico/DoctorReservation";
 import Searcher from "./pages/psico/Searcher";
 import WriteReview from "./pages/psico/WriteReview";
 import Login from "./pages/users/Login";
 import Register from "./pages/users/Register";
+import ScheduleAppointment from "./pages/psico/ScheduleAppointment";
 
 function App() {
   return (
@@ -21,29 +22,32 @@ function App() {
         <Routes>
           <Route path="*" element={<LandingLayout />}>
             <Route index element={<Landing />} />
+            <Route path="*" element={<Error404 />} />
           </Route>
 
           <Route path="/landing" element={<LandingLayout />}>
             <Route index element={<Landing />} />
+            <Route path="*" element={<Error404 />} />
           </Route>
 
           <Route path="/users" element={<UserLayout />}>
             <Route index element={<Navigate to="login" />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
+            <Route path="*" element={<Error404 />} />
             <Route path="writereview" element={<WriteReview />} /> {/* de mientras aqui*/}
           </Route>
 
           <Route path="/psico" element={<ProtectedLayout />}>
             <Route index element={<Searcher />} />
             <Route path="profile/:id" element={<Profile />} />
-            <Route path="schedule" element={<Schedule />} />
+            <Route path="reservations" element={<Reservations />} />
+            <Route path="shedule/:id" element={<ScheduleAppointment />} />
             <Route path="chat" element={<Chat />} />
             <Route path="checkout" element={<Checkout />} />
+            <Route path="*" element={<Error404 />} />
           </Route>
-          <Route path="*" element={<LandingLayout />}>
-            <Route index element={<Error404 />} />
-          </Route>
+
         </Routes>
       </BrowserRouter>
     </AuthProvider>
@@ -51,3 +55,4 @@ function App() {
 }
 
 export default App;
+

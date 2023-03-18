@@ -4,7 +4,10 @@ import { ReactComponent as StarIcon } from "../../assets/icons/star.svg";
 interface StarRatingProps {
   currentRating: number;
   handleCurrentRating: (rating: number) => void;
-  svgClass?: string;
+  /**
+   * It is necessary to pass at least the width or height of the svg
+   */
+  svgClass: string;
   readonly?: boolean;
 }
 
