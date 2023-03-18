@@ -3,6 +3,9 @@ import { getUserById } from "../firebase/api";
 import { useTimestampToString } from "../hooks/useTimestampToString";
 import { Appointment } from "../interfaces/Appointment";
 import { Client } from "../interfaces/Client";
+import { storage } from "../firebase/config";
+import { ref, getDownloadURL } from "firebase/storage";
+import { Link } from "react-router-dom";
 
 interface ReservationCardProps {
   appointment: Appointment;
@@ -19,14 +22,23 @@ export const ReservationCard = (props: ReservationCardProps) => {
     initializeClient();
   }, []);
 
-  const dateString = useTimestampToString(props.appointment.date.seconds);
+    const dateString = useTimestampToString(props.appointment.date.seconds);
 
-  return (
-    <main className="h-48 m-0 flex justify-around items-center max-[900px]:h-auto max-[900px]:flex-col max-[900px]:gap-4 max-[900px]:p-8">
+    const gsReference = ref(storage, "gs://psico-vivir.appspot.com/imagesUsers/aiudaporfavor.jpg");
+    const img = document.getElementById("profile-pic");
+    getDownloadURL(gsReference)
+  .then((url) => {
+    const img = document.getElementById("profile-pic");
+    img?.setAttribute("src", url);
+  })
+
+    return (
+      <main className="h-48 m-0 flex justify-around items-center max-[900px]:h-auto max-[900px]:flex-col max-[900px]:gap-4 max-[900px]:p-8">
       <img
+        id="profile-pic"
         src="../../src/assets/mock/pic.jpg"
         alt="profile-pic"
-        className="h-32 aspect-square rounded-full border-rose-400 border-8 smax2:h-52"
+        className="h-32 aspect-square rounded-full border-rose-400 border-8 max-[900px]:h-52"
       />
 
       <header className="h-1/2 w-1/5 flex flex-col gap-1 bg-white max-[900px]:w-full">
@@ -67,7 +79,7 @@ export const ReservationCard = (props: ReservationCardProps) => {
         </button>
       </footer>
     </main>
-  );
+    );
 };
 
 export default ReservationCard;
