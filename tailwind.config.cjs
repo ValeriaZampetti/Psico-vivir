@@ -14,6 +14,10 @@ module.exports = {
           normal: "#CBFFC9",
           strong: "#b2ffb0",
         },
+
+        other: {
+          normal: "#EF5DA8",
+        },
       },
     },
   },

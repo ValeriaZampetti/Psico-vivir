@@ -33,6 +33,7 @@ function App() {
             <Route index element={<Navigate to="login" />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
+            <Route path="schedule/:id" element={<ScheduleAppointment />} />
             <Route path="*" element={<Error404 />} />
           </Route>
 
@@ -40,12 +41,11 @@ function App() {
             <Route index element={<Searcher />} />
             <Route path="profile/:id" element={<Profile />} />
             <Route path="reservations" element={<Reservations />} />
-            <Route path="shedule/:id" element={<ScheduleAppointment />} />
+
             <Route path="chat" element={<Chat />} />
             <Route path="checkout" element={<Checkout />} />
             <Route path="*" element={<Error404 />} />
           </Route>
-
         </Routes>
       </BrowserRouter>
     </AuthProvider>
@@ -53,4 +53,3 @@ function App() {
 }
 
 export default App;
-
