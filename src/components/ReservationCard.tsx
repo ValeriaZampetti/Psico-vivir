@@ -22,18 +22,20 @@ export const ReservationCard = (props: ReservationCardProps) => {
     initializeClient();
   }, []);
 
-    const dateString = useTimestampToString(props.appointment.date.seconds);
+  const dateString = useTimestampToString(props.appointment.date.seconds);
 
-    const gsReference = ref(storage, "gs://psico-vivir.appspot.com/imagesUsers/aiudaporfavor.jpg");
-    const img = document.getElementById("profile-pic");
-    getDownloadURL(gsReference)
-  .then((url) => {
+  const gsReference = ref(
+    storage,
+    "gs://psico-vivir.appspot.com/imagesUsers/aiudaporfavor.jpg"
+  );
+  const img = document.getElementById("profile-pic");
+  getDownloadURL(gsReference).then((url) => {
     const img = document.getElementById("profile-pic");
     img?.setAttribute("src", url);
-  })
+  });
 
-    return (
-      <main className="h-48 m-0 flex justify-around items-center max-[900px]:h-auto max-[900px]:flex-col max-[900px]:gap-4 max-[900px]:p-8">
+  return (
+    <main className="h-48 m-0 flex justify-around items-center max-[900px]:h-auto max-[900px]:flex-col max-[900px]:gap-4 max-[900px]:p-8">
       <img
         id="profile-pic"
         src="../../src/assets/mock/pic.jpg"
@@ -62,13 +64,16 @@ export const ReservationCard = (props: ReservationCardProps) => {
       </section>
 
       <footer className="flex flex-wrap justify-center items-center gap-8 w-48 h-16">
-        <button className="h-full aspect-square rounded-2xl  border-rose-400 border-4 flex items-center justify-center hover:scale-110">
+        <Link
+          to="/psico/chat"
+          className="h-full aspect-square rounded-2xl  border-rose-400 border-4 flex items-center justify-center hover:scale-110"
+        >
           <img
             src="../../src/assets/icons/chat.svg"
             alt="check-icon"
             className="h-8"
           />
-        </button>
+        </Link>
 
         <button className="h-full aspect-square rounded-2xl  border-rose-400 border-4 flex items-center justify-center hover:scale-110">
           <img
@@ -79,7 +84,7 @@ export const ReservationCard = (props: ReservationCardProps) => {
         </button>
       </footer>
     </main>
-    );
+  );
 };
 
 export default ReservationCard;
