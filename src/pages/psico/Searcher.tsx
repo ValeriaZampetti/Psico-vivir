@@ -1,11 +1,7 @@
 import { DocumentData, DocumentSnapshot } from "firebase/firestore";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React from "react";
 import DoctorCard from "../../components/DoctorCard";
-import {
-  createMocked10Doctors,
-  getDoctors,
-  getDoctorsPaginated,
-} from "../../firebase/api";
+import { getDoctorsPaginated } from "../../firebase/api";
 import useInfiniteLoading from "../../hooks/useInfiniteLoading";
 import { Doctor } from "../../interfaces/Client";
 
@@ -28,9 +24,9 @@ function Searcher() {
           <DoctorCard doctor={doctor} />
         </div>
       );
-    } else {
-      return <DoctorCard key={doctor.id} doctor={doctor} />;
     }
+    
+    return <DoctorCard key={doctor.id} doctor={doctor} />;
   });
 
   return (

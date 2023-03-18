@@ -5,15 +5,33 @@ import {
 } from "firebase/firestore";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
-interface Props {
-  getItems: (docToStart: DocumentSnapshot<DocumentData> | null) => Promise<{
-    snapShot: QuerySnapshot<DocumentData>;
-    lastVisible: DocumentSnapshot<DocumentData> | null;
-  }>;
-}
+type Props =
+  | {
+      getItems?: (
+        docToStart?: DocumentSnapshot<DocumentData> | null
+      ) => Promise<{
+        snapShot: QuerySnapshot<DocumentData>;
+        lastVisible: DocumentSnapshot<DocumentData> | null;
+      }>;
+
+      idToPass?: never;
+
+      getItemsWithId?: never;
+    }
+  | {
+      getItemsWithId: (
+        id: string,
+        docToStart?: DocumentSnapshot<DocumentData> | null
+      ) => Promise<{
+        snapShot: QuerySnapshot<DocumentData>;
+        lastVisible: DocumentSnapshot<DocumentData> | null;
+      }>;
+      idToPass: string;
+      getItems?: never;
+    };
 
 function useInfiniteLoading(props: Props) {
-  const { getItems } = props;
+  const { getItems, getItemsWithId } = props;
 
   const [items, setItems] = useState<any[]>([]);
   const [lastItem, setLastItem] =
@@ -39,8 +57,11 @@ function useInfiniteLoading(props: Props) {
       return items;
     }
     setIsLoading(true);
-    const { snapShot, lastVisible } = await getItems(lastItem);
-    console.log(lastVisible);
+
+    const { snapShot, lastVisible } = props.idToPass
+      ? await getItemsWithId!(props.idToPass, lastItem)
+      : await getItems!(lastItem);
+    console.log(snapShot, lastVisible);
     setHasMore(lastVisible != null);
 
     const data = snapShot.docs.map((doc) => ({
@@ -72,6 +93,7 @@ function useInfiniteLoading(props: Props) {
     },
     [isLoading, hasMore]
   );
+
   return {
     items,
     hasMore,

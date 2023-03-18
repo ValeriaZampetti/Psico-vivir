@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { Navigate, useNavigate, Link } from "react-router-dom";
 import register from "../../assets/images/Register.jpg";
 import { createUser } from "../../firebase/api";
-import { Client, Doctor } from "../../interfaces/Client";
+import { Client, ClientCreate, Doctor } from "../../interfaces/Client";
 import googleIcon from "../../assets/icons/google.svg";
 import facebookIcon from "../../assets/icons/facebook.svg";
 import { Dropdown } from "../../components/forms/Dropdown";
@@ -17,7 +17,7 @@ export const Register = (prop: any) => {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const user: Client | null = {
+    const user: ClientCreate | null = {
       email: email,
       name: nombre,
       type: 0,

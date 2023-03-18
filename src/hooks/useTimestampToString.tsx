@@ -1,4 +1,3 @@
-
 export function useTimestampToString(secs: number):string {
     const date: Date = new Date(secs*1000);
     const months = [
