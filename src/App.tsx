@@ -20,16 +20,19 @@ function App() {
         <Routes>
           <Route path="*" element={<LandingLayout />}>
             <Route index element={<Landing />} />
+            <Route path="*" element={<Error404 />} />
           </Route>
 
           <Route path="/landing" element={<LandingLayout />}>
             <Route index element={<Landing />} />
+            <Route path="*" element={<Error404 />} />
           </Route>
 
           <Route path="/users" element={<UserLayout />}>
             <Route index element={<Navigate to="login" />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
+            <Route path="*" element={<Error404 />} />
           </Route>
 
           <Route path="/psico" element={<ProtectedLayout />}>
@@ -38,10 +41,9 @@ function App() {
             <Route path="schedule" element={<Schedule />} />
             <Route path="chat" element={<Chat />} />
             <Route path="checkout" element={<Checkout />} />
+            <Route path="*" element={<Error404 />} />
           </Route>
-          <Route path="*" element={<LandingLayout />}>
-            <Route index element={<Error404 />} />
-          </Route>
+
         </Routes>
       </BrowserRouter>
     </AuthProvider>
