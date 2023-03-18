@@ -10,6 +10,7 @@ import Checkout from "./pages/psico/Checkout";
 import Profile from "./pages/psico/Profile";
 import Schedule from "./pages/psico/Schedule";
 import Searcher from "./pages/psico/Searcher";
+import WriteReview from "./pages/psico/WriteReview";
 import Login from "./pages/users/Login";
 import Register from "./pages/users/Register";
 
@@ -30,6 +31,7 @@ function App() {
             <Route index element={<Navigate to="login" />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
+            <Route path="writereview" element={<WriteReview />} /> {/* de mientras aqui*/}
           </Route>
 
           <Route path="/psico" element={<ProtectedLayout />}>
