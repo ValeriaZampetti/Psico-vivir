@@ -150,6 +150,51 @@ export async function getAppointmentsDoctorPaginated(
   return { snapShot: querySnapshot, lastVisible };
 }
 
+export async function getChatsDoctorPaginated(
+  id: string,
+  docAppointmentToStart?: DocumentSnapshot<DocumentData> | null
+): Promise<{
+  snapShot: QuerySnapshot<DocumentData>;
+  lastVisible: DocumentSnapshot<DocumentData> | null;
+}> {
+  const collectionRef = collection(db, "chat");
+
+  const numerOfEntitiesByPage = 10;
+  const q = docAppointmentToStart
+    ? query(
+        collectionRef,
+        where("hasAppointmentActive", "==", true),
+        where("doctorId", "==", id),
+        orderBy("createdAt", "desc"),
+        startAfter(docAppointmentToStart),
+        limit(numerOfEntitiesByPage)
+      )
+    : query(
+        collectionRef,
+        where("hasAppointmentActive", "==", true),
+        where("doctorId", "==", id),
+        orderBy("createdAt", "desc"),
+        limit(numerOfEntitiesByPage)
+      );
+
+  // REVIEW - Para Sergio ver si lo hago en tiempo real
+  // const unsubscribe = onSnapshot(q, (querySnapshot) => {
+  //   const cities = [];
+  //   querySnapshot.forEach((doc) => {
+  //       cities.push(doc.data().name);
+  //   });
+  //   console.log("Current cities in CA: ", cities.join(", "));
+  // });
+
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    console.log(doc.data());
+  });
+  const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+
+  return { snapShot: querySnapshot, lastVisible };
+}
+
 export async function getDoctorById(doctorId: string): Promise<Doctor> {
   const collectionRef = collection(db, "users");
 
@@ -210,6 +255,7 @@ export function addFeedback(
 }
 
 export function createUser(client: ClientCreate, password: string) {
+  console.log("Creating user", client.email);
   const collectionRef = collection(db, "users");
   console.log("Creating user", client.email);
   createUserWithEmailAndPassword(auth, client.email, password).then(
