@@ -48,19 +48,17 @@ function AuthProvider({ children }: IProps) {
 
   useEffect(() => {
     const unsubuscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setLoading(true);
-
       try {
         if (!currentUser) {
           setLoading(false);
           console.log("No hay usuario", loading);
           return;
         }
-        getUserById(currentUser?.uid || "").then((user) => {
-          setUser(user);
-          setLoading(false);
-          console.log("loading", loading);
-        });
+        setLoading(true);
+        const user = await getUserById(currentUser?.uid || "");
+        setUser(user);
+        setLoading(false);
+        console.log("loading", loading);
       } catch (error) {
         setLoading(false);
         console.log(error);
@@ -77,22 +75,20 @@ function AuthProvider({ children }: IProps) {
     console.log("login", email, password);
     return signIn(email, password);
   }
+
   async function loginWithGoogle() {
     return signInWithGoogle();
   }
+
   async function register(
     client: Client,
     password: string
   ): Promise<UserCredential | null> {
     return createUser(client, password);
   }
+
   async function loginWithGithub() {
     return signInWithGithub();
-  }
-
-  async function logOut() {
-    setUser(null);
-    logOut()
   }
 
   const value: IAuthProvider = {

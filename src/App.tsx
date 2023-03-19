@@ -41,11 +41,11 @@ function App() {
           <Route path="/psico" element={<ProtectedLayout />}>
             <Route index element={<Searcher />} />
             <Route path="profile/:id" element={<Profile />} />
-            <Route path="schedule" element={<Schedule />} />
+            <Route path="reservations" element={<Reservations />} />
+            <Route path="shedule/:id" element={<ScheduleAppointment />} />
             <Route path="chat" element={<Chat />} />
-          </Route>
-          <Route path="*" element={<LandingLayout />}>
-            <Route index element={<Error404 />} />
+            <Route path="checkout" element={<Checkout />} />
+            <Route path="*" element={<Error404 />} />
           </Route>
         </Routes>
       </BrowserRouter>

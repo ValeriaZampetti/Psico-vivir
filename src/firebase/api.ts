@@ -209,10 +209,10 @@ export function addFeedback(
   return addDoc(collectionRef, feedbackObj);
 }
 
-export function createUser(client: ClientCreate, password: string) {
+export function createUser(client: ClientCreate, password: string): Promise<UserCredential | null> {
   const collectionRef = collection(db, "users");
   console.log("Creating user", client.email);
-  createUserWithEmailAndPassword(auth, client.email, password).then(
+  return createUserWithEmailAndPassword(auth, client.email, password).then(
     (userCredential) => {
       const user = userCredential.user;
 
@@ -223,6 +223,7 @@ export function createUser(client: ClientCreate, password: string) {
         createdAt: serverTimestamp(),
       });
       console.log("User created", user.uid);
+      return userCredential;
     }
   );
 }
@@ -281,6 +282,7 @@ export async function getUserById(userId: string): Promise<Client | Doctor> {
 
   const document = await getDoc(doc(collectionRef, userId));
   const client = document.data()!;
+  console.log("client", client, userId)
   return client.type === 1 ? (client as Client) : (client as Doctor);
 }
 

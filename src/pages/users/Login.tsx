@@ -36,7 +36,7 @@ export const LogIn = (props: any) => {
         });
         setTimeout(() => {
           console.log("me voy");
-          // navigate("/psico");
+          navigate("/psico");
         }, 2000);
       } else {
         toast.error("No se pudo iniciar sesión");
