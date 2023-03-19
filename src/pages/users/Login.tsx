@@ -6,6 +6,8 @@ import psicoLogin from "../../assets/images/psicoLogin.png";
 import googleIcon from "../../assets/icons/google.svg";
 import facebookIcon from "../../assets/icons/facebook.svg";
 import { useAuth } from "../../hooks/useAuth";
+import { ToastContainer, toast } from "react-toastify";
+
 //import { Context } from "../store/appContext";
 //import Swal from "sweetalert2";\
 
@@ -14,12 +16,12 @@ export const LogIn = (props: any) => {
     const [password, setPassword] = useState("");
     const { login } = useAuth();
     const navigate = useNavigate();
-    const notUser = () => {
-        //Swal.fire({
-        //icon: "error",
-        //title: "Ha ocurrido un error",
-        //text: "El usuario no está registrado, por favor registrese antes de iniciar sesión",
-        //});
+    //const { actions } = useContext(Context);
+
+    const showToastMessage = () => {
+        toast.success("Success Notification !", {
+            position: toast.POSITION.TOP_RIGHT,
+        });
     };
 
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -27,14 +29,17 @@ export const LogIn = (props: any) => {
 
         try {
             const userCredential = await login(email, password);
-
+            console.log(userCredential);
             if (userCredential) {
+                toast.success("Inicio exitoso!", {
+                    position: toast.POSITION.TOP_RIGHT,
+                });
                 setTimeout(() => {
-                    // TODO - Avisar que sera redirigido
                     console.log("me voy");
-                    navigate("/psico");
+                    // navigate("/psico");
                 }, 2000);
             } else {
+                toast.error("No se pudo iniciar sesión");
                 console.log("no user");
             }
         } catch (error) {
@@ -47,7 +52,7 @@ export const LogIn = (props: any) => {
             <div className="bg-gray-300/40 px-14 py-7">
                 <div
                     className="backdrop-blur-lg bg-white drop-shadow-lg
-                      flex flex-row p-6 rounded-2xl justify-center"
+                    flex flex-row p-6 rounded-2xl justify-center"
                 >
                     <div className="w-[50%] lg:flex hidden justify-center">
                         <img
@@ -93,7 +98,7 @@ export const LogIn = (props: any) => {
                                 type="submit"
                                 className="w-full py-3 text-black font-bold rounded-lg shadow-lg
                 bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90
-                  hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
+                hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
                             >
                                 INICIA SESIÓN
                             </button>
