@@ -7,46 +7,51 @@ import UserLayout from "./layouts/UserLayout";
 import Error404 from "./pages/Error404";
 import Landing from "./pages/Landing";
 import Chat from "./pages/psico/Chat";
+import Checkout from "./pages/psico/Checkout";
 import Profile from "./pages/psico/Profile";
-import Schedule from "./pages/psico/Schedule";
+import Reservations from "./pages/psico/DoctorReservation";
 import Searcher from "./pages/psico/Searcher";
 import Login from "./pages/users/Login";
 import Register from "./pages/users/Register";
+import ScheduleAppointment from "./pages/psico/ScheduleAppointment";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-    return (
-        <AuthProvider>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="*" element={<LandingLayout />}>
-                        <Route index element={<Landing />} />
-                    </Route>
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="*" element={<LandingLayout />}>
+            <Route index element={<Landing />} />
+            <Route path="*" element={<Error404 />} />
+          </Route>
 
-                    <Route path="/landing" element={<LandingLayout />}>
-                        <Route index element={<Landing />} />
-                    </Route>
+          <Route path="/landing" element={<LandingLayout />}>
+            <Route index element={<Landing />} />
+            <Route path="*" element={<Error404 />} />
+          </Route>
 
-                    <Route path="/users" element={<UserLayout />}>
-                        <Route index element={<Navigate to="login" />} />
-                        <Route path="login" element={<Login />} />
-                        <Route path="register" element={<Register />} />
-                    </Route>
+          <Route path="/users" element={<UserLayout />}>
+            <Route index element={<Navigate to="login" />} />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="*" element={<Error404 />} />
+          </Route>
 
-                    <Route path="/psico" element={<ProtectedLayout />}>
-                        <Route index element={<Searcher />} />
-                        <Route path="profile/:id" element={<Profile />} />
-                        <Route path="schedule" element={<Schedule />} />
-                        <Route path="chat" element={<Chat />} />
-                    </Route>
-                    <Route path="*" element={<LandingLayout />}>
-                        <Route index element={<Error404 />} />
-                    </Route>
-                </Routes>
-            </BrowserRouter>
-            <ToastContainer />
-        </AuthProvider>
-    );
+          <Route path="/psico" element={<ProtectedLayout />}>
+            <Route index element={<Searcher />} />
+            <Route path="profile/:id" element={<Profile />} />
+            <Route path="schedule" element={<Schedule />} />
+            <Route path="chat" element={<Chat />} />
+          </Route>
+          <Route path="*" element={<LandingLayout />}>
+            <Route index element={<Error404 />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+      <ToastContainer />
+    </AuthProvider>
+  );
 }
 
 export default App;

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import Menu from "../../assets/icons/menu.svg";
 
 import Logo from "../../assets/react.svg";
@@ -33,8 +34,8 @@ function LandingHeader() {
 
         <ul
           className={`md:flex md:items-center md:pb-0 pb-12 absolute md:static
-          bg-secondary md:z-auto z-[-1] left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${
-            open ? "top-18 " : "top-[-20rem]"
+          bg-secondary-normal md:z-auto z-[-1] left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${
+            open ? "top-18" : "top-[-20rem]"
           }`}
         >
           {links.map((section) => (
@@ -47,12 +48,22 @@ function LandingHeader() {
               </a>
             </li>
           ))}
-          <button
-            className="bg-indigo-600 text-white font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-indigo-400 
-    duration-500"
+          <Link
+            className="rounded-lg px-4 py-2 border-2 border-primary-normal text-primary-strong bg-white
+              hover:bg-primary-strong hover:text-white duration-300 font-[Poppins] md:ml-8 text-center
+              active:scale-95 outline-none ring-offset-1 focus:ring-2 ring-primary-strong "
+            to="/users/login"
           >
-            Get started
-          </button>
+            Iniciar sesión
+          </Link>
+          <Link
+            className="bg-primary-normal hover:bg-primary-light  drop-shadow-md 
+                rounded-lg py-2 px-6 text-center duration-300 font-[Poppins] ml-5 
+                active:scale-95 outline-none ring-offset-1 hover:ring-2 focus:ring-2 ring-primary-strong"
+            to="/users/register"
+          >
+            Registrarse
+          </Link>
         </ul>
       </header>
     </nav>

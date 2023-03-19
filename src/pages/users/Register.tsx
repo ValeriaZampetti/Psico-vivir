@@ -3,7 +3,7 @@ import { Navigate, useNavigate, Link } from "react-router-dom";
 import registerr from "../../assets/images/Register.jpg";
 import arrow from "../../assets/icons/arrow.svg";
 import { createUser } from "../../firebase/api";
-import { Client, Doctor } from "../../interfaces/Client";
+import { Client, ClientCreate, Doctor } from "../../interfaces/Client";
 import googleIcon from "../../assets/icons/google.svg";
 import facebookIcon from "../../assets/icons/facebook.svg";
 import { Dropdown } from "../../components/forms/Dropdown";
@@ -16,20 +16,18 @@ export const Register = (prop: any) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmarcontraseña, setconfirmarcontraseña] = useState("");
-  const [tipoUsuario, setTipoUsuario] = useState(5);
+  const [tipoUsuario, setTipoUsuario] = useState(0);
 
   const { register, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const user: Client | null = {
+    const user: ClientCreate | null = {
       email: email,
       name: nombre,
       type: 0,
     };
-
-    createUser(user, password);
 
     if (password.length <= 7) {
       toast.warning("La contraseña debe tener al menos 8 caracteres");
@@ -53,6 +51,8 @@ export const Register = (prop: any) => {
       toast.warning("Las contraseñas no coinciden");
       return;
     }
+
+    createUser(user, password);
   }
   const handleGoogleSignIn = async () => {
     await loginWithGoogle();
@@ -66,7 +66,7 @@ export const Register = (prop: any) => {
   const registerButton = (
     <button
       type="submit"
-      className="w-full py-3 text-black font-bold rounded-lg shadow-lg
+      className="w-full py-3 text-black font-bold rounded-lg shadow-lg duration-300
   bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90
     hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
     >
@@ -79,7 +79,7 @@ export const Register = (prop: any) => {
       onClick={() => {
         console.log("Tiene que cambiar todo el form");
       }}
-      className="w-full py-3 text-black font-bold rounded-lg shadow-lg flex flex-row justify-evenly
+      className="w-full py-3 text-black font-bold rounded-lg shadow-lg flex flex-row justify-evenly duration-300
     bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90
         hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
     >
@@ -113,6 +113,7 @@ export const Register = (prop: any) => {
             <h2 className="text-center text-xl font-medium">
               Registrate ingresando los siguientes datos
             </h2>
+
             <form className="self-center" onSubmit={handleSubmit}>
               <section className="my-10 flex flex-col sm:flex-row justify-center gap-5 w-64 self-center ">
                 <div className="flex flex-col gap-5">

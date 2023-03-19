@@ -48,19 +48,21 @@ function AuthProvider({ children }: IProps) {
 
   useEffect(() => {
     const unsubuscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setLoading(true);
+
       try {
         if (!currentUser) {
           setLoading(false);
           console.log("No hay usuario", loading);
           return;
         }
-        setLoading(true);
         getUserById(currentUser?.uid || "").then((user) => {
           setUser(user);
           setLoading(false);
           console.log("loading", loading);
         });
       } catch (error) {
+        setLoading(false);
         console.log(error);
       }
     });
@@ -86,6 +88,11 @@ function AuthProvider({ children }: IProps) {
   }
   async function loginWithGithub() {
     return signInWithGithub();
+  }
+
+  async function logOut() {
+    setUser(null);
+    logOut()
   }
 
   const value: IAuthProvider = {
