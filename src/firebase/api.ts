@@ -1,4 +1,4 @@
-import { UserCredential } from "@firebase/auth";
+import { User, UserCredential } from "@firebase/auth";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -34,7 +34,7 @@ import {
 } from "../interfaces/Client";
 import { Feedback } from "../interfaces/Feedback";
 
-import { auth, db, googleAuthProvider } from "./config";
+import { auth, db, githubAuthProvider, googleAuthProvider } from "./config";
 
 export async function getDoctors(): Promise<Doctor[]> {
   const collectionRef = collection(db, "users");
@@ -254,11 +254,10 @@ export function addFeedback(
   return addDoc(collectionRef, feedbackObj);
 }
 
-export function createUser(client: ClientCreate, password: string) {
-  console.log("Creating user", client.email);
+export function createUser(client: ClientCreate, password: string): Promise<UserCredential | null> {
   const collectionRef = collection(db, "users");
   console.log("Creating user", client.email);
-  createUserWithEmailAndPassword(auth, client.email, password).then(
+  return createUserWithEmailAndPassword(auth, client.email, password).then(
     (userCredential) => {
       const user = userCredential.user;
 
@@ -269,9 +268,11 @@ export function createUser(client: ClientCreate, password: string) {
         createdAt: serverTimestamp(),
       });
       console.log("User created", user.uid);
+      return userCredential;
     }
   );
 }
+
 
 export async function signIn(
   email: string,
@@ -295,12 +296,29 @@ export async function logOut() {
   }
 }
 
-export async function signInWithGoogle() {
+
+export async function signInWithGoogle(): Promise<UserCredential | null> {
   try {
     const result = await signInWithPopup(auth, googleAuthProvider);
-    console.log("result", result);
+    const collectionRef = collection(db, "users");
+
+    const document = await getDoc(doc(collectionRef, result.user?.uid));
+    if (!document.exists()) {
+      const client: ClientCreate = {
+        email: result.user?.email ?? "",
+        name: result.user?.displayName ?? "",
+        type: 1,
+      };
+
+      const clientRef = doc(collectionRef, result.user?.uid);
+      setDoc(clientRef, client);
+    }
+
+    await auth.updateCurrentUser(result.user);
+    return result;
   } catch (error) {
     console.log("error", error);
+    throw error;
   }
 }
 
@@ -309,6 +327,7 @@ export async function getUserById(userId: string): Promise<Client | Doctor> {
 
   const document = await getDoc(doc(collectionRef, userId));
   const client = document.data()!;
+  console.log("client", client, userId)
   return client.type === 1 ? (client as Client) : (client as Doctor);
 }
 
@@ -329,5 +348,30 @@ export async function createMocked10Doctors() {
       createdAt: serverTimestamp(),
       image: "https://picsum.photos/200",
     });
+  }
+}
+
+export async function signInWithGithub(): Promise<UserCredential | null> {
+  try {
+    const result = await signInWithPopup(auth, githubAuthProvider);
+    const collectionRef = collection(db, "users");
+
+    const document = await getDoc(doc(collectionRef, result.user?.uid));
+    if (!document.exists()) {
+      const client: ClientCreate = {
+        email: result.user?.email ?? "",
+        name: result.user?.displayName ?? "",
+        type: 1
+      }
+
+      const clientRef = doc(collectionRef, result.user?.uid);
+      setDoc(clientRef, client);
+    }
+
+    auth.updateCurrentUser(result.user);
+    return result;
+  } catch (error) {
+    console.log("error", error);
+    throw error;
   }
 }
