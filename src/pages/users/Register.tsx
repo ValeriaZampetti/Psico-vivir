@@ -16,12 +16,16 @@ export const Register = (prop: any) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmarcontraseña, setconfirmarcontraseña] = useState("");
-  const [tipoUsuario, setTipoUsuario] = useState(0);
+  const [tipoUsuario, setTipoUsuario] = useState(1);
 
   const { register, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+
+  // FIXME - Hacer que el form se resetee cuando se cambia el tipo de usuario
+  // FIXME - Utilizar esto en el submit
+  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+    console.log("submit")
     e.preventDefault();
     const user: ClientCreate | null = {
       email: email,
@@ -52,11 +56,24 @@ export const Register = (prop: any) => {
       return;
     }
 
-    createUser(user, password);
+    const userCredential = await createUser(user, password);
+    if (userCredential) {
+      toast.success("Usuario creado exitosamente");
+      setTimeout(() => {
+        navigate("/psico");
+      }, 2000);
+    } else {
+      toast.error("Error al crear el usuario");
+    }
   }
   const handleGoogleSignIn = async () => {
-    await loginWithGoogle();
-    navigate("/psico");
+    try {
+      await loginWithGoogle();
+      navigate("/psico");
+    } catch (error) {
+      console.log(error);
+      toast.error("Error al iniciar sesión con Google");
+    }
   };
   const handleGithubSignIn = async () => {
     // await loginWithGithub();
@@ -65,7 +82,8 @@ export const Register = (prop: any) => {
 
   const registerButton = (
     <button
-      type="submit"
+      // type="submit"
+      onClick={handleSubmit}
       className="w-full py-3 text-black font-bold rounded-lg shadow-lg duration-300
   bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90
     hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
@@ -114,7 +132,10 @@ export const Register = (prop: any) => {
               Registrate ingresando los siguientes datos
             </h2>
 
-            <form className="self-center" onSubmit={handleSubmit}>
+            {/* FIXME - Averiguar por que el submit no se ejecuta */}
+            <form className="self-center" 
+            // onSubmit={handleSubmit}
+            >
               <section className="my-10 flex flex-col sm:flex-row justify-center gap-5 w-64 self-center ">
                 <div className="flex flex-col gap-5">
                   <input
@@ -176,7 +197,7 @@ export const Register = (prop: any) => {
               </section>
 
               {/* TODO - Cambiar bg-green */}
-              {tipoUsuario == 1 ? registerButton : continueDoctorButton}
+              {tipoUsuario == 2 ? continueDoctorButton : registerButton}
             </form>
 
             <footer className="mb-5">
