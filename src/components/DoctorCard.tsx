@@ -15,8 +15,17 @@ function DoctorCard(props: DoctorCardProps) {
       flex flex-col justify-center w-80"
     >
       <img src={Profile}></img>
-      <h1 className="font-bold text-3xl self-center">{props.doctor.name}</h1>
-      <p className="self-center">{props.doctor.specialties.join(", ")}</p>
+      <h1 className="font-semibold text-3xl self-center">{props.doctor.name}</h1>
+      <section className="flex flex-wrap gap-2 my-2 justify-center">
+      {
+        props.doctor.specialties.map((specialty, index) => {
+          return (
+            <p className="bg-secondary-strong rounded-lg  px-4 py-2
+            font-semibold  text-center" key={index}>{specialty}</p>
+          );
+        })
+      }
+      </section>
 
       {/* TODO - Componente readonly de ranking */}
       <StarRating
@@ -27,7 +36,8 @@ function DoctorCard(props: DoctorCardProps) {
         }}
         readonly={false}
       />
-      <p className="text-gray-700 text-center mt-2">{props.doctor.biography}</p>
+      {/* TODO - Poner máximo de lineas */}
+      <p className="text-gray-700 text-center mt-2 text-lg">{props.doctor.biography}</p>
       <button
         className="w-full py-3 text-black font-bold uppercase rounded-lg shadow-lg duration-300
         bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90
