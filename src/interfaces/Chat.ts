@@ -1,3 +1,4 @@
+import { Timestamp } from "@firebase/firestore";
 import { Appointment } from "./Appointment";
 
 export interface Chat{
@@ -8,6 +9,7 @@ export interface Chat{
    * If the chat has an active appointment.
    * (If it has, it will alwayas be the last element of the array)
    */
-  hasAppointmentActive: boolean;
+  lastAppointmentActive: boolean;
   appointments: Appointment[];
+  updatedAt: Timestamp;
 }
