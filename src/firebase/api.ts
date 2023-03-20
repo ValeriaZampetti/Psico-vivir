@@ -32,7 +32,7 @@ import {
   Doctor,
   DoctorCreate,
 } from "../interfaces/Client";
-import { Feedback } from "../interfaces/Feedback";
+import { Feedback, FeedbackCreate } from "../interfaces/Feedback";
 
 import { auth, db, githubAuthProvider, googleAuthProvider } from "./config";
 
@@ -157,23 +157,23 @@ export async function getChatsDoctorPaginated(
   snapShot: QuerySnapshot<DocumentData>;
   lastVisible: DocumentSnapshot<DocumentData> | null;
 }> {
-  const collectionRef = collection(db, "chat");
+  const collectionRef = collection(db, "chats");
 
   const numerOfEntitiesByPage = 10;
   const q = docAppointmentToStart
     ? query(
         collectionRef,
-        where("hasAppointmentActive", "==", true),
         where("doctorId", "==", id),
-        orderBy("createdAt", "desc"),
+        where("lastAppointmentActive", "==", true),
+        orderBy("updatedAt", "desc"),
         startAfter(docAppointmentToStart),
         limit(numerOfEntitiesByPage)
       )
     : query(
         collectionRef,
-        where("hasAppointmentActive", "==", true),
         where("doctorId", "==", id),
-        orderBy("createdAt", "desc"),
+        where("lastAppointmentActive", "==", true),
+        orderBy("updatedAt", "desc"),
         limit(numerOfEntitiesByPage)
       );
 
@@ -181,7 +181,7 @@ export async function getChatsDoctorPaginated(
   // const unsubscribe = onSnapshot(q, (querySnapshot) => {
   //   const cities = [];
   //   querySnapshot.forEach((doc) => {
-  //       cities.push(doc.data().name);
+  //       cities.push(doc.data().name);f
   //   });
   //   console.log("Current cities in CA: ", cities.join(", "));
   // });
@@ -240,21 +240,31 @@ export async function getAppointmentsClient(
   return appointments;
 }
 
+// FIXME - mejorar logica para addFeedback
 export function addFeedback(
-  clientId: string,
-  doctorId: string,
-  message: string
+  chatId: string,
+  appointmentId: string,
+  message: string,
+  rating: number
 ) {
-  const collectionRef = collection(db, "feedback");
-  const feedbackObj: Feedback = {
-    clientId,
-    doctorId,
+  const feedbackCollectionRef = collection(db, "feedback");
+  const feedbackObj: FeedbackCreate = {
+    appointmentId,
     message,
+    rating,
   };
-  return addDoc(collectionRef, feedbackObj);
+  addDoc(feedbackCollectionRef, feedbackObj);
+
+  const chatCollectionRef = collection(db, "chats");
+  setDoc(doc(chatCollectionRef, chatId), {
+    lastAppointmentActive: false,
+  });
 }
 
-export function createUser(client: ClientCreate, password: string): Promise<UserCredential | null> {
+export function createUser(
+  client: ClientCreate,
+  password: string
+): Promise<UserCredential | null> {
   const collectionRef = collection(db, "users");
   console.log("Creating user", client.email);
   return createUserWithEmailAndPassword(auth, client.email, password).then(
@@ -272,7 +282,6 @@ export function createUser(client: ClientCreate, password: string): Promise<User
     }
   );
 }
-
 
 export async function signIn(
   email: string,
@@ -295,7 +304,6 @@ export async function logOut() {
     console.log("error", error);
   }
 }
-
 
 export async function signInWithGoogle(): Promise<UserCredential | null> {
   try {
@@ -327,7 +335,7 @@ export async function getUserById(userId: string): Promise<Client | Doctor> {
 
   const document = await getDoc(doc(collectionRef, userId));
   const client = document.data()!;
-  console.log("client", client, userId)
+  client.id = document.id;
   return client.type === 1 ? (client as Client) : (client as Doctor);
 }
 
@@ -361,8 +369,8 @@ export async function signInWithGithub(): Promise<UserCredential | null> {
       const client: ClientCreate = {
         email: result.user?.email ?? "",
         name: result.user?.displayName ?? "",
-        type: 1
-      }
+        type: 1,
+      };
 
       const clientRef = doc(collectionRef, result.user?.uid);
       setDoc(clientRef, client);
