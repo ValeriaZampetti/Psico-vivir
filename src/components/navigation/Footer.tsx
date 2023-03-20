@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 
 export const Footer = () => (
-    <footer className="bg-primary-light flex flex-row text-lg justify-between border-t-[1px] p-4 border-[black] w-full">
-        <ul className="flex flex-col gap-4">
+    <footer className="bg-primary-light flex flex-wrap text-lg justify-between border-t-[1px] p-4 border-[black] w-full gap-8">
+        <ul className="flex flex-col gap-4 w-56">
             <li>
-                <h2 className="font-bold">Atencion al cliente</h2>
+                <h2 className="font-bold">Atención al cliente</h2>
                 <p>citas@psicovivir.com</p>
             </li>
 
@@ -14,9 +14,9 @@ export const Footer = () => (
             </li>
         </ul>
 
-        <ul className="flex flex-col gap-4">
+        <ul className="flex flex-col gap-4 w-56">
             <li>
-                <h2 className="font-bold">Atencion al cliente</h2>
+                <h2 className="font-bold">Atención al cliente</h2>
                 <p>citas@psicovivir.com</p>
             </li>
 
@@ -26,7 +26,7 @@ export const Footer = () => (
             </li>
         </ul>
 
-        <ul className="flex flex-col">
+        <ul className="flex flex-col w-56 font-bold gap-1">
             <li>
                 <a href="#">Home</a>
             </li>

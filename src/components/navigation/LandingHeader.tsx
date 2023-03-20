@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import Menu from "../../assets/icons/menu.svg";
+import Logo from "../../assets/images/psicovivircompleto.png";
+import Logo1 from "../../assets/images/psicovivirxiquito.png";
 
-import Logo from "../../assets/react.svg";
 
 function LandingHeader() {
   let links = [
@@ -14,16 +16,10 @@ function LandingHeader() {
   return (
     <nav className="shadow-md w-full fixed top-0 left-0 z-[99]">
       <header className="md:flex items-center justify-between bg-secondary-normal py-4 md:px-10 px-7">
-        <div
-          className="font-bold text-2xl cursor-pointer flex items-center font-[Poppins] 
-    text-gray-800"
-        >
-          <span className="text-3xl text-indigo-600 mr-1 pt-2">
-            <img src={Logo} alt="logo" />
-          </span>
-          Designer
-        </div>
-
+        <Link to={"/landing"}>
+            <img src={Logo} alt="logo" className="h-10 md" />
+            <img src={Logo1} alt="logo" className="h-10 hidden md:block" />
+        </Link>
         <div
           onClick={() => setOpen(!open)}
           className="text-3xl absolute right-8 top-6 cursor-pointer md:hidden"
