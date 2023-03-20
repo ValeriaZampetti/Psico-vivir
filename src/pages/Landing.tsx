@@ -78,15 +78,17 @@ function Landing() {
 
             <div className="flex flex-wrap gap-3 justify-center">
               <Link
-                className="bg-secondary-normal hover:bg-secondary-strong active:ring-1 ring-black drop-shadow-md
-                rounded-lg py-2 px-10 text-lg w-[18rem] text-center"
-                to="users/register"
+                className="bg-secondary-normal hover:bg-secondary-strong  drop-shadow-md duration-300 
+                hover:scale-95 active:scale-90 hover:ring-4 ring-secondary-strong ring-offset-2 ring-offset-gray-100
+                rounded-lg py-2 px-10 text-lg  w-[18rem] text-center font-bold"
+                to="/users/register"
               >
-                <span className="font-bold">Registrarse con email</span>
+                Registrarse con email
               </Link>
 
               <button
-                className="flex gap-1 bg-white hover:bg-gray-100 active:ring-1 ring-black drop-shadow-md
+                className="flex gap-1 bg-white hover:bg-gray-100 active:ring-1 drop-shadow-md duration-300 
+                hover:scale-95 active:scale-90 hover:ring-4 ring-gray-200 ring-offset-2 ring-offset-white
                 rounded-lg py-2 px-4  text-lg w-[18rem]"
               >
                 <img src={Google} />
