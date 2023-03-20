@@ -49,19 +49,23 @@ function AuthProvider({ children }: IProps) {
   useEffect(() => {
     const unsubuscribe = onAuthStateChanged(auth, async (currentUser) => {
       try {
-        if (!currentUser) {
-          setLoading(false);
-          console.log("No hay usuario", loading);
-          return;
-        }
         setLoading(true);
+        if (!currentUser) {
+          throw new Error("No hay usuario autenticado");
+        }
+
         const user = await getUserById(currentUser?.uid || "");
+        if (!user) {
+          throw new Error("Usuario autenticado no existe en la base de datos");
+        }
+
         setUser(user);
         setLoading(false);
         console.log("loading", loading);
       } catch (error) {
         setLoading(false);
         console.log(error);
+        throw error
       }
     });
 
