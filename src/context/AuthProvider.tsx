@@ -4,15 +4,10 @@ import {
   UserCredential,
 } from "firebase/auth";
 import React, { createContext, useEffect, useState } from "react";
-import {
-  createUser,
-  getUserById,
-  signIn,
-  signInWithGoogle,
-  signInWithGithub,
-} from "../firebase/api";
+import { signIn, signInWithGoogle, signInWithGithub } from "../firebase/api";
+import { createUser, getUserById } from "../firebase/api/UserService";
 import { auth } from "../firebase/config";
-import { Client } from "../interfaces/Client";
+import { Client, ClientCreate, DoctorCreate } from "../interfaces/Client";
 import { IAuthProvider } from "../interfaces/providers/IAuthProvider";
 
 interface IProps {
@@ -26,7 +21,7 @@ export const AuthContext = createContext<IAuthProvider>({
     console.log("no estas usando la funcion que es");
     return new Promise(() => {});
   },
-  register: (client: Client, password: string) => {
+  register: (client: ClientCreate | DoctorCreate, password: string) => {
     console.log("no estas usando la funcion que es");
     return new Promise(() => {});
   },
@@ -65,7 +60,7 @@ function AuthProvider({ children }: IProps) {
       } catch (error) {
         setLoading(false);
         console.log(error);
-        throw error
+        throw error;
       }
     });
 
@@ -85,7 +80,7 @@ function AuthProvider({ children }: IProps) {
   }
 
   async function register(
-    client: Client,
+    client: ClientCreate | DoctorCreate,
     password: string
   ): Promise<UserCredential | null> {
     return createUser(client, password);
