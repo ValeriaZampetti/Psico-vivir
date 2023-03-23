@@ -33,7 +33,7 @@ export const ChatContext = createContext<IChatProvider>({
   currentChat: null,
 });
 
-enum TypesToChat {
+enum TypeUserChatting {
   CLIENT = "CLIENT",
   DOCTOR = "DOCTOR",
   ADMIN = "ADMIN",
@@ -47,12 +47,17 @@ function ChatProvider({ children }: IProps) {
   >(null);
   const [currentChat, setCurrentChat] = useState<Chat | null>(null);
   const [chats, setChats] = useState<Chat[]>([]);
-  const [typesToChat, setTypesToChat] = useState<TypesToChat>(
-    TypesToChat.CLIENT
+  const [typeUserChatting, setTypeUserChatting] = useState<TypeUserChatting>(
+    TypeUserChatting.CLIENT
   );
   const { user } = useAuth();
 
   useEffect(() => {
+    setTypeUserChatting(
+      user?.type === 1
+        ? TypeUserChatting.CLIENT
+        : TypeUserChatting.DOCTOR
+    );
     initializeChats();
   }, [user?.id]);
 
@@ -72,12 +77,6 @@ function ChatProvider({ children }: IProps) {
   }
 
   async function initializeChats() {
-    // FIXME - Suscribirme bien
-    // getChatsByDoctorId(user!.id, (chats: Chat[]) => {
-    //   setChats(chats);
-    // })
-    const chatsHola = await getChatsByDoctorIdNormal(user!.id);
-
     const collectionRef = collection(db, "chats");
 
     const q = query(
@@ -146,20 +145,26 @@ function ChatProvider({ children }: IProps) {
     setCurrentUserToChat(user);
 
     let chat: Chat | null = null;
-    switch (typesToChat) {
-      case TypesToChat.CLIENT:
-        chat = chats.find((chat) => chat.clientId === user.id) ?? null;
-
-        setCurrentChat(chat);
-
-        break;
-
-      case TypesToChat.DOCTOR:
+    switch (typeUserChatting) {
+      case TypeUserChatting.CLIENT:
         chat = chats.find((chat) => chat.doctorId === user.id) ?? null;
+
         setCurrentChat(chat);
 
         break;
 
+      case TypeUserChatting.DOCTOR:
+        chat = chats.find((chat) => chat.clientId === user.id) ?? null;
+        setCurrentChat(chat);
+
+        break;
+
+      case TypeUserChatting.ADMIN:
+        chat = chats.find((chat) => chat.clientId === user.id || chat.doctorId === user.id) ?? null;
+
+        setCurrentChat(chat);
+
+        break;
       default:
         break;
     }
