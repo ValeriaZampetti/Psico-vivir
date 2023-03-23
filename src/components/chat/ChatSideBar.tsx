@@ -1,19 +1,28 @@
-import React, { useState } from "react";
-import { Client } from "../../interfaces/Client";
+import React, { useEffect, useState } from "react";
+import { useAuth } from "../../hooks/useAuth";
+import { useChat } from "../../hooks/useChat";
+import { Client, Doctor } from "../../interfaces/Client";
 import SearchBar from "../forms/SearchBar";
-import ChatUsers from "./ChatUsers";
+import UsersToChat from "./UsersToChat";
 
 function ChatSideBar() {
   const [search, setSearch] = useState<string>("");
-  const [clientsToChat, setClientsToChat] = useState<Client[]>([]);
-  const [clientsToChatFiltered, setClientsToChatFiltered] = useState<Client[]>([]);
+  const [usersToChatFiltered, setClientsToChatFiltered] = useState<
+    Client[] | Doctor[]
+  >([]);
 
+  const { usersToChat } = useChat();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    setClientsToChatFiltered(usersToChat);
+  }, [usersToChat]);
 
   function handleSearchChange(value: string) {
     setSearch(value);
-  
-    const filteredClients = clientsToChat.filter((client) => {
-      return client.name.toLowerCase().includes(value.toLowerCase());
+
+    const filteredClients = usersToChat.filter((user) => {
+      return user.name.toLowerCase().includes(value.toLowerCase());
     });
     setClientsToChatFiltered(filteredClients);
   }
@@ -25,20 +34,19 @@ function ChatSideBar() {
           <img
             src="../../src/assets/mock/pic.jpg"
             alt="profile-pic"
-            className="h-20 aspect-square rounded-full self-center"
+            className="h-20 aspect-square rounded-full self-center max-[900px]:hidden"
           />
           <h1
-            className="text-black text-2xl font-semibold self-center 
-            text-ellipsis overflow-hidden max-[900px]:hidden"
+            className="text-black text-2xl font-semibold self-center text-center 
+            text-ellipsis overflow-hidden "
           >
-            Sergio Suárez
-            {/* Nombre del doctor */}
+            {user?.name}
           </h1>
         </div>
       </section>
 
       <SearchBar value={search} onChange={handleSearchChange} />
-      <ChatUsers users={clientsToChatFiltered}/>
+      <UsersToChat users={usersToChatFiltered} />
     </div>
   );
 }
