@@ -1,8 +1,7 @@
 import { Timestamp } from "@firebase/firestore";
 import { Appointment } from "./Appointment";
 
-export interface Chat{
-  id?: string;
+export interface ChatCreate {
   doctorId: string;
   clientId: string;
   /**
@@ -11,5 +10,9 @@ export interface Chat{
    */
   lastAppointmentActive: boolean;
   appointments: Appointment[];
+}
+
+export interface Chat extends ChatCreate {
+  id: string;
   updatedAt: Timestamp;
 }
