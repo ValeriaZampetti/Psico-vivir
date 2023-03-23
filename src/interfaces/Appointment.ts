@@ -1,5 +1,5 @@
 import { Timestamp } from "firebase/firestore";
-import { Message } from "postcss";
+import { Message } from "./Message";
 
 export interface Appointment {
   id?: string;
