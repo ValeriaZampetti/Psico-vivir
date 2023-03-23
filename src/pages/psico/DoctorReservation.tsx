@@ -1,11 +1,7 @@
 import { DocumentData, DocumentSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import ReservationCard from "../../components/ReservationCard";
-import {
-  getAppointmentsDoctor,
-  getAppointmentsDoctorPaginated,
-  getChatsDoctorPaginated,
-} from "../../firebase/api";
+import { getChatsDoctorPaginated } from "../../firebase/api/chatService";
 import { useAuth } from "../../hooks/useAuth";
 import useInfiniteLoading from "../../hooks/useInfiniteLoading";
 import { Appointment } from "../../interfaces/Appointment";
@@ -35,7 +31,10 @@ function DoctorReservation() {
           key={chat.id}
           ref={lastItemRef}
         >
-          <ReservationCard appointment={lastAppointment} />
+          <ReservationCard
+            appointment={lastAppointment}
+            userId={chat.clientId}
+          />
         </li>
       );
     }
@@ -45,7 +44,7 @@ function DoctorReservation() {
         className="border-b-2 border-rose-300 last:border-b-0 last:mb-2"
         key={chat.id}
       >
-        <ReservationCard appointment={lastAppointment} />
+        <ReservationCard appointment={lastAppointment} userId={chat.clientId} />
       </li>
     );
   });
