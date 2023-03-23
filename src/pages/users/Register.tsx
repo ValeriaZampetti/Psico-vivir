@@ -2,7 +2,6 @@ import React, { useState, useContext } from "react";
 import { Navigate, useNavigate, Link } from "react-router-dom";
 import registerr from "../../assets/images/Register.jpg";
 import arrow from "../../assets/icons/arrow.svg";
-import { createUser } from "../../firebase/api";
 import { Client, ClientCreate, Doctor } from "../../interfaces/Client";
 import googleIcon from "../../assets/icons/google.svg";
 import facebookIcon from "../../assets/icons/facebook.svg";
@@ -56,7 +55,7 @@ export const Register = (prop: any) => {
       return;
     }
 
-    const userCredential = await createUser(user, password);
+    const userCredential = await register(user, password);
     if (userCredential) {
       toast.success("Usuario creado exitosamente");
       setTimeout(() => {
