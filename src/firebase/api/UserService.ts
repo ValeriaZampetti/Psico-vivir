@@ -15,6 +15,7 @@ import {
   serverTimestamp,
   setDoc,
   addDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { Chat } from "../../interfaces/Chat";
 import {
@@ -167,22 +168,22 @@ export async function getDoctorsByChats(chats: Chat[]): Promise<Doctor[]> {
   return doctors;
 }
 
-export async function createMocked10Doctors() {
+export async function updateRankingDoctor(
+  doctorId: string,
+  rating: number
+): Promise<void> {
   const collectionRef = collection(db, "users");
-  for (let i = 0; i < 10; i++) {
-    const doctor: DoctorCreate = {
-      name: `Doctor ${i}`,
-      email: `${i}@gmail.com`,
-      type: 2,
-      specialties: ["hola", "fafaf"],
-      telephone: `${i}`,
-      ranking: 3,
-      biography: `biography ${i}`,
-    };
-    const docRef = await addDoc(collectionRef, {
-      ...doctor,
-      createdAt: serverTimestamp(),
-      image: "https://picsum.photos/200",
-    });
-  }
+  const doctorRef = doc(collectionRef, doctorId);
+
+  const doctor = await getDoc(doctorRef);
+  const doctorData = doctor.data() as Doctor;
+
+  const newRanking =
+    (doctorData.ranking * doctorData.numberOfReviews + rating) /
+    (doctorData.numberOfReviews + 1);
+
+  await updateDoc(doctorRef, {
+    ranking: newRanking,
+    numberOfReviews: doctorData.numberOfReviews + 1,
+  });
 }
