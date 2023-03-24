@@ -1,5 +1,6 @@
 export interface FeedbackCreate {
-  appointmentId: string;
+  chatId: string;
+  appointmentIndex: number;
   rating: number;
   message: string;
 }
