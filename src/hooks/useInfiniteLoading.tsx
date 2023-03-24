@@ -61,13 +61,13 @@ function useInfiniteLoading(props: Props) {
     const { snapShot, lastVisible } = props.idToPass
       ? await getItemsWithId!(props.idToPass, lastItem)
       : await getItems!(lastItem);
-    console.log(snapShot, lastVisible);
     setHasMore(lastVisible != null);
 
     const data = snapShot.docs.map((doc) => ({
       ...doc.data(),
       id: doc.id,
     }));
+
     setItems((prevItems) => [...prevItems, ...data]);
     setLastItem(lastVisible);
     setIsLoading(false);

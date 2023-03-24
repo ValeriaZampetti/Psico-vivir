@@ -1,6 +1,9 @@
-export interface Feedback {
-  id?: string;
-  clientId: string;
-  doctorId: string;
+export interface FeedbackCreate {
+  appointmentId: string;
+  rating: number;
   message: string;
+}
+
+export interface Feedback extends FeedbackCreate {
+  id: string;
 }
