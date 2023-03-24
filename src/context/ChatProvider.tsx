@@ -11,7 +11,10 @@ import {
   getChatsByDoctorIdNormal,
   updateChatByMessage,
 } from "../firebase/api/chatService";
-import { getClientsByChats } from "../firebase/api/UserService";
+import {
+  getClientsByChats,
+  getDoctorsByChats,
+} from "../firebase/api/UserService";
 import { db } from "../firebase/config";
 import { useAuth } from "../hooks/useAuth";
 import { Chat } from "../interfaces/Chat";
@@ -54,26 +57,34 @@ function ChatProvider({ children }: IProps) {
 
   useEffect(() => {
     setTypeUserChatting(
-      user?.type === 1
-        ? TypeUserChatting.CLIENT
-        : TypeUserChatting.DOCTOR
+      user?.type === 1 ? TypeUserChatting.CLIENT : TypeUserChatting.DOCTOR
     );
     initializeChats();
   }, [user?.id]);
 
   useEffect(() => {
     if (chats.length > 0) {
-      console.log(
-        "cambio chats",
-        chats[0].appointments[0].messages.at(-1)?.body
-      );
+      initializeClientsToChat(chats);
+      const newcurrentChat: Chat | null =
+        chats.find((chat) => chat.id === currentChat?.id) ?? null;
+      setCurrentChat(newcurrentChat);
     }
   }, [chats]);
 
   // FIXME - Agarrar solo los clientes que tienen chat
   async function initializeClientsToChat(chats: Chat[]) {
-    const clients = await getClientsByChats(chats);
-    setUsersToChat(clients);
+    switch (typeUserChatting) {
+      case TypeUserChatting.DOCTOR:
+        const clients = await getClientsByChats(chats);
+        console.log(clients);
+        setUsersToChat(clients);
+        break;
+
+      case TypeUserChatting.CLIENT:
+        const doctors = await getDoctorsByChats(chats);
+        setUsersToChat(doctors);
+        break;
+    }
   }
 
   async function initializeChats() {
@@ -86,47 +97,9 @@ function ChatProvider({ children }: IProps) {
       orderBy("updatedAt", "desc")
     );
 
-    const chatsForSnapshot: Chat[] = [];
-
     const unsub = onSnapshot(q, (querySnapshot) => {
-      querySnapshot.docChanges().forEach(
-        (change) => {
-          if (change.type === "added") {
-            console.log("added");
-            chatsForSnapshot.push({
-              id: change.doc.id,
-              ...change.doc.data(),
-            } as Chat);
-          }
-          if (change.type === "modified") {
-            const index = chatsForSnapshot.findIndex(
-              (chat) => chat.id === change.doc.id
-            );
-            chatsForSnapshot[index] = {
-              id: change.doc.id,
-              ...change.doc.data(),
-            } as Chat;
-
-            // FIXME - Solucion temporal
-            if (chatsForSnapshot[index].id === currentChat?.id) {
-              setCurrentChat(chatsForSnapshot[index]);
-            }
-          }
-          if (change.type === "removed") {
-            console.log("removed");
-            const index = chats.findIndex(
-              (chat) => chat.id === change.doc.data().id
-            );
-            chats.splice(index, 1);
-          }
-          setChats(chatsForSnapshot);
-
-          initializeClientsToChat(chatsForSnapshot);
-        },
-        (error: any) => {
-          console.log(error);
-          unsub();
-        }
+      setChats(
+        querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Chat))
       );
     });
 
@@ -160,7 +133,10 @@ function ChatProvider({ children }: IProps) {
         break;
 
       case TypeUserChatting.ADMIN:
-        chat = chats.find((chat) => chat.clientId === user.id || chat.doctorId === user.id) ?? null;
+        chat =
+          chats.find(
+            (chat) => chat.clientId === user.id || chat.doctorId === user.id
+          ) ?? null;
 
         setCurrentChat(chat);
 
