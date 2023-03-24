@@ -1,6 +1,6 @@
 export interface Feedback {
   id?: string;
-  clientId: string;
-  doctorId: string;
+  appointmentId: string;
+  rating: number;
   message: string;
 }
