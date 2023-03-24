@@ -21,11 +21,22 @@ import { Chat } from "../../interfaces/Chat";
 import { MessageCreate } from "../../interfaces/Message";
 import { db } from "../config";
 
-export async function getChatsByDoctorId(id: string): Promise<Chat[]> {
+export async function getChatById(id: string): Promise<Chat | null> {
+  const docRef = doc(db, "chats", id);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    return { id: docSnap.id, ...docSnap.data() } as Chat;
+  } else {
+    return null;
+  }
+}
+
+export async function getChatsByDoctorId(doctorId: string): Promise<Chat[]> {
   const collectionRef = collection(db, "chats");
   const q = query(
     collectionRef,
-    where("doctorId", "==", id),
+    where("doctorId", "==", doctorId),
     where("lastAppointmentActive", "==", true),
     orderBy("updatedAt", "desc")
   );
