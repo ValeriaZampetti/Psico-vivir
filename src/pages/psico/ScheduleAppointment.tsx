@@ -24,8 +24,8 @@ const AppointmentBooking = () => {
       <h1 className="font-bold text-4xl text-center mt-12">Pedro Pascal</h1>
       <h1 className="font-bold text text-center mt-3">Agenda una cita</h1>
 
-      <div className="flex flex-wrap h-[550px]">
-        <div className="flex flex-col ml-20 mr-20 mt-10 gap-4">
+      <div className="flex flex-wrap h-auto my-2">
+        <div className="flex flex-col mx-20 mt-10">
           <img
             src="https://www.themoviedb.org/t/p/w500/nms0d0ExYtiOke82oqr3vOb3smF.jpg"
             alt=""
@@ -37,7 +37,7 @@ const AppointmentBooking = () => {
       */}
         </div>
 
-        <div className="flex flex-col ml-20 mr-20 mt-10">
+        <div className="flex flex-col mx-36 mt-12">
           <form onSubmit={handleSubmit}>
             <div>
               <label className="font-bold text">
@@ -54,9 +54,10 @@ const AppointmentBooking = () => {
           </form>
         </div>
 
-        <div className="flex flex-col ml-12 mr-12 mt-8">
+        <div className="flex flex-col mx-12 mt-8">
+          <h1 className="font-bold text mt-3">Email:</h1>
+          <h1 className="text text-center mt-3">pedrito@gmail.com</h1>
           {/*<h1 className="font-bold text-3xl self-center mt-3">{props.doctor.email}</h1>*/}
-          <h1 className="font-bold text text-center mt-3">Email:</h1>
         </div>
       </div>
     </div>
