@@ -1,7 +1,7 @@
 import { DocumentData, DocumentSnapshot } from "firebase/firestore";
 import React from "react";
 import DoctorCard from "../../components/DoctorCard";
-import { getDoctorsPaginated } from "../../firebase/api";
+import { getDoctorsPaginated } from "../../firebase/api/UserService";
 import useInfiniteLoading from "../../hooks/useInfiniteLoading";
 import { Doctor } from "../../interfaces/Client";
 
@@ -25,24 +25,20 @@ function Searcher() {
         </div>
       );
     }
-    
+
     return <DoctorCard key={doctor.id} doctor={doctor} />;
   });
 
   return (
     <>
-      <div className="flex justify-between items-center px-8">
+      <div className="flex justify-between items-center px-8 ">
         <h1 className="text-7xl">Doctores disponibles</h1>
 
         <p>Ordenar por</p>
       </div>
 
-      <section>
-        <div className="flex flex-wrap px-16 mt-10 gap-4 justify-center">
-          {cards}
-        </div>
-
-        {/* <button onClick={loadItems}>Load More</button> */}
+      <section className="flex flex-wrap px-16 mt-10 gap-4 justify-center">
+        {cards}
       </section>
     </>
   );
