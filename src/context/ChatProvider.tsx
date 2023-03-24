@@ -45,6 +45,9 @@ enum TypeUserChatting {
 // FIXME - Agarrar doctor si es paciente y viceversa\
 function ChatProvider({ children }: IProps) {
   const [usersToChat, setUsersToChat] = useState<Client[] | Doctor[]>([]);
+  const [usersActive, setUsersActive] = useState<Client[] | Doctor[]>([]);
+  const [usersInactive, setUsersInactive] = useState<Client[] | Doctor[]>([]);
+
   const [currentUserToChat, setCurrentUserToChat] = useState<
     Client | Doctor | null
   >(null);
@@ -73,16 +76,16 @@ function ChatProvider({ children }: IProps) {
 
   // FIXME - Agarrar solo los clientes que tienen chat
   async function initializeClientsToChat(chats: Chat[]) {
+    let clients: Client[] = [];
     switch (typeUserChatting) {
       case TypeUserChatting.DOCTOR:
-        const clients = await getClientsByChats(chats);
-        console.log(clients);
+        clients = await getClientsByChats(chats);
         setUsersToChat(clients);
         break;
 
       case TypeUserChatting.CLIENT:
-        const doctors = await getDoctorsByChats(chats);
-        setUsersToChat(doctors);
+        clients = await getDoctorsByChats(chats);
+        setUsersToChat(clients);
         break;
     }
   }
