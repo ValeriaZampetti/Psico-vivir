@@ -21,7 +21,7 @@ import { Chat } from "../../interfaces/Chat";
 import { MessageCreate } from "../../interfaces/Message";
 import { db } from "../config";
 
-export async function getChatsByDoctorIdNormal(id: string): Promise<Chat[]> {
+export async function getChatsByDoctorId(id: string): Promise<Chat[]> {
   const collectionRef = collection(db, "chats");
   const q = query(
     collectionRef,
@@ -38,52 +38,6 @@ export async function getChatsByDoctorIdNormal(id: string): Promise<Chat[]> {
   });
 
   return chats;
-}
-
-export async function getChatsByDoctorId(
-  id: string,
-  handleChats: (chats: Chat[]) => void
-): Promise<Unsubscribe> {
-  const collectionRef = collection(db, "chats");
-
-  const q = query(
-    collectionRef,
-    where("doctorId", "==", id),
-    where("lastAppointmentActive", "==", true),
-    orderBy("updatedAt", "desc")
-  );
-
-  const chats: Chat[] = [];
-
-  const unsub = onSnapshot(q, (querySnapshot) => {
-    querySnapshot.docChanges().forEach(
-      (change) => {
-        if (change.type === "added") {
-          chats.push(change.doc.data() as Chat);
-        }
-        if (change.type === "modified") {
-          const index = chats.findIndex(
-            (chat) => chat.id === change.doc.data().id
-          );
-          chats[index] = change.doc.data() as Chat;
-        }
-        if (change.type === "removed") {
-          const index = chats.findIndex(
-            (chat) => chat.id === change.doc.data().id
-          );
-          chats.splice(index, 1);
-        }
-        console.log("chats", chats);
-        handleChats(chats);
-      },
-      (error: any) => {
-        console.log(error);
-        unsub();
-      }
-    );
-  });
-
-  return unsub;
 }
 
 export async function getChatsByClientId(id: string): Promise<Chat[]> {
