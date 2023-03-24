@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import AuthProvider from "./context/AuthProvider";
 import LandingLayout from "./layouts/LandingLayout";
 import ProtectedLayout from "./layouts/ProtectedLayout";
@@ -14,6 +15,7 @@ import WriteReview from "./pages/psico/WriteReview";
 import Login from "./pages/users/Login";
 import Register from "./pages/users/Register";
 import ScheduleAppointment from "./pages/psico/ScheduleAppointment";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -42,17 +44,16 @@ function App() {
             <Route index element={<Searcher />} />
             <Route path="profile/:id" element={<Profile />} />
             <Route path="reservations" element={<Reservations />} />
-            <Route path="shedule/:id" element={<ScheduleAppointment />} />
+            <Route path="schedule/:id" element={<ScheduleAppointment />} />
             <Route path="chat" element={<Chat />} />
             <Route path="checkout" element={<Checkout />} />
             <Route path="*" element={<Error404 />} />
           </Route>
-
         </Routes>
       </BrowserRouter>
+      <ToastContainer />
     </AuthProvider>
   );
 }
 
 export default App;
-
