@@ -37,7 +37,7 @@ function App() {
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route path="*" element={<Error404 />} />
-            <Route path="writereview" element={<WriteReview />} /> {/* de mientras aqui*/}
+            <Route path="writereview/:chatId/:index" element={<WriteReview />} /> {/* de mientras aqui*/}
           </Route>
 
           <Route path="/psico" element={<ProtectedLayout />}>

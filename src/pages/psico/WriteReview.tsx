@@ -4,6 +4,8 @@ import Profile from "../../assets/mock/pic.jpg";
 import { Doctor } from "../../interfaces/Client"; // Pasarle el nombre del doc auto
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
+import { useParams } from "react-router-dom";
+import { getChatsByClientId, getChatsByDoctorId, getChatById} from "../../firebase/api/chatService";
 
 function WriteReview() {
   const [rating, setRating] = useState(0);
@@ -25,7 +27,7 @@ function WriteReview() {
   //     setTimeout(() => {
   //       setComment('');
   //     }, 2000);
-  
+
   //     setSuccess(true);
   //   }
   //   setTimeout(() => {
@@ -35,26 +37,32 @@ function WriteReview() {
 
   // }
 
-
-
-
-
+  const { chatId, index } = useParams<{ chatId: string; index: string }>();
+  
   useEffect(() => {
-    console.log(rating);
-  }, [rating]);
-
-  const sendComment = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-
-
-
+    // console.log(chatId);
+    // console.log(index);
+    // chatId && console.log(getChatsByClientId(chatId));
+    // chatId && console.log(getChatsByDoctorId(chatId));
+    // chatId && console.log(getChatById(chatId));
+    
+  });
+  
+  // useEffect(() => {
+    //   console.log(rating);
+    // }, [rating]);
+    
+    const sendComment = async (e: { preventDefault: () => void }) => {
+      e.preventDefault();
+      
+    const indexInt = index && parseInt(index, 10);
     const commentToSend = comment;
     const ratingToSend = rating;
     setComment("");
     setRating(0);
     await addDoc(collection(db, "feedback"), {
-      id: "dsa",
-      appointmentId: "fasdfasdf",
+      chatId: chatId,
+      appointmentIndex: indexInt,
       rating: ratingToSend,
       message: commentToSend,
     });
@@ -108,11 +116,23 @@ function WriteReview() {
         </button>
 
         <div className="w-full relative mt-3 flex justify-center">
+          {danger && (
+            <div
+              id="danger"
+              className="text-red-500 text-2xl absolute transition duration-300 animate-buttons hidden"
+            >
+              Error, por favor escriba un mensaje.
+            </div>
+          )}
 
-          {danger && <div id="danger" className="text-red-500 text-2xl absolute transition duration-300 animate-buttons hidden">Error, por favor escriba un mensaje.</div>}
-          
-          {success && <div id="" className="text-green-500 text-2xl absolute animate-buttons hidden">Tu mensaje ha sido enviado con exito!</div>}
-
+          {success && (
+            <div
+              id=""
+              className="text-green-500 text-2xl absolute animate-buttons hidden"
+            >
+              Tu mensaje ha sido enviado con exito!
+            </div>
+          )}
         </div>
       </div>
     </div>
