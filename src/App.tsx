@@ -34,6 +34,7 @@ function App() {
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route path="*" element={<Error404 />} />
+            <Route path="checkout" element={<Checkout />} />
           </Route>
 
           <Route path="/psico" element={<ProtectedLayout />}>
