@@ -178,6 +178,14 @@ export async function updateRankingDoctor(
   const doctor = await getDoc(doctorRef);
   const doctorData = doctor.data() as Doctor;
 
+  if (!doctorData.numberOfReviews || doctorData.numberOfReviews === 0) {
+    await updateDoc(doctorRef, {
+      ranking: rating,
+      numberOfReviews: 1,
+    });
+    return;
+  }
+
   const newRanking =
     (doctorData.ranking * doctorData.numberOfReviews + rating) /
     (doctorData.numberOfReviews + 1);

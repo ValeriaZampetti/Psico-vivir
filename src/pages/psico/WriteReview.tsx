@@ -5,7 +5,12 @@ import { Doctor } from "../../interfaces/Client"; // Pasarle el nombre del doc a
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { useParams } from "react-router-dom";
-import { getChatsByClientId, getChatsByDoctorId, getChatById} from "../../firebase/api/chatService";
+import {
+  getChatsByClientId,
+  getChatsByDoctorId,
+  getChatById,
+} from "../../firebase/api/chatService";
+import { updateRankingDoctor } from "../../firebase/api/UserService";
 
 function WriteReview() {
   const [rating, setRating] = useState(0);
@@ -38,23 +43,25 @@ function WriteReview() {
   // }
 
   const { chatId, index } = useParams<{ chatId: string; index: string }>();
-  
+
   useEffect(() => {
-    // console.log(chatId);
+    // const promiseResult = await getPromiseResult();
+    // const doctorId = promiseResult.doctorId
+    // console.log(chatId.doctorId);
     // console.log(index);
     // chatId && console.log(getChatsByClientId(chatId));
     // chatId && console.log(getChatsByDoctorId(chatId));
-    // chatId && console.log(getChatById(chatId));
-    
+    chatId && console.log(getChatById(chatId));
+    // console.log(updateRankingDoctor("aZ9hfOr8dAOfI4MytoSdaexEuzU2", rating));
   });
-  
-  // useEffect(() => {
-    //   console.log(rating);
-    // }, [rating]);
-    
-    const sendComment = async (e: { preventDefault: () => void }) => {
-      e.preventDefault();
-      
+
+  useEffect(() => {
+    console.log(rating);
+  }, [rating]);
+
+  const sendComment = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+
     const indexInt = index && parseInt(index, 10);
     const commentToSend = comment;
     const ratingToSend = rating;
@@ -65,7 +72,13 @@ function WriteReview() {
       appointmentIndex: indexInt,
       rating: ratingToSend,
       message: commentToSend,
+      userId: "",
     });
+
+    const chatInfo = chatId && (await getChatById(chatId));
+    if (chatInfo) {
+      updateRankingDoctor(chatInfo.doctorId, rating);
+    }
   };
 
   return (
