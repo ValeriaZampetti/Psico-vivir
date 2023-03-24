@@ -21,11 +21,22 @@ import { Chat } from "../../interfaces/Chat";
 import { MessageCreate } from "../../interfaces/Message";
 import { db } from "../config";
 
-export async function getChatsByDoctorIdNormal(id: string): Promise<Chat[]> {
+export async function getChatById(id: string): Promise<Chat | null> {
+  const docRef = doc(db, "chats", id);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    return { id: docSnap.id, ...docSnap.data() } as Chat;
+  } else {
+    return null;
+  }
+}
+
+export async function getChatsByDoctorId(doctorId: string): Promise<Chat[]> {
   const collectionRef = collection(db, "chats");
   const q = query(
     collectionRef,
-    where("doctorId", "==", id),
+    where("doctorId", "==", doctorId),
     where("lastAppointmentActive", "==", true),
     orderBy("updatedAt", "desc")
   );
@@ -38,52 +49,6 @@ export async function getChatsByDoctorIdNormal(id: string): Promise<Chat[]> {
   });
 
   return chats;
-}
-
-export async function getChatsByDoctorId(
-  id: string,
-  handleChats: (chats: Chat[]) => void
-): Promise<Unsubscribe> {
-  const collectionRef = collection(db, "chats");
-
-  const q = query(
-    collectionRef,
-    where("doctorId", "==", id),
-    where("lastAppointmentActive", "==", true),
-    orderBy("updatedAt", "desc")
-  );
-
-  const chats: Chat[] = [];
-
-  const unsub = onSnapshot(q, (querySnapshot) => {
-    querySnapshot.docChanges().forEach(
-      (change) => {
-        if (change.type === "added") {
-          chats.push(change.doc.data() as Chat);
-        }
-        if (change.type === "modified") {
-          const index = chats.findIndex(
-            (chat) => chat.id === change.doc.data().id
-          );
-          chats[index] = change.doc.data() as Chat;
-        }
-        if (change.type === "removed") {
-          const index = chats.findIndex(
-            (chat) => chat.id === change.doc.data().id
-          );
-          chats.splice(index, 1);
-        }
-        console.log("chats", chats);
-        handleChats(chats);
-      },
-      (error: any) => {
-        console.log(error);
-        unsub();
-      }
-    );
-  });
-
-  return unsub;
 }
 
 export async function getChatsByClientId(id: string): Promise<Chat[]> {
