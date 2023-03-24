@@ -1,13 +1,11 @@
 import { DocumentData, DocumentSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import ReservationCard from "../../components/ReservationCard";
-import {
-  getAppointmentsDoctor,
-  getAppointmentsDoctorPaginated,
-} from "../../firebase/api";
+import { getChatsDoctorPaginated } from "../../firebase/api/chatService";
 import { useAuth } from "../../hooks/useAuth";
 import useInfiniteLoading from "../../hooks/useInfiniteLoading";
 import { Appointment } from "../../interfaces/Appointment";
+import { Chat } from "../../interfaces/Chat";
 
 function DoctorReservation() {
   const { user } = useAuth();
@@ -16,24 +14,27 @@ function DoctorReservation() {
     items,
     lastItemRef,
   }: {
-    items: Appointment[];
+    items: Chat[];
     loadItems: () => Promise<DocumentSnapshot<DocumentData>[]>;
     lastItemRef: (node: any) => void;
   } = useInfiniteLoading({
-    getItemsWithId: getAppointmentsDoctorPaginated,
-    // idToPass: user?.email
-    idToPass: "765GVZowDwloZq07LAfp",
+    getItemsWithId: getChatsDoctorPaginated,
+    idToPass: user?.id ?? "",
   });
 
-  const cards = items.map((appointment, index) => {
+  const cards = items.map((chat, index) => {
+    const lastAppointment = chat.appointments.at(-1)!;
     if (index === items.length - 1) {
       return (
         <li
           className="border-b-2 border-rose-300 last:border-b-0 last:mb-2"
-          key={appointment.id}
+          key={chat.id}
           ref={lastItemRef}
         >
-          <ReservationCard appointment={appointment} />
+          <ReservationCard
+            appointment={lastAppointment}
+            userId={chat.clientId}
+          />
         </li>
       );
     }
@@ -41,9 +42,9 @@ function DoctorReservation() {
     return (
       <li
         className="border-b-2 border-rose-300 last:border-b-0 last:mb-2"
-        key={appointment.id}
+        key={chat.id}
       >
-        <ReservationCard appointment={appointment} />
+        <ReservationCard appointment={lastAppointment} userId={chat.clientId} />
       </li>
     );
   });

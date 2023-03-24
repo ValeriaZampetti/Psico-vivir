@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { getUserById } from "../firebase/api";
 import { useTimestampToString } from "../hooks/useTimestampToString";
 import { Appointment } from "../interfaces/Appointment";
 import { Client } from "../interfaces/Client";
 import { storage } from "../firebase/config";
 import { ref, getDownloadURL } from "firebase/storage";
 import { Link } from "react-router-dom";
+import { getUserById } from "../firebase/api/UserService";
 
 interface ReservationCardProps {
   appointment: Appointment;
+  userId: string;
 }
 
 export const ReservationCard = (props: ReservationCardProps) => {
   const [user, setUser] = useState<Client>();
 
   const initializeClient = async () => {
-    setUser(await getUserById(props.appointment.clientId));
+    setUser(await getUserById(props.userId));
   };
 
   useEffect(() => {
