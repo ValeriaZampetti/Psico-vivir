@@ -16,6 +16,10 @@ module.exports = {
         quaternary: {
           normal: "#9AC1BA",
         },
+
+        other: {
+          normal: "#EF5DA8",
+        },
       },
       screens: {
         "ml": "970px",
