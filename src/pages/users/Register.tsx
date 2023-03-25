@@ -20,11 +20,10 @@ export const Register = (prop: any) => {
   const { register, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
-
   // FIXME - Hacer que el form se resetee cuando se cambia el tipo de usuario
   // FIXME - Utilizar esto en el submit
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
-    console.log("submit")
+    console.log("submit");
     e.preventDefault();
     const user: ClientCreate | null = {
       email: email,
@@ -55,16 +54,73 @@ export const Register = (prop: any) => {
       return;
     }
 
-    const userCredential = await register(user, password);
-    if (userCredential) {
-      toast.success("Usuario creado exitosamente");
-      setTimeout(() => {
-        navigate("/psico");
-      }, 2000);
-    } else {
-      toast.error("Error al crear el usuario");
+    try {
+      const userCredential = await register(user, password);
+      if (userCredential) {
+        toast.success("Usuario creado exitosamente");
+        setTimeout(() => {
+          navigate("/psico");
+        }, 2000);
+      } else {
+        toast.error("Error al crear el usuario");
+      }
+    } catch (error: any) {
+      switch (error.code) {
+        case "auth/invalid-email":
+          toast.error("Email inválido");
+          break;
+
+        case "auth/user-disabled":
+          toast.error("Usuario deshabilitado");
+          break;
+
+        case "auth/user-not-found":
+          toast.error("Usuario no encontrado");
+          break;
+
+        case "auth/wrong-password":
+          toast.error("Contraseña incorrecta");
+          break;
+
+        case "auth/too-many-requests":
+          toast.error("Demasiados intentos fallidos, intente más tarde");
+          break;
+
+        case "auth/network-request-failed":
+          toast.error("No hay conexión a internet");
+          break;
+
+        case "auth/operation-not-allowed":
+          toast.error("Operación no permitida");
+          break;
+
+        case "auth/email-already-in-use":
+          toast.error("El email ya está en uso");
+          break;
+
+        case "auth/weak-password":
+          toast.error("La contraseña debe tener al menos 8 caracteres");
+          break;
+
+        case "auth/invalid-credential":
+          toast.error("Credenciales inválidas");
+          break;
+
+        case "auth/invalid-verification-code":
+          toast.error("Código de verificación inválido");
+          break;
+
+        case "auth/invalid-verification-id":
+          toast.error("ID de verificación inválido");
+          break;
+
+        default:
+          toast.error("No se pudo iniciar sesión");
+          break;
+      }
     }
   }
+
   const handleGoogleSignIn = async () => {
     try {
       await loginWithGoogle();
@@ -74,6 +130,7 @@ export const Register = (prop: any) => {
       toast.error("Error al iniciar sesión con Google");
     }
   };
+
   const handleGithubSignIn = async () => {
     // await loginWithGithub();
     // navigate("/psico");
@@ -132,8 +189,9 @@ export const Register = (prop: any) => {
             </h2>
 
             {/* FIXME - Averiguar por que el submit no se ejecuta */}
-            <form className="self-center" 
-            // onSubmit={handleSubmit}
+            <form
+              className="self-center"
+              // onSubmit={handleSubmit}
             >
               <section className="my-10 flex flex-col sm:flex-row justify-center gap-5 w-64 self-center ">
                 <div className="flex flex-col gap-5">
