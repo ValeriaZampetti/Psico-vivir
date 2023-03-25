@@ -115,68 +115,72 @@ export const Register = (prop: any) => {
             </h2>
 
             <form className="self-center" onSubmit={handleSubmit}>
-              <section className="my-10 flex flex-col sm:flex-row justify-center gap-5 w-64 self-center ">
-                <div className="flex flex-col gap-5">
-                  <input
-                    className="rounded-lg p-4 border-2 border-primary-strong outline-none"
-                    placeholder="Ingrese su nombre y apellido"
-                    value={nombre}
-                    onChange={(e) => setNombre(e.target.value)}
-                  ></input>
+              {tipoUsuario == 2 ? (
+                <section></section>
+              ) : (
+                <section className="my-10 flex flex-col sm:flex-row justify-center gap-5 w-64 self-center ">
+                  <div className="flex flex-col gap-5">
+                    <input
+                      className="rounded-lg p-4 border-2 border-primary-strong outline-none"
+                      placeholder="Ingrese su nombre y apellido"
+                      value={nombre}
+                      onChange={(e) => setNombre(e.target.value)}
+                    ></input>
 
-                  <input
-                    className="rounded-lg p-4 border-2 border-primary-strong outline-none"
-                    placeholder="Email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  ></input>
+                    <input
+                      className="rounded-lg p-4 border-2 border-primary-strong outline-none"
+                      placeholder="Email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    ></input>
 
-                  <Dropdown
-                    title="Tipo de usuario"
-                    options={[
-                      {
-                        value: "Cliente",
-                        label: "Cliente",
-                        onClick: () => setTipoUsuario(1),
-                      },
-                      {
-                        value: "Doctor",
-                        label: "Doctor",
-                        onClick: () => setTipoUsuario(2),
-                      },
-                    ]}
-                  />
-                </div>
+                    <Dropdown
+                      title="Tipo de usuario"
+                      options={[
+                        {
+                          value: "Cliente",
+                          label: "Cliente",
+                          onClick: () => setTipoUsuario(1),
+                        },
+                        {
+                          value: "Doctor",
+                          label: "Doctor",
+                          onClick: () => setTipoUsuario(2),
+                        },
+                      ]}
+                    />
+                  </div>
 
-                <div className="flex flex-col gap-5">
-                  <input
-                    className="rounded-lg p-4 border-2 border-primary-strong outline-none"
-                    placeholder="Número de teléfono"
-                    value={number}
-                    onChange={(e) => setnumber(e.target.value)}
-                  ></input>
+                  <div className="flex flex-col gap-5">
+                    <input
+                      className="rounded-lg p-4 border-2 border-primary-strong outline-none"
+                      placeholder="Número de teléfono"
+                      value={number}
+                      onChange={(e) => setnumber(e.target.value)}
+                    ></input>
 
-                  <input
-                    className="rounded-lg p-4 border-2 border-primary-strong outline-none"
-                    placeholder="Contraseña"
-                    value={password}
-                    type="password"
-                    onChange={(e) => setPassword(e.target.value)}
-                  ></input>
+                    <input
+                      className="rounded-lg p-4 border-2 border-primary-strong outline-none"
+                      placeholder="Contraseña"
+                      value={password}
+                      type="password"
+                      onChange={(e) => setPassword(e.target.value)}
+                    ></input>
 
-                  <input
-                    className="rounded-lg p-4 border-2 border-primary-strong"
-                    placeholder="Confirmar contraseña"
-                    value={confirmarcontraseña}
-                    type="password"
-                    onChange={(e) => setconfirmarcontraseña(e.target.value)}
-                  ></input>
-                </div>
-              </section>
+                    <input
+                      className="rounded-lg p-4 border-2 border-primary-strong"
+                      placeholder="Confirmar contraseña"
+                      value={confirmarcontraseña}
+                      type="password"
+                      onChange={(e) => setconfirmarcontraseña(e.target.value)}
+                    ></input>
+                  </div>
+                </section>
+              )}
 
               {/* TODO - Cambiar bg-green */}
-              {tipoUsuario == 1 ? registerButton : continueDoctorButton}
+              {tipoUsuario == 2 ? continueDoctorButton : registerButton}
             </form>
 
             <footer className="mb-5">
