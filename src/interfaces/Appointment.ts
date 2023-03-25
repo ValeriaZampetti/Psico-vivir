@@ -1,12 +1,12 @@
 import { Timestamp } from "firebase/firestore";
+import { Message } from "./Message";
 
 export interface Appointment {
   id?: string;
-  clientId: string;
-  doctorId: string;
+  title: string;
   description: string;
   date: Timestamp;
   duration: number;
-  completed: boolean;
   paid: boolean;
+  messages: Message[];
 }
