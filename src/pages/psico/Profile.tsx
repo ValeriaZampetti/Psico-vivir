@@ -1,8 +1,88 @@
 import React from 'react'
+import  k  from "../../assets/mock/pic.jpg"
+import iconEdit from "../../assets/icons/edit.svg"
 
 function Profile() {
   return (
-    <div>Profile</div>
+    <div className="pt-4">
+      <h1 className="text-4xl font-bold pl-2">Información personal</h1>
+      <div className="my-10 md:flex">
+
+        <div className="flex flex-col items-center justify-center md:ml-10">
+
+          <img src={k} alt="profile-pic" className="rounded-full w-2/3 border-8 border-primary-normal max-w-xs md:w-64"/>
+
+          <div className="w-full mt-10 flex flex-col items-center">
+            <h1 className="text-2xl font-bold pl-5 w-full">Biografia</h1>
+            <textarea id="biography" className="w-10/12 h-40 p-4 mt-2 rounded-3xl border-4 border-secondary-normal font-semibold max-w-sm">Mi biografia</textarea>
+            <button className="w-16 h-16 aspect-square mb-6 mt-2 p-3 border-4 border-primary-normal rounded-2xl bg-secondary-normal">
+              <img src={iconEdit} alt="edit" />
+            </button>
+          </div>
+
+          <div className="w-full flex p-4 justify-around">
+            <h1 className="text-xl font-bold pl-2 w-1/2 flex items-center">Precio de hora de consulta ($)</h1>
+            <div className="w-1/2 items-center flex">
+              <textarea id="price" className="w-[90px] m-2 rounded-xl border-4 border-secondary-normal h-12 mr-4"></textarea>
+              <button className="w-[48px] h-auto p-2 border-4 border-primary-normal rounded-2xl bg-secondary-normal">
+                <img src={iconEdit} alt="edit" />
+              </button>
+            </div>
+          </div>
+
+        </div>
+        
+        <div className="flex flex-col p-3 md:ml-12 md:w-1/2">
+
+          <div className=" flex justify-between p-2 items-center">
+            <div className="flex flex-col w-full">
+              <label htmlFor="" className="pl-3 text-xl font-bold">Nombre completo</label>
+              <div className="items-center flex">
+                <input type="text" className="h-12 rounded-xl border-4 border-secondary-normal w-full max-w-xs md:max-w-sm"/>
+                <button className="w-[48px] h-auto p-2 border-4 border-primary-normal rounded-xl bg-secondary-normal ml-3">
+                  <img src={iconEdit} alt="edit" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className=" flex justify-between p-2 items-center">
+            <div className="flex flex-col w-full">
+              <label htmlFor="" className="pl-3 text-xl font-bold">Dirección de correo</label>
+              <div className="items-center flex">
+                <input type="text" className="h-12 rounded-xl border-4 border-secondary-normal w-full max-w-xs md:max-w-sm"/>
+                <button className="w-[48px] h-auto p-2 border-4 border-primary-normal rounded-xl bg-secondary-normal ml-3">
+                  <img src={iconEdit} alt="edit" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className=" flex justify-between p-2 items-center">
+            <div className="flex flex-col w-full">
+              <label htmlFor="" className="pl-3 text-xl font-bold">Número de telefono</label>
+              <div className="items-center flex">
+                <input type="text" className="h-12 rounded-xl border-4 border-secondary-normal w-full max-w-xs"/>
+                <button className="w-[48px] h-auto p-2 border-4 border-primary-normal rounded-xl bg-secondary-normal ml-3">
+                  <img src={iconEdit} alt="edit" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-yellow-300 h-28 mt-8 max-w-md">
+            Rating
+          </div>
+
+          <div className="flex justify-center max-w-md mt-5">
+            <button className="w-auto h-12 p-2 rounded-xl bg-secondary-normal hover:scale-105 
+            font-bold hover:drop-shadow-md transition-all">Guardar cambios</button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
   )
 }
 
