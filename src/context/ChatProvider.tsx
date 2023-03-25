@@ -8,7 +8,6 @@ import {
 import React, { createContext, useEffect, useState } from "react";
 import {
   getChatsByDoctorId,
-  getChatsByDoctorIdNormal,
   updateChatByMessage,
 } from "../firebase/api/chatService";
 import {
@@ -90,6 +89,7 @@ function ChatProvider({ children }: IProps) {
     }
   }
 
+  // FIXME - Agarrar d dependiendo si es user o doctor
   async function initializeChats() {
     const collectionRef = collection(db, "chats");
 

@@ -2,7 +2,6 @@ import { Timestamp } from "firebase/firestore";
 import { Message } from "./Message";
 
 export interface Appointment {
-  id?: string;
   title: string;
   description: string;
   date: Timestamp;
