@@ -11,10 +11,12 @@ import Checkout from "./pages/psico/Checkout";
 import Profile from "./pages/psico/Profile";
 import Reservations from "./pages/psico/DoctorReservation";
 import Searcher from "./pages/psico/Searcher";
+import WriteReview from "./pages/psico/WriteReview";
 import Login from "./pages/users/Login";
 import Register from "./pages/users/Register";
 import ScheduleAppointment from "./pages/psico/ScheduleAppointment";
 import "react-toastify/dist/ReactToastify.css";
+import PatientsReviews from "./pages/psico/PatientsReviews";
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route path="*" element={<Error404 />} />
+            <Route path="writereview/:chatId/:index" element={<WriteReview />} /> {/* de mientras aqui*/}
+            <Route path="patientsreviews" element={<PatientsReviews />} /> {/* de mientras aqui*/}
           </Route>
 
           <Route path="/psico" element={<ProtectedLayout />}>

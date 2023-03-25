@@ -3,6 +3,7 @@ export interface FeedbackCreate {
   appointmentIndex: number;
   rating: number;
   message: string;
+  userId: string;
 }
 
 export interface Feedback extends FeedbackCreate {
