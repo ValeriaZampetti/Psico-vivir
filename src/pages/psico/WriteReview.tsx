@@ -127,7 +127,7 @@ function WriteReview() {
           {danger && (
             <div
               id="danger"
-              className="text-red-500 text-2xl absolute transition duration-300 animate-buttons"
+              className="text-red-500 text-2xl font-bold absolute transition duration-300 animate-buttons"
             >
               Error, por favor escriba un mensaje.
             </div>
@@ -136,7 +136,7 @@ function WriteReview() {
           {success && (
             <div
               id=""
-              className="text-green-500 text-2xl absolute animate-buttons"
+              className="text-green-500 text-2xl font-bold absolute animate-buttons"
             >
               Tu mensaje ha sido enviado con exito!
             </div>
