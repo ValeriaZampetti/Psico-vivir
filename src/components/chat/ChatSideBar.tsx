@@ -64,16 +64,16 @@ function ChatSideBar() {
         <div className="flex w-full py-4">
           <button
             className={`${
-              activeChatsDisplay ? "bg-primary-strong border-2" : "bg-primary-normal"
-            } self-center flex justify-center h-12  basis-1/2`}
+              activeChatsDisplay ? "bg-primary-strong border-2" : "bg-primary-normal hover:border-[1px] active:scale-95 "
+            } self-center flex justify-center  basis-1/2 border-black `}
             onClick={() => setActiveChatsDisplay(true)}
           >
             <img src={List} alt="" className="h-10" />
           </button>
           <button
             className={`${
-              !activeChatsDisplay ? "bg-primary-strong border-2" : "bg-primary-normal"
-            } flex justify-center  basis-1/2`}
+              !activeChatsDisplay ? "bg-primary-strong border-2" : "bg-primary-normal hover:border-[1px] active:scale-95 "
+            } flex justify-center basis-1/2  border-black`}
             onClick={() => setActiveChatsDisplay(false)}
           >
             <img src={ListCheck} alt="" className="h-10 " />
