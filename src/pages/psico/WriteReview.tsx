@@ -21,39 +21,17 @@ function WriteReview() {
 
   const [danger, setDanger] = useState(false);
 
-  const commentRef = useRef();
-
-  // const handleSubmit = (e: { preventDefault: () => void; }) => {
-  //   e.preventDefault();
-
-  //   if (comment === '') {
-  //     setDanger(true);
-  //   } else {
-  //     setTimeout(() => {
-  //       setComment('');
-  //     }, 2000);
-
-  //     setSuccess(true);
-  //   }
-  //   setTimeout(() => {
-  //     setDanger(false);
-  //     setSuccess(false);
-  //   }, 4000);
-
-  // }
+  const commentRef = useRef<HTMLTextAreaElement>(null);
 
   const { chatId, index } = useParams<{ chatId: string; index: string }>();
 
-  useEffect(() => {
-    // const promiseResult = await getPromiseResult();
-    // const doctorId = promiseResult.doctorId
-    // console.log(chatId.doctorId);
-    // console.log(index);
-    // chatId && console.log(getChatsByClientId(chatId));
-    // chatId && console.log(getChatsByDoctorId(chatId));
-    chatId && console.log(getChatById(chatId));
-    // console.log(updateRankingDoctor("aZ9hfOr8dAOfI4MytoSdaexEuzU2", rating));
-  });
+  // useEffect(() => {
+  //   console.log(index);
+  //   chatId && console.log(getChatsByClientId(chatId));
+  //   chatId && console.log(getChatsByDoctorId(chatId));
+  //   chatId && console.log(getChatById(chatId));
+  //   console.log(updateRankingDoctor("aZ9hfOr8dAOfI4MytoSdaexEuzU2", rating));
+  // });
 
   useEffect(() => {
     console.log(rating);
@@ -62,23 +40,40 @@ function WriteReview() {
   const sendComment = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
-    const indexInt = index && parseInt(index, 10);
-    const commentToSend = comment;
-    const ratingToSend = rating;
-    setComment("");
-    setRating(0);
-    await addDoc(collection(db, "feedback"), {
-      chatId: chatId,
-      appointmentIndex: indexInt,
-      rating: ratingToSend,
-      message: commentToSend,
-      userId: "",
-    });
+    if (comment === "") {
+      setDanger(true);
+    } else {
+      setTimeout(() => {
+        setComment("");
+      }, 2000);
 
-    const chatInfo = chatId && (await getChatById(chatId));
-    if (chatInfo) {
-      updateRankingDoctor(chatInfo.doctorId, rating);
+      setSuccess(true);
+
+      const chatInfo = chatId && (await getChatById(chatId));
+      if (chatInfo) {
+        const userIdToSend = chatInfo.clientId;
+        const indexInt = index && parseInt(index, 10);
+        const commentToSend = comment;
+        const ratingToSend = rating;
+        setComment("");
+        setRating(0);
+        await addDoc(collection(db, "feedback"), {
+          chatId: chatId,
+          appointmentIndex: indexInt,
+          rating: ratingToSend,
+          message: commentToSend,
+          userId: userIdToSend,
+        });
+      }
+
+      if (chatInfo) {
+        updateRankingDoctor(chatInfo.doctorId, rating);
+      }
     }
+    setTimeout(() => {
+      setDanger(false);
+      setSuccess(false);
+    }, 4000);
   };
 
   return (
@@ -115,7 +110,7 @@ function WriteReview() {
         <textarea
           placeholder="Escribe tu comentario aqui..."
           className="rounded-lg px-4 resize-none h-24 md:h-32 w-full md:w-2/3 border-2 border-rose-300 outline-none mt-4 md:mt-6"
-          // ref={commentRef}
+          ref={commentRef}
           value={comment}
           onChange={(e) => setComment(e.target.value)}
         />
@@ -132,7 +127,7 @@ function WriteReview() {
           {danger && (
             <div
               id="danger"
-              className="text-red-500 text-2xl absolute transition duration-300 animate-buttons hidden"
+              className="text-red-500 text-2xl absolute transition duration-300 animate-buttons"
             >
               Error, por favor escriba un mensaje.
             </div>
@@ -141,7 +136,7 @@ function WriteReview() {
           {success && (
             <div
               id=""
-              className="text-green-500 text-2xl absolute animate-buttons hidden"
+              className="text-green-500 text-2xl absolute animate-buttons"
             >
               Tu mensaje ha sido enviado con exito!
             </div>
