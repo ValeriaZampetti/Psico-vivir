@@ -159,6 +159,7 @@ export async function getDoctorsByChats(chats: Chat[]): Promise<Doctor[]> {
   const userCollectionRef = collection(db, "users");
   const doctors: Doctor[] = [];
 
+  console.log(chats)
   for (const chat of chats) {
     const doctorRef = doc(userCollectionRef, chat.doctorId);
 
@@ -177,6 +178,14 @@ export async function updateRankingDoctor(
 
   const doctor = await getDoc(doctorRef);
   const doctorData = doctor.data() as Doctor;
+
+  if (!doctorData.numberOfReviews || doctorData.numberOfReviews === 0) {
+    await updateDoc(doctorRef, {
+      ranking: rating,
+      numberOfReviews: 1,
+    });
+    return;
+  }
 
   const newRanking =
     (doctorData.ranking * doctorData.numberOfReviews + rating) /

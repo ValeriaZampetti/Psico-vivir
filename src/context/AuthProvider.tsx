@@ -4,7 +4,7 @@ import {
   UserCredential,
 } from "firebase/auth";
 import React, { createContext, useEffect, useState } from "react";
-import { signIn, signInWithGoogle, signInWithGithub } from "../firebase/api";
+import { signIn, signInWithGoogle, signInWithGithub } from "../firebase/api/authService";
 import { createUser, getUserById } from "../firebase/api/UserService";
 import { auth } from "../firebase/config";
 import { Client, ClientCreate, DoctorCreate } from "../interfaces/Client";

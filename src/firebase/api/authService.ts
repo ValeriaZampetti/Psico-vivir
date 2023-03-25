@@ -1,62 +1,7 @@
-import { User, UserCredential } from "@firebase/auth";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-} from "firebase/auth";
-import {
-  collection,
-  addDoc,
-  updateDoc,
-  onSnapshot,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  QuerySnapshot,
-  DocumentData,
-  where,
-  query,
-  DocumentSnapshot,
-  setDoc,
-  orderBy,
-  Timestamp,
-  limit,
-  startAfter,
-  serverTimestamp,
-} from "firebase/firestore";
-import { Appointment } from "../interfaces/Appointment";
-import {
-  Client,
-  ClientCreate,
-  Doctor,
-  DoctorCreate,
-} from "../interfaces/Client";
-import { Feedback, FeedbackCreate } from "../interfaces/Feedback";
-
-import { auth, db, githubAuthProvider, googleAuthProvider } from "./config";
-
-// FIXME - mejorar logica para addFeedback
-export function addFeedback(
-  chatId: string,
-  appointmentId: string,
-  message: string,
-  rating: number
-) {
-  const feedbackCollectionRef = collection(db, "feedback");
-  const feedbackObj: FeedbackCreate = {
-    appointmentId,
-    message,
-    rating,
-  };
-  addDoc(feedbackCollectionRef, feedbackObj);
-
-  const chatCollectionRef = collection(db, "chats");
-  setDoc(doc(chatCollectionRef, chatId), {
-    lastAppointmentActive: false,
-  });
-}
-
+import { UserCredential, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { collection, getDoc, doc, setDoc } from "firebase/firestore";
+import { ClientCreate } from "../../interfaces/Client";
+import { auth, googleAuthProvider, db, githubAuthProvider } from "../config";
 
 export async function signIn(
   email: string,
@@ -68,7 +13,7 @@ export async function signIn(
     return result;
   } catch (error) {
     console.log("error", error);
-    return null;
+    throw error;
   }
 }
 
