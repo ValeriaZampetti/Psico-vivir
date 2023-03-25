@@ -15,6 +15,7 @@ import Login from "./pages/users/Login";
 import Register from "./pages/users/Register";
 import ScheduleAppointment from "./pages/psico/ScheduleAppointment";
 import "react-toastify/dist/ReactToastify.css";
+import ProfileDoctor from "./pages/psico/ProfileDoctor";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
             <Route path="schedule/:id" element={<ScheduleAppointment />} />
             <Route path="chat" element={<Chat />} />
             <Route path="checkout" element={<Checkout />} />
+            <Route path="doctor/:id" element={<ProfileDoctor />} />
             <Route path="*" element={<Error404 />} />
           </Route>
         </Routes>
