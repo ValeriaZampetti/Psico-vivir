@@ -38,7 +38,6 @@ function App() {
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route path="*" element={<Error404 />} />
-            <Route path="writereview/:chatId/:index" element={<WriteReview />} /> {/* de mientras aqui*/}
             <Route path="patientsreviews" element={<PatientsReviews />} /> {/* de mientras aqui*/}
           </Route>
 
@@ -49,6 +48,7 @@ function App() {
             <Route path="schedule/:id" element={<ScheduleAppointment />} />
             <Route path="chat" element={<Chat />} />
             <Route path="checkout" element={<Checkout />} />
+            <Route path="writeReview/:chatId/:index" element={<WriteReview />} />
             <Route path="*" element={<Error404 />} />
           </Route>
         </Routes>
