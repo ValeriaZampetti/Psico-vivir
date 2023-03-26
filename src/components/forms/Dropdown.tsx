@@ -17,8 +17,6 @@ export const Dropdown = (props: Props) => {
   const [showOptions, setShowOptions] = useState(false);
   const [optionSelected, setOptionSelected] = useState<string | null>(null);
 
-  
-
   useEffect(() => {
     function closeOptions(e: MouseEvent) {
       e.preventDefault()
