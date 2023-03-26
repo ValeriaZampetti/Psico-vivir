@@ -106,39 +106,28 @@ export async function getDoctorById(doctorId: string): Promise<Doctor> {
 
 // REVIEW - Sera que me suscribo a esto?
 export async function getClients(): Promise<Client[]> {
-  const collectionRef = collection(db, "users");
-  const q = query(collectionRef, where("type", "==", 1));
-
-  const querySnapshot = await getDocs(q);
-  const clients: Client[] = [];
-
-  querySnapshot.forEach((doc) => {
-    clients.push({ id: doc.id, ...doc.data() } as Client);
-  });
-
-  return clients;
+  try {
+    const collectionRef = collection(db, "users");
+    const q = query(collectionRef, where("chatId", "==", 1));
+  
+    const querySnapshot = await getDocs(q);
+    const clients: Client[] = [];
+  
+    querySnapshot.forEach((doc) => {
+      clients.push({ id: doc.id, ...doc.data() } as Client);
+    });
+  
+    return clients;
+  } catch (error) {
+    throw error;
+  }
 }
 
-export function createUser(
-  client: ClientCreate,
-  password: string
-): Promise<UserCredential | null> {
+export async function getClientById(clientId: string): Promise<Client | null> {
   const collectionRef = collection(db, "users");
-  console.log("Creating user", client.email);
-  return createUserWithEmailAndPassword(auth, client.email, password).then(
-    (userCredential) => {
-      const user = userCredential.user;
 
-      const clientRef = doc(collectionRef, user.uid);
-
-      setDoc(clientRef, {
-        ...client,
-        createdAt: serverTimestamp(),
-      });
-      console.log("User created", user.uid);
-      return userCredential;
-    }
-  );
+  const documentSnapshot = await getDoc(doc(collectionRef, clientId));
+  return { id: documentSnapshot.id, ...documentSnapshot.data() } as Client;
 }
 
 export async function getClientsByChats(chats: Chat[]): Promise<Client[]> {
