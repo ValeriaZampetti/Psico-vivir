@@ -13,14 +13,14 @@ function ChatContainer() {
     
   }, [currentChat]);
 
-  const appointmentsList = appointments.map((appointment) => {
+  const appointmentsList = appointments.map((appointment, index) => {
     const listMessages = appointment.messages.map((message, index) => (
       <MessageComponent key={index} message={message} />
     ));
 
     const dateString = getRelativeTimeString(appointment.date.toDate());
     return (
-      <div key={appointment.id} className="mt-4 flex flex-col">
+      <div key={index} className="mt-4 flex flex-col">
         <h3 className="text-sm text-center  text-gray-500">
           {capitalize(dateString)}
         </h3>

@@ -22,6 +22,7 @@ export interface DoctorCreate extends ClientCreate {
   specialties: string[];
   telephone: string;
   ranking: number;
+  numberOfReviews: number;
   biography: string;
   
 }
