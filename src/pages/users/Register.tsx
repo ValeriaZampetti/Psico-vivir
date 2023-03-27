@@ -1,54 +1,66 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Navigate, useNavigate, Link } from "react-router-dom";
 import registerr from "../../assets/images/Register.jpg";
 import arrow from "../../assets/icons/arrow.svg";
-import { Client, ClientCreate, Doctor } from "../../interfaces/Client";
+import {
+  Client,
+  ClientCreate,
+  UserType,
+  Doctor,
+  DoctorCreate,
+} from "../../interfaces/Client";
 import googleIcon from "../../assets/icons/google.svg";
 import facebookIcon from "../../assets/icons/facebook.svg";
 import { Dropdown } from "../../components/forms/Dropdown";
 import { ToastContainer, toast } from "react-toastify";
 import { useAuth } from "../../hooks/useAuth";
-
-const CLIENT_TYPE = 1;
-const DOCTOR_TYPE = 2;
+import { getSpecialties } from "../../firebase/api/UserService";
+import { Specialty } from "../../interfaces/Specialty";
 
 const STEP_VIEW_CLIENT = 1;
 const STEP_VIEW_DOCTOR = 2;
 
 export const Register = (prop: any) => {
   const [nombre, setNombre] = useState("");
-  const [number, setnumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [phone, setPhone] = useState("");
+  const [countryCode, setCountryCode] = useState<number>(58);
+
   const [biography, setBiography] = useState("");
-  const [ranking, setRanking] = useState("");
+  const [specialties, setSpecialties] = useState<Specialty[]>([]);
+  const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
 
   const [confirmarcontraseña, setconfirmarcontraseña] = useState("");
-  const [tipoUsuario, setTipoUsuario] = useState(CLIENT_TYPE);
+  const [tipoUsuario, setTipoUsuario] = useState(UserType.CLIENT);
   const [step, setStep] = useState(STEP_VIEW_CLIENT);
 
   const { register, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    async function getSpecialtiesFromApi() {
+      const specialties = await getSpecialties();
+      setSpecialties(specialties);
+      console.log(specialties);
+    }
+
+    getSpecialtiesFromApi();
+  }, []);
+
   // FIXME - Hacer que el form se resetee cuando se cambia el tipo de usuario
   // FIXME - Utilizar esto en el submit
 
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
-    console.log("submit");
     e.preventDefault();
-    const user: ClientCreate | null = {
-      email,
-      name: nombre,
-      type: 0,
-    };
 
     if (password.length <= 7) {
       toast.warning("La contraseña debe tener al menos 8 caracteres");
       return;
     }
 
-    if (!email || !password || !nombre || !number || !confirmarcontraseña) {
+    if (!email || !password || !nombre || !phone || !confirmarcontraseña) {
       toast.warning("No puedes dejar espacios en blanco", {
         position: "top-right",
       });
@@ -60,13 +72,31 @@ export const Register = (prop: any) => {
       return;
     }
 
-    if (tipoUsuario === DOCTOR_TYPE) {
-      console.log("soy doctor");
-      setStep(STEP_VIEW_DOCTOR);
+    if (tipoUsuario === UserType.DOCTOR) {
+      const doctor: DoctorCreate = {
+        name: nombre,
+        email,
+        phone: parseInt(phone),
+        countryCode,
+        type: tipoUsuario,
+        biography,
+        ranking: 3,
+        specialties: selectedSpecialties,
+        numberOfReviews: 0,
+      };
+
       return;
     }
 
-    const userCredential = await register(user, password);
+    const client: ClientCreate = {
+      name: nombre,
+      email,
+      phone: parseInt(phone),
+      countryCode,
+      type: tipoUsuario,
+    };
+
+    const userCredential = await register(client, password);
     if (userCredential) {
       toast.success("Usuario creado exitosamente");
       setTimeout(() => {
@@ -116,7 +146,6 @@ export const Register = (prop: any) => {
           <h2 className="text-center text-xl font-medium">
             Registrate ingresando los siguientes datos
           </h2>
-
           {/* FIXME - Averiguar por que el submit no se ejecuta */}
 
           {step === STEP_VIEW_CLIENT ? (
@@ -148,25 +177,32 @@ export const Register = (prop: any) => {
                       {
                         value: "Cliente",
                         label: "Cliente",
-                        onClick: () => setTipoUsuario(1),
+                        onClick: () => setTipoUsuario(UserType.CLIENT),
                       },
                       {
                         value: "Doctor",
                         label: "Doctor",
-                        onClick: () => setTipoUsuario(2),
+                        onClick: () => setTipoUsuario(UserType.DOCTOR),
                       },
                     ]}
                   />
                 </div>
 
                 <div className="flex flex-col gap-5">
-                  <input
-                    className="rounded-lg p-4 border-2 border-primary-strong outline-none"
-                    placeholder="Número de teléfono"
-                    value={number}
-                    onChange={(e) => setnumber(e.target.value)}
-                  ></input>
-
+                  <div>
+                    <input
+                      className="rounded-lg p-4 border-2 border-primary-strong outline-none"
+                      placeholder="Número de teléfono"
+                      type="number"
+                      pattern="[0-9]*"
+                      value={phone}
+                      onChange={(e) =>
+                        setPhone((v) =>
+                          e.target.validity.valid ? e.target.value : v
+                        )
+                      }
+                    />
+                  </div>
                   <input
                     className="rounded-lg p-4 border-2 border-primary-strong outline-none"
                     placeholder="Contraseña"
@@ -174,7 +210,6 @@ export const Register = (prop: any) => {
                     type="password"
                     onChange={(e) => setPassword(e.target.value)}
                   ></input>
-
                   <input
                     className="rounded-lg p-4 border-2 border-primary-strong"
                     placeholder="Confirmar contraseña"
@@ -186,7 +221,7 @@ export const Register = (prop: any) => {
               </section>
 
               {/* TODO - Cambiar bg-green */}
-              {tipoUsuario == DOCTOR_TYPE ? (
+              {tipoUsuario == UserType.DOCTOR ? (
                 <button
                   onClick={handleSubmit}
                   className="w-full py-3 text-black font-bold rounded-lg shadow-lg flex flex-row justify-evenly duration-300 bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90 hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
@@ -210,44 +245,48 @@ export const Register = (prop: any) => {
               className="self-center"
               // onSubmit={handleSubmit}
             >
-              <section className="my-10 flex flex-col sm:flex-row justify-center gap-5 w-64 self-center ">
-                <div className="flex flex-col gap-5">
-                  <input
+              <section className="my-10 flex flex-row sm:flex-row justify-center gap-5 w-64 self-center ">
+                <div className="flex flex-row gap-5">
+                  <textarea
                     className="rounded-lg p-4 border-2 border-primary-strong outline-none"
-                    placeholder="Ingrese su número de teléfono"
-                    value={phone}
-                    onChange={(e) => setnumber(e.target.value)}
-                  ></input>
-                  <input
-                    className="rounded-lg p-4 border-2 border-primary-strong outline-none"
-                    placeholder="Ingrese el ranking"
-                    value={ranking}
-                    onChange={(e) => setRanking(e.target.value)}
-                  ></input>
-
-                  <input
-                    className="rounded-lg p-4 border-2 border-primary-strong outline-none"
-                    placeholder="Email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  ></input>
+                    placeholder="Escribe tu biografia aqui..."
+                    value={biography}
+                    onChange={(e) => setBiography(e.target.value)}
+                  />
                 </div>
 
                 <div className="flex flex-col gap-5">
-                  <input
-                    className="rounded-lg p-4 border-2 border-primary-strong outline-none"
-                    placeholder="Número de teléfono"
-                    value={number}
-                    onChange={(e) => setnumber(e.target.value)}
-                  ></input>
+                  <Dropdown
+                    title="Especialidades"
+                    options={
+                      specialties
+                        ? specialties.map((specialty) => {
+                            return {
+                              value: specialty.id,
+                              label: specialty.name,
+                              onClick: () => {
+                                setSelectedSpecialties([
+                                  ...selectedSpecialties,
+                                  specialty.id,
+                                ]);
+                                setSpecialties(
+                                  specialties.filter(
+                                    (item) => item.id !== specialty.id
+                                  )
+                                );
+                              },
+                            };
+                          })
+                        : []
+                    }
+                  />
                 </div>
               </section>
 
               {/* TODO - Cambiar bg-green */}
-              {tipoUsuario == DOCTOR_TYPE ? (
+              {tipoUsuario == UserType.DOCTOR && step === STEP_VIEW_CLIENT ? (
                 <button
-                  onClick={handleSubmit}
+                  onClick={() => setStep(STEP_VIEW_DOCTOR)}
                   className="w-full py-3 text-black font-bold rounded-lg shadow-lg flex flex-row justify-evenly duration-300 bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90 hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
                 >
                   <p className="ml-2">CONTINUAR</p>
@@ -264,7 +303,6 @@ export const Register = (prop: any) => {
               )}
             </form>
           )}
-
           <footer className="mb-5">
             <p className="text-center">O inicia sesión con</p>
             <div className="flex justify-center gap-5 mt-5">

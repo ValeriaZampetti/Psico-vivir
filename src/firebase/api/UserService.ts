@@ -24,6 +24,7 @@ import {
   ClientCreate,
   DoctorCreate,
 } from "../../interfaces/Client";
+import { Specialty } from "../../interfaces/Specialty";
 import { auth, db } from "../config";
 
 export async function getUserById(userId: string): Promise<Client | Doctor> {
@@ -117,6 +118,18 @@ export async function getClients(): Promise<Client[]> {
   });
 
   return clients;
+}
+
+
+export async function getSpecialties(): Promise<Specialty[]> {
+  const collectionRef = collection(db, "specialties");
+  const snapShot = await getDocs(collectionRef);
+  console.log({snapShot});
+  return snapShot.docs.map((doc) => { 
+    return { id: doc.id, ...doc.data() } as Specialty;
+  });
+
+
 }
 
 export function createUser(
