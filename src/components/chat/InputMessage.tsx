@@ -82,7 +82,7 @@ function InputMessage() {
 
         <button
           className="bg-quaternary-normal text-black font-semibold rounded-full px-5 py-3 hover:scale-95 active:scale-90 transition-all duration-300
-          disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
+          disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={!canTalk}
           onClick={handleSendMessage}
         >
