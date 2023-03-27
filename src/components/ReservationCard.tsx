@@ -10,6 +10,7 @@ import { getUserById } from "../firebase/api/UserService";
 interface ReservationCardProps {
   appointment: Appointment;
   userId: string;
+  chatId: string;
 }
 
 export const ReservationCard = (props: ReservationCardProps) => {
@@ -66,7 +67,7 @@ export const ReservationCard = (props: ReservationCardProps) => {
 
       <footer className="flex flex-wrap justify-center items-center gap-8 w-48 h-16">
         <Link
-          to="/psico/chat"
+          to={`/psico/chat/?chatId=${props.chatId}`}
           className="h-full aspect-square rounded-2xl  border-rose-400 border-4 flex items-center justify-center hover:scale-110"
         >
           <img
