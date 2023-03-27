@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { capitalize, getRelativeTimeString } from "../../helpers";
 import { useChat } from "../../hooks/useChat";
 import { Appointment } from "../../interfaces/Appointment";
+import ChatHeader from "./ChatHeader";
 import MessageComponent from "./MessageComponent";
 
 function ChatContainer() {
@@ -36,6 +37,7 @@ function ChatContainer() {
 
   return (
     <div className="flex-[2]">
+      {currentChat && <ChatHeader />}
       <div
         id="messages"
         className="bg-quaternary-normal px-8 py-6 h-full overflow-y-scroll"
