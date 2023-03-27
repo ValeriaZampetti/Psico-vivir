@@ -1,6 +1,6 @@
 import { UserCredential, signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
 import { collection, getDoc, doc, setDoc, serverTimestamp } from "firebase/firestore";
-import { ClientCreate } from "../../interfaces/Client";
+import { ClientCreate, DoctorCreate } from "../../interfaces/Client";
 import { auth, googleAuthProvider, db, githubAuthProvider } from "../config";
 
 export async function signIn(
@@ -18,7 +18,7 @@ export async function signIn(
 }
 
 export function createUser(
-  client: ClientCreate,
+  client: ClientCreate | DoctorCreate,
   password: string
 ): Promise<UserCredential | null> {
   const collectionRef = collection(db, "users");
