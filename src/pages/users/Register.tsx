@@ -85,6 +85,18 @@ export const Register = (prop: any) => {
           specialties: selectedSpecialties,
           numberOfReviews: 0,
         };
+        const userCredential = await register(doctor, password);
+        if (userCredential) {
+          toast.success("Usuario creado exitosamente", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+          setTimeout(() => {
+            navigate("/psico");
+          }, 3000);
+        } else {
+          toast.error("Error al crear el usuario");
+        }
 
         return;
       }
@@ -102,7 +114,7 @@ export const Register = (prop: any) => {
         toast.success("Usuario creado exitosamente");
         setTimeout(() => {
           navigate("/psico");
-        }, 2000);
+        }, 3000);
       } else {
         toast.error("Error al crear el usuario");
       }
@@ -178,6 +190,170 @@ export const Register = (prop: any) => {
     // navigate("/psico");
   };
 
+  const clientform = (
+    <form
+      className="self-center"
+      // onSubmit={handleSubmit}
+    >
+      <section className="my-10 flex flex-col sm:flex-row justify-center gap-5 w-64 self-center ">
+        <div className="flex flex-col gap-5">
+          <input
+            className="rounded-lg p-4 border-2 border-primary-strong outline-none"
+            placeholder="Ingrese su nombre y apellido"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+          ></input>
+
+          <input
+            className="rounded-lg p-4 border-2 border-primary-strong outline-none"
+            placeholder="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          ></input>
+
+          <Dropdown
+            title="Tipo de usuario"
+            options={[
+              {
+                value: "Cliente",
+                label: "Cliente",
+                onClick: () => setTipoUsuario(UserType.CLIENT),
+              },
+              {
+                value: "Doctor",
+                label: "Doctor",
+                onClick: () => setTipoUsuario(UserType.DOCTOR),
+              },
+            ]}
+          />
+        </div>
+
+        <div className="flex flex-col gap-5">
+          <div>
+            <input
+              className="rounded-lg p-4 border-2 border-primary-strong outline-none"
+              placeholder="Número de teléfono"
+              type="number"
+              pattern="[0-9]*"
+              value={phone}
+              onChange={(e) =>
+                setPhone((v) => (e.target.validity.valid ? e.target.value : v))
+              }
+            />
+          </div>
+          <input
+            className="rounded-lg p-4 border-2 border-primary-strong outline-none"
+            placeholder="Contraseña"
+            value={password}
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+          ></input>
+          <input
+            className="rounded-lg p-4 border-2 border-primary-strong"
+            placeholder="Confirmar contraseña"
+            value={confirmarcontraseña}
+            type="password"
+            onChange={(e) => setconfirmarcontraseña(e.target.value)}
+          ></input>
+        </div>
+      </section>
+
+      {/* TODO - Cambiar bg-green */}
+      {tipoUsuario == UserType.DOCTOR ? (
+        <button
+          onClick={() => setStep(STEP_VIEW_DOCTOR)}
+          className="w-full py-3 text-black font-bold rounded-lg shadow-lg flex flex-row justify-evenly duration-300 bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90 hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
+        >
+          <p className="ml-2">CONTINUAR</p>
+          <img src={arrow} className="h-5 w-auto" />
+        </button>
+      ) : (
+        <button
+          // type="submit"
+          onClick={handleSubmit}
+          className="w-full py-3 text-black font-bold rounded-lg shadow-lg duration-300 bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90 hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
+        >
+          REGISTRARSE
+        </button>
+      )}
+    </form>
+  );
+
+  const doctorform = (
+    <form
+      className="self-center"
+      // onSubmit={handleSubmit}
+    >
+      <section className="my-10 flex flex-row sm:flex-row justify-center gap-5 w-64 self-center ">
+        <div className="flex flex-row gap-5">
+          <textarea
+            className="rounded-lg p-4 border-2 border-primary-strong outline-none"
+            placeholder="Escribe tu biografia aqui..."
+            value={biography}
+            onChange={(e) => setBiography(e.target.value)}
+          />
+        </div>
+
+        <div className="flex flex-col gap-5">
+          <Dropdown
+            title="Especialidades"
+            options={
+              specialties
+                ? specialties.map((specialty) => {
+                    return {
+                      value: specialty.id,
+                      label: specialty.name,
+                      onClick: () => {
+                        setSelectedSpecialties([
+                          ...selectedSpecialties,
+                          specialty.id,
+                        ]);
+                        setSpecialties(
+                          specialties.filter((item) => item.id !== specialty.id)
+                        );
+                      },
+                    };
+                  })
+                : []
+            }
+          />
+        </div>
+      </section>
+
+      {/* TODO - Cambiar bg-green */}
+      {tipoUsuario == UserType.DOCTOR && step === STEP_VIEW_CLIENT ? (
+        <button
+          onClick={() => setStep(STEP_VIEW_DOCTOR)}
+          className="w-full py-3 text-black font-bold rounded-lg shadow-lg flex flex-row justify-evenly duration-300 bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90 hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
+        >
+          <p className="ml-2">CONTINUAR</p>
+          <img src={arrow} className="h-5 w-auto" />
+        </button>
+      ) : (
+        <div
+          className="flex flex-row justify-center gap-4
+                "
+        >
+          <button
+            onClick={() => setStep(STEP_VIEW_CLIENT)}
+            className="w-full py-3 text-black font-bold rounded-lg shadow-lg flex flex-row justify-evenly duration-300 bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90 hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
+          >
+            <img src={arrow} className="h-5 w-auto rotate-180" />
+            <p className="ml-2">Volver</p>
+          </button>
+          <button
+            // type="submit"
+            onClick={handleSubmit}
+            className="w-full py-3 text-black font-bold rounded-lg shadow-lg duration-300 bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90 hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
+          >
+            REGISTRARSE
+          </button>
+        </div>
+      )}
+    </form>
+  );
+
   // FIXME - Arreglar responsive overflow de inputs
   return (
     <div className="bg-gray-300/40 px-14 py-7">
@@ -204,161 +380,8 @@ export const Register = (prop: any) => {
           </h2>
           {/* FIXME - Averiguar por que el submit no se ejecuta */}
 
-          {step === STEP_VIEW_CLIENT ? (
-            //TODO - Poner esto a un componente
-            <form
-              className="self-center"
-              // onSubmit={handleSubmit}
-            >
-              <section className="my-10 flex flex-col sm:flex-row justify-center gap-5 w-64 self-center ">
-                <div className="flex flex-col gap-5">
-                  <input
-                    className="rounded-lg p-4 border-2 border-primary-strong outline-none"
-                    placeholder="Ingrese su nombre y apellido"
-                    value={nombre}
-                    onChange={(e) => setNombre(e.target.value)}
-                  ></input>
-
-                  <input
-                    className="rounded-lg p-4 border-2 border-primary-strong outline-none"
-                    placeholder="Email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  ></input>
-
-                  <Dropdown
-                    title="Tipo de usuario"
-                    options={[
-                      {
-                        value: "Cliente",
-                        label: "Cliente",
-                        onClick: () => setTipoUsuario(UserType.CLIENT),
-                      },
-                      {
-                        value: "Doctor",
-                        label: "Doctor",
-                        onClick: () => setTipoUsuario(UserType.DOCTOR),
-                      },
-                    ]}
-                  />
-                </div>
-
-                <div className="flex flex-col gap-5">
-                  <div>
-                    <input
-                      className="rounded-lg p-4 border-2 border-primary-strong outline-none"
-                      placeholder="Número de teléfono"
-                      type="number"
-                      pattern="[0-9]*"
-                      value={phone}
-                      onChange={(e) =>
-                        setPhone((v) =>
-                          e.target.validity.valid ? e.target.value : v
-                        )
-                      }
-                    />
-                  </div>
-                  <input
-                    className="rounded-lg p-4 border-2 border-primary-strong outline-none"
-                    placeholder="Contraseña"
-                    value={password}
-                    type="password"
-                    onChange={(e) => setPassword(e.target.value)}
-                  ></input>
-                  <input
-                    className="rounded-lg p-4 border-2 border-primary-strong"
-                    placeholder="Confirmar contraseña"
-                    value={confirmarcontraseña}
-                    type="password"
-                    onChange={(e) => setconfirmarcontraseña(e.target.value)}
-                  ></input>
-                </div>
-              </section>
-
-              {/* TODO - Cambiar bg-green */}
-              {tipoUsuario == UserType.DOCTOR ? (
-                <button
-                  onClick={handleSubmit}
-                  className="w-full py-3 text-black font-bold rounded-lg shadow-lg flex flex-row justify-evenly duration-300 bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90 hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
-                >
-                  <p className="ml-2">CONTINUAR</p>
-                  <img src={arrow} className="h-5 w-auto" />
-                </button>
-              ) : (
-                <button
-                  // type="submit"
-                  onClick={handleSubmit}
-                  className="w-full py-3 text-black font-bold rounded-lg shadow-lg duration-300 bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90 hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
-                >
-                  REGISTRARSE
-                </button>
-              )}
-            </form>
-          ) : (
-            //Formulario para el doctor
-            <form
-              className="self-center"
-              // onSubmit={handleSubmit}
-            >
-              <section className="my-10 flex flex-row sm:flex-row justify-center gap-5 w-64 self-center ">
-                <div className="flex flex-row gap-5">
-                  <textarea
-                    className="rounded-lg p-4 border-2 border-primary-strong outline-none"
-                    placeholder="Escribe tu biografia aqui..."
-                    value={biography}
-                    onChange={(e) => setBiography(e.target.value)}
-                  />
-                </div>
-
-                <div className="flex flex-col gap-5">
-                  <Dropdown
-                    title="Especialidades"
-                    options={
-                      specialties
-                        ? specialties.map((specialty) => {
-                            return {
-                              value: specialty.id,
-                              label: specialty.name,
-                              onClick: () => {
-                                setSelectedSpecialties([
-                                  ...selectedSpecialties,
-                                  specialty.id,
-                                ]);
-                                setSpecialties(
-                                  specialties.filter(
-                                    (item) => item.id !== specialty.id
-                                  )
-                                );
-                              },
-                            };
-                          })
-                        : []
-                    }
-                  />
-                </div>
-              </section>
-
-              {/* TODO - Cambiar bg-green */}
-              {tipoUsuario == UserType.DOCTOR && step === STEP_VIEW_CLIENT ? (
-                <button
-                  onClick={() => setStep(STEP_VIEW_DOCTOR)}
-                  className="w-full py-3 text-black font-bold rounded-lg shadow-lg flex flex-row justify-evenly duration-300 bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90 hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
-                >
-                  <p className="ml-2">CONTINUAR</p>
-                  <img src={arrow} className="h-5 w-auto" />
-                </button>
-              ) : (
-                <button
-                  // type="submit"
-                  onClick={handleSubmit}
-                  className="w-full py-3 text-black font-bold rounded-lg shadow-lg duration-300 bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90 hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
-                >
-                  REGISTRARSE
-                </button>
-              )}
-            </form>
-          )}
+          {step === STEP_VIEW_CLIENT && clientform}
+          {step === STEP_VIEW_DOCTOR && doctorform}
           <footer className="mb-5">
             <p className="text-center">O inicia sesión con</p>
             <div className="flex justify-center gap-5 mt-5">
