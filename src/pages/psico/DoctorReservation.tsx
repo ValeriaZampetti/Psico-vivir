@@ -32,6 +32,7 @@ function DoctorReservation() {
           ref={lastItemRef}
         >
           <ReservationCard
+            chatId={chat.id}
             appointment={lastAppointment}
             userId={chat.clientId}
           />
@@ -44,7 +45,11 @@ function DoctorReservation() {
         className="border-b-2 border-rose-300 last:border-b-0 last:mb-2"
         key={chat.id}
       >
-        <ReservationCard appointment={lastAppointment} userId={chat.clientId} />
+        <ReservationCard
+          chatId={chat.id}
+          appointment={lastAppointment}
+          userId={chat.clientId}
+        />
       </li>
     );
   });
