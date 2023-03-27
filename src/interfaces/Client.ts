@@ -25,8 +25,6 @@ export interface Client extends ClientCreate {
   img: string;
 }
 
-
-
 /**
  * Interface used when creating a new Doctor and id is yet unknown
  */
