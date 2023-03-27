@@ -6,10 +6,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import React, { createContext, useEffect, useState } from "react";
-import {
-  getChatsByDoctorId,
-  updateChatByMessage,
-} from "../firebase/api/chatService";
+import { updateChatByMessage } from "../firebase/api/chatService";
 import {
   getClientsByChats,
   getDoctorsByChats,
@@ -17,7 +14,7 @@ import {
 import { db } from "../firebase/config";
 import { useAuth } from "../hooks/useAuth";
 import { Chat } from "../interfaces/Chat";
-import { Client, Doctor } from "../interfaces/Client";
+import { Client, Doctor, UserType } from "../interfaces/Client";
 import { MessageCreate } from "../interfaces/Message";
 import { IChatProvider } from "../interfaces/providers/IChatProvider";
 
@@ -29,19 +26,13 @@ export const ChatContext = createContext<IChatProvider>({
   sendMessage: (message: string) => {
     return new Promise((resolve, reject) => {});
   },
-  usersToChat: [],
+  usersActive: [],
+  usersInactive: [],
   currentUserToChat: null,
   handleSelectUserToChat: (user: Doctor | Client) => {},
   currentChat: null,
 });
 
-enum TypeUserChatting {
-  CLIENT = "CLIENT",
-  DOCTOR = "DOCTOR",
-  ADMIN = "ADMIN",
-}
-
-// FIXME - Agarrar doctor si es paciente y viceversa\
 function ChatProvider({ children }: IProps) {
   const [usersToChat, setUsersToChat] = useState<Client[] | Doctor[]>([]);
   const [usersActive, setUsersActive] = useState<Client[] | Doctor[]>([]);
@@ -52,53 +43,61 @@ function ChatProvider({ children }: IProps) {
   >(null);
   const [currentChat, setCurrentChat] = useState<Chat | null>(null);
   const [chats, setChats] = useState<Chat[]>([]);
-  const [typeUserChatting, setTypeUserChatting] = useState<TypeUserChatting>(
-    TypeUserChatting.CLIENT
-  );
+
+  const params = new URLSearchParams(window.location.search);
   const { user } = useAuth();
 
   useEffect(() => {
-    setTypeUserChatting(
-      user?.type === 1 ? TypeUserChatting.CLIENT : TypeUserChatting.DOCTOR
-    );
     initializeChats();
-  }, [user?.id]);
+  }, [user]);
 
   useEffect(() => {
     if (chats.length > 0) {
       initializeClientsToChat(chats);
       const newcurrentChat: Chat | null =
         chats.find((chat) => chat.id === currentChat?.id) ?? null;
+
       setCurrentChat(newcurrentChat);
     }
   }, [chats]);
 
-  // FIXME - Agarrar solo los clientes que tienen chat
   async function initializeClientsToChat(chats: Chat[]) {
-    let clients: Client[] = [];
+    switch (user?.type) {
+      case UserType.DOCTOR:
+        const { clients, clientsActive, clientsInactive } =
+          await getClientsByChats(chats);
 
-    switch (typeUserChatting) {
-      case TypeUserChatting.DOCTOR:
-        clients = await getClientsByChats(chats);
         setUsersToChat(clients);
+        setUsersActive(clientsActive);
+        setUsersInactive(clientsInactive);
         break;
 
-      case TypeUserChatting.CLIENT:
-        clients = await getDoctorsByChats(chats);
-        setUsersToChat(clients);
+      case UserType.CLIENT:
+        const { doctors, doctorsActive, doctorsInactive } =
+          await getDoctorsByChats(chats);
+
+        setUsersToChat(doctors);
+        setUsersActive(doctorsActive);
+        setUsersInactive(doctorsInactive);
         break;
+    }
+
+    const chatId = params.get("chatId");
+    if (chatId !== null) {
+      const chat = chats.find((chat) => chat.id === chatId) ?? null;
+      console.log(chatId);
+      setCurrentChat(chat);
     }
   }
 
   async function initializeChats() {
     const collectionRef = collection(db, "chats");
 
-    switch (typeUserChatting) {
-      case TypeUserChatting.DOCTOR:
+    switch (user?.type) {
+      case UserType.DOCTOR:
         const doctorQuery = query(
           collectionRef,
           where("doctorId", "==", user!.id),
-          where("lastAppointmentActive", "==", true),
           orderBy("updatedAt", "desc")
         );
 
@@ -112,11 +111,10 @@ function ChatProvider({ children }: IProps) {
 
         return () => doctorUnsub();
 
-      case TypeUserChatting.CLIENT:
+      case UserType.CLIENT:
         const clientQuery = query(
           collectionRef,
           where("clientId", "==", user!.id),
-          where("lastAppointmentActive", "==", true),
           orderBy("updatedAt", "desc")
         );
 
@@ -133,35 +131,45 @@ function ChatProvider({ children }: IProps) {
   }
 
   function sendMessage(body: string): Promise<void> {
+    if (!currentChat) {
+      throw new Error("No hay chat seleccionado");
+    }
+
+    if (!user) {
+      throw new Error("No hay usuario logueado");
+    }
+
     const message: MessageCreate = {
       senderId: user!.id,
       body,
     };
-    return updateChatByMessage(message, currentChat!);
+
+    return updateChatByMessage(message, currentChat!, user.type);
   }
 
-  function handleSelectUserToChat(user: Doctor | Client) {
-    setCurrentUserToChat(user);
+  function handleSelectUserToChat(userToChat: Doctor | Client) {
+    setCurrentUserToChat(userToChat);
 
     let chat: Chat | null = null;
-    switch (typeUserChatting) {
-      case TypeUserChatting.CLIENT:
-        chat = chats.find((chat) => chat.doctorId === user.id) ?? null;
+    switch (userToChat.type) {
+      case UserType.CLIENT:
+        chat = chats.find((chat) => chat.clientId === userToChat.id) ?? null;
 
         setCurrentChat(chat);
 
         break;
 
-      case TypeUserChatting.DOCTOR:
-        chat = chats.find((chat) => chat.clientId === user.id) ?? null;
+      case UserType.DOCTOR:
+        chat = chats.find((chat) => chat.doctorId === userToChat.id) ?? null;
         setCurrentChat(chat);
 
         break;
 
-      case TypeUserChatting.ADMIN:
+      case UserType.ADMIN:
         chat =
           chats.find(
-            (chat) => chat.clientId === user.id || chat.doctorId === user.id
+            (chat) =>
+              chat.clientId === userToChat.id || chat.doctorId === userToChat.id
           ) ?? null;
 
         setCurrentChat(chat);
@@ -174,7 +182,8 @@ function ChatProvider({ children }: IProps) {
 
   const value: IChatProvider = {
     sendMessage,
-    usersToChat,
+    usersActive,
+    usersInactive,
     currentUserToChat,
     currentChat,
     handleSelectUserToChat,
