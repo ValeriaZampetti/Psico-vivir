@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Menu from "../../assets/icons/menu.svg";
 import Logo from "../../assets/images/psicovivircompleto.png";
-import Logo1 from "../../assets/images/psicovivirxiquito.png";
+import LogoResponsive from "../../assets/images/psicovivirxiquito.png";
 import { useAuth } from "../../hooks/useAuth";
 
 function LandingHeader() {
-  let links = [
+  const links = [
     { name: "Sobre nosotros", link: "#AboutUs" },
     { name: "Servicios", link: "#Services" },
     { name: "Opiniones", link: "#Opinions" },
@@ -66,7 +66,7 @@ function LandingHeader() {
       <header className="md:flex items-center justify-between bg-secondary-normal py-3 md:px-10 px-7 h-[71px]">
         <Link to={"/landing"} className="">
           <img src={Logo} alt="logo" className="w-64 h-auto hidden md:block" />
-          <img src={Logo1} alt="logo" className="h-12 block md:hidden" />
+          <img src={LogoResponsive} alt="logo" className="h-12 block md:hidden" />
         </Link>
         <div
           onClick={() => setOpen(!open)}
