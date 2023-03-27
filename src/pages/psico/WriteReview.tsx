@@ -85,15 +85,7 @@ function WriteReview() {
 
   useEffect(() => {
     intializeChat();
-    // chatId && console.log(getChatsByClientId(chatId));
-    // chatId && console.log(getChatsByDoctorId(chatId));
-    // chatId && console.log(getChatById(chatId));
-    // console.log(updateRankingDoctor("aZ9hfOr8dAOfI4MytoSdaexEuzU2", rating));
   }, [chatId, index]);
-
-  useEffect(() => {
-    // console.log(rating);
-  }, [rating]);
 
   const sendFeedback = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -114,31 +106,17 @@ function WriteReview() {
         userId: user!.id,
       };
 
-      const hola = await createFeedback(feedback, doctor!.id);
+      const documentReference = await createFeedback(feedback, doctor!.id);
 
       toast.success("Comentario enviado exitosamente", {
         autoClose: 3000,
       });
+
       setTimeout(() => {
         setComment("");
         setSendingFeedback(false);
         setRating(0);
       }, 3000);
-      // if (chatInfo) {
-      //   const userIdToSend = chatInfo.clientId;
-      //   const indexInt = index && parseInt(index, 10);
-      //   const commentToSend = comment;
-      //   const ratingToSend = rating;
-      //   setComment("");
-      //   setRating(0);
-      //   await addDoc(collection(db, "feedback"), {
-      //     chatId: chatId,
-      //     appointmentIndex: indexInt,
-      //     rating: ratingToSend,
-      //     message: commentToSend,
-      //     userId: userIdToSend,
-      //   });
-      // }
     } catch (error: any) {
       setSendingFeedback(false);
       console.log(error);
@@ -150,12 +128,6 @@ function WriteReview() {
     setTimeout(() => {
       setComment("");
     }, 2000);
-
-    // const chatInfo = chatId && (await getChatById(chatId));
-
-    // if (chatInfo) {
-    //   updateRankingDoctor(chatInfo.doctorId, rating);
-    // }
   };
 
   const whileLoading = (
