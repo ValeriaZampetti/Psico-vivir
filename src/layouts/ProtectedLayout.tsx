@@ -2,7 +2,7 @@ import React from "react";
 import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 import { Footer } from "../components/navigation/Footer";
-import LandingHeader from "../components/navigation/LandingHeader";
+import ProtectedHeader from "../components/navigation/ProtectedHeader";
 import AuthProvider from "../context/AuthProvider";
 import { useAuth } from "../hooks/useAuth";
 
@@ -15,7 +15,7 @@ function ProtectedLayout() {
     return (
       <>
         <div>
-          <LandingHeader />
+          <ProtectedHeader />
           <div className="bg-gray-400 mt-[4.5rem] relative h-48 w-full p-[15rem]">
             <Loading
               svgClass="h-[20rem] w-[20rem]"
@@ -46,7 +46,7 @@ function ProtectedLayout() {
   return (
     <>
       <div>
-        <LandingHeader />
+        <ProtectedHeader />
         <div className="bg-white mt-[4.5rem]">
           <Outlet />
         </div>
