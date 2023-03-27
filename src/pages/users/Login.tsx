@@ -42,8 +42,39 @@ export const LogIn = (props: any) => {
         toast.error("No se pudo iniciar sesión");
         console.log("no user");
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      switch (error.code) {
+        case "auth/invalid-email":
+          toast.error("Email inválido");
+          break;
+
+        case "auth/user-disabled":
+          toast.error("Usuario deshabilitado");
+          break;
+
+        case "auth/user-not-found":
+          toast.error("Usuario no encontrado");
+          break;
+
+        case "auth/wrong-password":
+          toast.error("Contraseña incorrecta");
+          break;
+        
+        case "auth/too-many-requests":
+          toast.error("Demasiados intentos fallidos, intente más tarde");
+          break;
+        
+        case "auth/network-request-failed":
+          toast.error("No hay conexión a internet");
+          break;
+        
+        case "auth/operation-not-allowed":
+          toast.error("Operación no permitida");
+          break;
+        default:
+          toast.error("No se pudo iniciar sesión");
+          break;
+      }
     }
   }
 

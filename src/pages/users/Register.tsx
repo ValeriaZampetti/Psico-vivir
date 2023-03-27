@@ -72,38 +72,94 @@ export const Register = (prop: any) => {
       return;
     }
 
-    if (tipoUsuario === UserType.DOCTOR) {
-      const doctor: DoctorCreate = {
+    try {
+      if (tipoUsuario === UserType.DOCTOR) {
+        const doctor: DoctorCreate = {
+          name: nombre,
+          email,
+          phone: parseInt(phone),
+          countryCode,
+          type: tipoUsuario,
+          biography,
+          ranking: 3,
+          specialties: selectedSpecialties,
+          numberOfReviews: 0,
+        };
+
+        return;
+      }
+
+      const client: ClientCreate = {
         name: nombre,
         email,
         phone: parseInt(phone),
         countryCode,
         type: tipoUsuario,
-        biography,
-        ranking: 3,
-        specialties: selectedSpecialties,
-        numberOfReviews: 0,
       };
 
-      return;
-    }
+      const userCredential = await register(client, password);
+      if (userCredential) {
+        toast.success("Usuario creado exitosamente");
+        setTimeout(() => {
+          navigate("/psico");
+        }, 2000);
+      } else {
+        toast.error("Error al crear el usuario");
+      }
+    } catch (error: any) {
+      switch (error.code) {
+        case "auth/invalid-email":
+          toast.error("Email inválido");
+          break;
 
-    const client: ClientCreate = {
-      name: nombre,
-      email,
-      phone: parseInt(phone),
-      countryCode,
-      type: tipoUsuario,
-    };
+        case "auth/user-disabled":
+          toast.error("Usuario deshabilitado");
+          break;
 
-    const userCredential = await register(client, password);
-    if (userCredential) {
-      toast.success("Usuario creado exitosamente");
-      setTimeout(() => {
-        navigate("/psico");
-      }, 2000);
-    } else {
-      toast.error("Error al crear el usuario");
+        case "auth/user-not-found":
+          toast.error("Usuario no encontrado");
+          break;
+
+        case "auth/wrong-password":
+          toast.error("Contraseña incorrecta");
+          break;
+
+        case "auth/too-many-requests":
+          toast.error("Demasiados intentos fallidos, intente más tarde");
+          break;
+
+        case "auth/network-request-failed":
+          toast.error("No hay conexión a internet");
+          break;
+
+        case "auth/operation-not-allowed":
+          toast.error("Operación no permitida");
+          break;
+
+        case "auth/email-already-in-use":
+          toast.error("El email ya está en uso");
+          break;
+
+        case "auth/weak-password":
+          toast.error("La contraseña debe tener al menos 8 caracteres");
+          break;
+
+        case "auth/invalid-credential":
+          toast.error("Credenciales inválidas");
+          break;
+
+        case "auth/invalid-verification-code":
+          toast.error("Código de verificación inválido");
+          break;
+
+        case "auth/invalid-verification-id":
+          toast.error("ID de verificación inválido");
+          break;
+
+        default:
+          toast.error("No se pudo iniciar sesión");
+          break;
+      }
     }
   }
 

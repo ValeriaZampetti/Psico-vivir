@@ -1,62 +1,7 @@
-import { User, UserCredential } from "@firebase/auth";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-} from "firebase/auth";
-import {
-  collection,
-  addDoc,
-  updateDoc,
-  onSnapshot,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  QuerySnapshot,
-  DocumentData,
-  where,
-  query,
-  DocumentSnapshot,
-  setDoc,
-  orderBy,
-  Timestamp,
-  limit,
-  startAfter,
-  serverTimestamp,
-} from "firebase/firestore";
-import { Appointment } from "../interfaces/Appointment";
-import {
-  Client,
-  ClientCreate,
-  Doctor,
-  DoctorCreate,
-} from "../interfaces/Client";
-import { Feedback, FeedbackCreate } from "../interfaces/Feedback";
-
-import { auth, db, githubAuthProvider, googleAuthProvider } from "./config";
-
-// FIXME - mejorar logica para addFeedback
-export function addFeedback(
-  chatId: string,
-  appointmentId: string,
-  message: string,
-  rating: number
-) {
-  const feedbackCollectionRef = collection(db, "feedback");
-  const feedbackObj: FeedbackCreate = {
-    appointmentId,
-    message,
-    rating,
-  };
-  addDoc(feedbackCollectionRef, feedbackObj);
-
-  const chatCollectionRef = collection(db, "chats");
-  setDoc(doc(chatCollectionRef, chatId), {
-    lastAppointmentActive: false,
-  });
-}
-
+import { UserCredential, signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
+import { collection, getDoc, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { ClientCreate, DoctorCreate } from "../../interfaces/Client";
+import { auth, googleAuthProvider, db, githubAuthProvider } from "../config";
 
 export async function signIn(
   email: string,
@@ -68,8 +13,30 @@ export async function signIn(
     return result;
   } catch (error) {
     console.log("error", error);
-    return null;
+    throw error;
   }
+}
+
+export function createUser(
+  client: ClientCreate | DoctorCreate,
+  password: string
+): Promise<UserCredential | null> {
+  const collectionRef = collection(db, "users");
+  console.log("Creating user", client.email);
+  return createUserWithEmailAndPassword(auth, client.email, password).then(
+    (userCredential) => {
+      const user = userCredential.user;
+
+      const clientRef = doc(collectionRef, user.uid);
+
+      setDoc(clientRef, {
+        ...client,
+        createdAt: serverTimestamp(),
+      });
+      console.log("User created", user.uid);
+      return userCredential;
+    }
+  );
 }
 
 export async function logOut() {

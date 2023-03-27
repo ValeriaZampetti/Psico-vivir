@@ -1,11 +1,15 @@
 import {
   onAuthStateChanged,
-  signInWithEmailAndPassword,
   UserCredential,
 } from "firebase/auth";
 import React, { createContext, useEffect, useState } from "react";
-import { signIn, signInWithGoogle, signInWithGithub } from "../firebase/api";
-import { createUser, getUserById } from "../firebase/api/UserService";
+import {
+  signIn,
+  signInWithGoogle,
+  signInWithGithub,
+  createUser,
+} from "../firebase/api/authService";
+import { getUserById } from "../firebase/api/UserService";
 import { auth } from "../firebase/config";
 import { Client, ClientCreate, DoctorCreate } from "../interfaces/Client";
 import { IAuthProvider } from "../interfaces/providers/IAuthProvider";
@@ -71,8 +75,11 @@ function AuthProvider({ children }: IProps) {
     email: string,
     password: string
   ): Promise<UserCredential | null> {
-    console.log("login", email, password);
-    return signIn(email, password);
+    try {
+      return signIn(email, password);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async function loginWithGoogle() {

@@ -76,6 +76,7 @@ function ChatProvider({ children }: IProps) {
   // FIXME - Agarrar solo los clientes que tienen chat
   async function initializeClientsToChat(chats: Chat[]) {
     let clients: Client[] = [];
+
     switch (typeUserChatting) {
       case TypeUserChatting.DOCTOR:
         clients = await getClientsByChats(chats);
@@ -89,24 +90,46 @@ function ChatProvider({ children }: IProps) {
     }
   }
 
-  // FIXME - Agarrar d dependiendo si es user o doctor
   async function initializeChats() {
     const collectionRef = collection(db, "chats");
 
-    const q = query(
-      collectionRef,
-      where("doctorId", "==", user!.id),
-      where("lastAppointmentActive", "==", true),
-      orderBy("updatedAt", "desc")
-    );
+    switch (typeUserChatting) {
+      case TypeUserChatting.DOCTOR:
+        const doctorQuery = query(
+          collectionRef,
+          where("doctorId", "==", user!.id),
+          where("lastAppointmentActive", "==", true),
+          orderBy("updatedAt", "desc")
+        );
 
-    const unsub = onSnapshot(q, (querySnapshot) => {
-      setChats(
-        querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Chat))
-      );
-    });
+        const doctorUnsub = onSnapshot(doctorQuery, (querySnapshot) => {
+          setChats(
+            querySnapshot.docs.map(
+              (doc) => ({ id: doc.id, ...doc.data() } as Chat)
+            )
+          );
+        });
 
-    return () => unsub();
+        return () => doctorUnsub();
+
+      case TypeUserChatting.CLIENT:
+        const clientQuery = query(
+          collectionRef,
+          where("clientId", "==", user!.id),
+          where("lastAppointmentActive", "==", true),
+          orderBy("updatedAt", "desc")
+        );
+
+        const clientUnsub = onSnapshot(clientQuery, (querySnapshot) => {
+          setChats(
+            querySnapshot.docs.map(
+              (doc) => ({ id: doc.id, ...doc.data() } as Chat)
+            )
+          );
+        });
+
+        return () => clientUnsub();
+    }
   }
 
   function sendMessage(body: string): Promise<void> {
