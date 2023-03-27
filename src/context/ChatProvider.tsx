@@ -6,7 +6,10 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import React, { createContext, useEffect, useState } from "react";
-import { updateChatByMessage } from "../firebase/api/chatService";
+import {
+  desactiveChat,
+  updateChatByMessage,
+} from "../firebase/api/chatService";
 import {
   getClientsByChats,
   getDoctorsByChats,
@@ -31,6 +34,7 @@ export const ChatContext = createContext<IChatProvider>({
   currentUserToChat: null,
   handleSelectUserToChat: (user: Doctor | Client) => {},
   currentChat: null,
+  endChat: () => {},
 });
 
 function ChatProvider({ children }: IProps) {
@@ -180,6 +184,16 @@ function ChatProvider({ children }: IProps) {
     }
   }
 
+  function endChat(chatId: string) {
+    try {
+      desactiveChat(chatId);
+      setCurrentChat(null);
+      setCurrentUserToChat(null);
+    } catch (error) {
+      throw new Error("No se pudo finalizar el chat");
+    }
+  }
+
   const value: IChatProvider = {
     sendMessage,
     usersActive,
@@ -187,6 +201,7 @@ function ChatProvider({ children }: IProps) {
     currentUserToChat,
     currentChat,
     handleSelectUserToChat,
+    endChat,
   };
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
 }

@@ -7,5 +7,6 @@ export interface IChatProvider {
   usersInactive: Doctor[] | Client[];
   currentUserToChat: Doctor | Client | null;
   currentChat: Chat | null;
-  handleSelectUserToChat(user: Doctor | Client): void;
+  handleSelectUserToChat(user: Doctor | Client): void
+  endChat(chatId: string): void;
 }

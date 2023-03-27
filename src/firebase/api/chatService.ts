@@ -158,7 +158,7 @@ export async function updateChatByMessage(
       date: Timestamp.now(),
     };
 
-    if(userType === UserType.DOCTOR) {
+    if (userType === UserType.DOCTOR) {
       lastAppointment.clientCanTalk = true;
     }
 
@@ -175,5 +175,18 @@ export async function updateChatByMessage(
     });
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function desactiveChat(chatId: string): Promise<void> {
+  try {
+    const docRef = doc(db, "chats", chatId);
+
+    return updateDoc(docRef, {
+      lastAppointmentActive: false,
+    });
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 }
