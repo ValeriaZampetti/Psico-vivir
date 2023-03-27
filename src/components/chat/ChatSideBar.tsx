@@ -23,8 +23,10 @@ function ChatSideBar() {
 
   useEffect(() => {
     setActiveChats(usersActive);
+    setActiveFilteredChats(usersActive);
 
     setInactiveChats(usersInactive);
+    setInactiveFilteredChats(usersInactive);
   }, [usersActive, usersInactive]);
 
   useEffect(() => {}, [activeChatsDisplay]);
