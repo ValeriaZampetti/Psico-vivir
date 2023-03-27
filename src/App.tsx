@@ -47,6 +47,7 @@ function App() {
             <Route path="reservations" element={<Reservations />} />
             <Route path="schedule/:id" element={<ScheduleAppointment />} />
             <Route path="chat" element={<Chat />} />
+            <Route path="chats" element={<Chat />} />
             <Route path="checkout" element={<Checkout />} />
             <Route path="writeReview/:chatId/:index" element={<WriteReview />} />
             <Route path="*" element={<Error404 />} />
