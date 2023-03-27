@@ -1,22 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Attach from "../../assets/icons/paperclip.svg";
 import Image from "../../assets/icons/image.svg";
 import { useChat } from "../../hooks/useChat";
+import { useAuth } from "../../hooks/useAuth";
 
 // TODO - Si el doctor no habla, el cliente no puede
 function InputMessage() {
   const [message, setMessage] = useState<string>("");
   const [img, setImg] = useState<File | null>(null);
-  const { currentUserToChat, sendMessage, currentChat } = useChat();
+  const [canTalk, setCanTalk] = useState<boolean>(true);
 
-  // useEfect(() => {
-  //   const messages = document.getElementById("messages");
-  //   if (messages) {
-  //     messages.scrollTop = messages.scrollHeight;
-  //   }
-  // }, [currentChat]);
+  const { currentUserToChat, sendMessage, currentChat } = useChat();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (!currentChat) {
+      setCanTalk(false);
+      return;
+    }
+
+    const lastAppointment = currentChat?.appointments.at(-1)!;
+    if (user?.type === 1 && !lastAppointment.clientCanTalk) {
+      setCanTalk(false);
+      return;
+    }
+    setCanTalk(true);
+    
+  }, [currentChat]);
 
   function handleSendMessage() {
+    const lastAppointment = currentChat?.appointments.at(-1)!;
+    if (user?.type === 1 && !lastAppointment.clientCanTalk) {
+      return;
+    }
+
     if (message) {
       sendMessage(message).then(() => {
         const messages = document.getElementById("messages");
@@ -26,7 +43,6 @@ function InputMessage() {
       });
       setMessage("");
 
-      // Make it to go down when send a message
     }
   }
 
@@ -42,11 +58,11 @@ function InputMessage() {
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === "Enter") {
+          if (e.key === "Enter" && canTalk) {
             handleSendMessage();
           }
         }}
-        disabled={!currentUserToChat}
+        disabled={!canTalk}
       />
 
       <section id="send" className="ml-2  flex items-center gap-2">
@@ -65,9 +81,9 @@ function InputMessage() {
         </label> */}
 
         <button
-          className="bg-primary-strong text-white rounded-full p-3 hover:scale-95 active:scale-90 transition-all duration-300
+          className="bg-quaternary-normal text-black font-semibold rounded-full px-5 py-3 hover:scale-95 active:scale-90 transition-all duration-300
           disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
-          disabled={!currentUserToChat}
+          disabled={!canTalk}
           onClick={handleSendMessage}
         >
           Enviar
@@ -78,6 +94,4 @@ function InputMessage() {
 }
 
 export default InputMessage;
-function useEfect(arg0: () => void, arg1: string[]) {
-  throw new Error("Function not implemented.");
-}
+

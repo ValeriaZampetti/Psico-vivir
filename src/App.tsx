@@ -17,6 +17,7 @@ import Register from "./pages/users/Register";
 import ScheduleAppointment from "./pages/psico/ScheduleAppointment";
 import "react-toastify/dist/ReactToastify.css";
 import PatientsReviews from "./pages/psico/PatientsReviews";
+import ProfileDoctor from "./pages/psico/ProfileDoctor";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
             <Route path="register" element={<Register />} />
             <Route path="*" element={<Error404 />} />
             <Route path="patientsreviews" element={<PatientsReviews />} /> {/* de mientras aqui*/}
+            <Route path="checkout" element={<Checkout />} />
           </Route>
 
           <Route path="/psico" element={<ProtectedLayout />}>
@@ -47,8 +49,10 @@ function App() {
             <Route path="reservations" element={<Reservations />} />
             <Route path="schedule/:id" element={<ScheduleAppointment />} />
             <Route path="chat" element={<Chat />} />
+            <Route path="chats" element={<Chat />} />
             <Route path="checkout" element={<Checkout />} />
             <Route path="writeReview/:chatId/:index" element={<WriteReview />} />
+            <Route path="doctor/:id" element={<ProfileDoctor />} />
             <Route path="*" element={<Error404 />} />
           </Route>
         </Routes>

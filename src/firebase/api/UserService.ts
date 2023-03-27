@@ -113,11 +113,11 @@ export async function getClients(): Promise<Client[]> {
   
     const querySnapshot = await getDocs(q);
     const clients: Client[] = [];
-  
+
     querySnapshot.forEach((doc) => {
       clients.push({ id: doc.id, ...doc.data() } as Client);
     });
-  
+
     return clients;
   } catch (error) {
     throw error;
@@ -143,32 +143,52 @@ export async function getClientById(clientId: string): Promise<Client | null> {
   return { id: documentSnapshot.id, ...documentSnapshot.data() } as Client;
 }
 
-export async function getClientsByChats(chats: Chat[]): Promise<Client[]> {
+export async function getClientsByChats(chats: Chat[]): Promise<{
+  clients: Client[];
+  clientsActive: Client[];
+  clientsInactive: Client[];
+}> {
   const userCollectionRef = collection(db, "users");
   const clients: Client[] = [];
+  const clientsActive: Client[] = [];
+  const clientsInactive: Client[] = [];
 
   for (const chat of chats) {
     const clientRef = doc(userCollectionRef, chat.clientId);
 
     const docSnapshot = await getDoc(clientRef);
-    clients.push({ id: docSnapshot.id, ...docSnapshot.data() } as Client);
+    const client = { id: docSnapshot.id, ...docSnapshot.data() } as Client;
+    clients.push(client);
+    chat.lastAppointmentActive
+      ? clientsActive.push(client)
+      : clientsInactive.push(client);
   }
 
-  return clients;
+  return { clients, clientsActive, clientsInactive };
 }
 
-export async function getDoctorsByChats(chats: Chat[]): Promise<Doctor[]> {
+export async function getDoctorsByChats(chats: Chat[]): Promise<{
+  doctors: Doctor[];
+  doctorsActive: Doctor[];
+  doctorsInactive: Doctor[];
+}> {
   const userCollectionRef = collection(db, "users");
   const doctors: Doctor[] = [];
+  const doctorsActive: Doctor[] = [];
+  const doctorsInactive: Doctor[] = [];
 
-  console.log(chats)
+  console.log(chats);
   for (const chat of chats) {
     const doctorRef = doc(userCollectionRef, chat.doctorId);
 
     const docSnapshot = await getDoc(doctorRef);
-    doctors.push({ id: docSnapshot.id, ...docSnapshot.data() } as Doctor);
+    const doctor = { id: docSnapshot.id, ...docSnapshot.data() } as Doctor;
+    doctors.push(doctor);
+    chat.lastAppointmentActive
+      ? doctorsActive.push(doctor)
+      : doctorsInactive.push(doctor);
   }
-  return doctors;
+  return { doctors, doctorsActive, doctorsInactive };
 }
 
 export async function updateRankingDoctor(
@@ -194,7 +214,7 @@ export async function updateRankingDoctor(
     (doctorData.numberOfReviews + 1);
 
   await updateDoc(doctorRef, {
-    ranking: newRanking,
+    ranking: (Math.round(newRanking * 100) / 100),
     numberOfReviews: doctorData.numberOfReviews + 1,
   });
 }

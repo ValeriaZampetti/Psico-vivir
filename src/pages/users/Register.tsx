@@ -36,7 +36,7 @@ export const Register = (prop: any) => {
   const [tipoUsuario, setTipoUsuario] = useState(UserType.CLIENT);
   const [step, setStep] = useState(STEP_VIEW_CLIENT);
 
-  const { register, loginWithGoogle } = useAuth();
+  const { register, logInWithGoogle: loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -1,6 +1,10 @@
 import { Timestamp } from "firebase/firestore";
 
-export enum UserType { CLIENT = 1, DOCTOR = 2, ADMIN = 3}
+export enum UserType {
+  CLIENT = 1,
+  DOCTOR = 2,
+  ADMIN = 3,
+}
 
 /**
  * Interface used when creating a new client and id is yet unknown

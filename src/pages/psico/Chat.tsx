@@ -8,8 +8,8 @@ import ChatProvider from "../../context/ChatProvider";
 function Chat() {
   return (
     <ChatProvider>
-      <div className="bg-primary-normal h-screen w-screen flex items-center justify-center">
-        <main className="rounded-xl border-2 border-white w-[90%] md:w-[65%] h-[80%] overflow-hidden">
+      <div className="bg-[#f9f0f8] h-screen w-screen flex items-center justify-center">
+        <main className="rounded-xl border-2 border-primary-normal w-[90%] md:w-[65%] h-[80%] overflow-hidden">
           <div className="flex overflow-hidden h-[calc(100%_-_80px)]">
             <ChatSideBar />
             <ChatContainer />

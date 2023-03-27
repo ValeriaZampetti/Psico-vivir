@@ -16,7 +16,7 @@ function ProtectedLayout() {
       <>
         <div>
           <LandingHeader />
-          <div className="bg-gray-400  min-[768px]:max-[868px]:mt-[6rem] mt-[4.5rem] relative h-48 w-full p-[15rem]">
+          <div className="bg-gray-400 mt-[4.5rem] relative h-48 w-full p-[15rem]">
             <Loading
               svgClass="h-[20rem] w-[20rem]"
               statusClass="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2"
@@ -47,7 +47,7 @@ function ProtectedLayout() {
     <>
       <div>
         <LandingHeader />
-        <div className="bg-white min-[768px]:max-[868px]:mt-[6rem] mt-[4.5rem]">
+        <div className="bg-white mt-[4.5rem]">
           <Outlet />
         </div>
         <Footer />

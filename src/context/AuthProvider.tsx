@@ -1,13 +1,11 @@
-import {
-  onAuthStateChanged,
-  UserCredential,
-} from "firebase/auth";
+import { onAuthStateChanged, UserCredential } from "firebase/auth";
 import React, { createContext, useEffect, useState } from "react";
 import {
   signIn,
   signInWithGoogle,
   signInWithGithub,
   createUser,
+  logOutAuth,
 } from "../firebase/api/authService";
 import { getUserById } from "../firebase/api/UserService";
 import { auth } from "../firebase/config";
@@ -21,7 +19,7 @@ interface IProps {
 export const AuthContext = createContext<IAuthProvider>({
   user: null,
   loading: true,
-  login: (email: string, password: string) => {
+  logIn: (email: string, password: string) => {
     console.log("no estas usando la funcion que es");
     return new Promise(() => {});
   },
@@ -30,12 +28,16 @@ export const AuthContext = createContext<IAuthProvider>({
     return new Promise(() => {});
   },
 
-  loginWithGoogle: (client?: Client) => {
+  logInWithGoogle: (client?: Client) => {
     console.log("no estas usando la funcion que es");
     return new Promise(() => {});
   },
 
-  loginWithGithub: (client?: Client) => {
+  logInWithGithub: (client?: Client) => {
+    console.log("no estas usando la funcion que es");
+    return new Promise(() => {});
+  },
+  logOut: () => {
     console.log("no estas usando la funcion que es");
     return new Promise(() => {});
   },
@@ -97,13 +99,19 @@ function AuthProvider({ children }: IProps) {
     return signInWithGithub();
   }
 
+  async function logOut() {
+    logOutAuth()
+    setUser(null);
+  }
+
   const value: IAuthProvider = {
     user,
     loading,
-    login,
-    loginWithGoogle,
+    logIn: login,
+    logInWithGoogle: loginWithGoogle,
     register,
-    loginWithGithub,
+    logInWithGithub: loginWithGithub,
+    logOut,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
