@@ -27,7 +27,7 @@ function ChatContainer() {
 
         {/* FIXME - Arreglar responsive para que se parta por linaes*/}
         <div className="text-center TitleWithLine font-bold ">
-          <span className="bg-[#f9f0f8] py-0 px-2 break-all">{appointment.title}</span>
+          <span className="bg-quaternary-normal py-0 px-2 break-all">{appointment.title}</span>
         </div>
         {listMessages}
       </div>
@@ -38,7 +38,7 @@ function ChatContainer() {
     <div className="flex-[2]">
       <div
         id="messages"
-        className="bg-[#f9f0f8] px-8 py-6 h-full overflow-y-scroll"
+        className="bg-quaternary-normal px-8 py-6 h-full overflow-y-scroll"
       >
         {appointmentsList}
       </div>

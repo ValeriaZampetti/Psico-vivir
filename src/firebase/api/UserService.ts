@@ -201,7 +201,7 @@ export async function updateRankingDoctor(
     (doctorData.numberOfReviews + 1);
 
   await updateDoc(doctorRef, {
-    ranking: newRanking,
+    ranking: (Math.round(newRanking * 100) / 100),
     numberOfReviews: doctorData.numberOfReviews + 1,
   });
 }

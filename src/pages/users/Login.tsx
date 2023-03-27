@@ -14,17 +14,10 @@ import { ToastContainer, toast } from "react-toastify";
 export const LogIn = (props: any) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useAuth();
+  const { logIn: login } = useAuth();
   const navigate = useNavigate();
-  //const { actions } = useContext(Context);
 
-  const showToastMessage = () => {
-    toast.success("Success Notification !", {
-      position: toast.POSITION.TOP_RIGHT,
-    });
-  };
-
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
 
     try {
@@ -59,15 +52,15 @@ export const LogIn = (props: any) => {
         case "auth/wrong-password":
           toast.error("Contraseña incorrecta");
           break;
-        
+
         case "auth/too-many-requests":
           toast.error("Demasiados intentos fallidos, intente más tarde");
           break;
-        
+
         case "auth/network-request-failed":
           toast.error("No hay conexión a internet");
           break;
-        
+
         case "auth/operation-not-allowed":
           toast.error("Operación no permitida");
           break;
@@ -83,14 +76,12 @@ export const LogIn = (props: any) => {
       <div className="bg-gray-300/40 px-14 py-7">
         <div
           className="backdrop-blur-lg bg-white drop-shadow-lg
-                    flex flex-row p-6 rounded-2xl justify-center"
+            flex flex-row p-6 rounded-2xl justify-center"
         >
           <div className="w-[50%] lg:flex hidden justify-center">
-            <img
-              src={psicoLogin}
-              className="w-auto h-[37rem] rounded-2xl bg-primary-normal"
-            />
+            <img src={psicoLogin} className="w-auto h-[37rem] rounded-2xl" />
           </div>
+
           <main className="flex flex-col  justify-center lg:w-[50%]">
             <p className="text-end mb-12  ">
               ¿No tienes una cuenta?{" "}
@@ -101,22 +92,29 @@ export const LogIn = (props: any) => {
                 Registrate
               </Link>
             </p>
+
             <h1 className="text-2xl font-bold text-center">Bienvenido!</h1>
+
             <h2 className="text-center text-xl font-medium">
               Preparado para el cambio?
             </h2>
+
             <form
-              className="my-10 flex flex-col justify-center gap-5 w-64 self-center"
-              onSubmit={handleSubmit}
+              className="my-10 flex flex-col justify-center gap-5 self-center"
+              // onSubmit={handleSubmit}
             >
               <input
-                className="rounded-lg p-4 border-2 border-primary-strong"
+                className="rounded-xl p-4 border-4 border-secondary-normal w-full
+                outline-none focus:border-primary-normal 
+                hover:ring-1 focus:ring-2 ring-secondary-normal ring-offset-2 ring-offset-gray-100"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               ></input>
               <input
-                className="rounded-lg p-4 border-2 border-primary-strong"
+                className="rounded-xl p-4 border-4 border-secondary-normal w-full
+                outline-none focus:border-primary-normal
+                hover:ring-1 focus:ring-2 ring-secondary-normal ring-offset-2 ring-offset-gray-100"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -124,17 +122,20 @@ export const LogIn = (props: any) => {
               <p>Olvidaste tu contraseña?</p>
 
               <button
-                type="submit"
-                className="w-full py-3 text-black font-bold rounded-lg shadow-lg duration-300 
-                bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90
-                hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
+                // type="submit"
+                onClick={handleSubmit}
+                className="w-full py-3 text-primary-normal text-xl font-bold rounded-lg shadow-lg duration-300 
+                  border-primary-light border-2
+                  hover:bg-primary-normal hover:scale-95 hover:text-white active:scale-90
+                  hover:ring-4 ring-primary-light ring-offset-2 ring-offset-gray-100"
               >
-                INICIA SESIÓN
+                Iniciar sesión
               </button>
             </form>
 
             <footer className="mb-5">
               <p className="text-center">O inicia sesión con</p>
+
               <div className="flex justify-center gap-5 mt-5">
                 <button
                   className="bg-white hover:bg-gray-100 active:ring-1 ring-black font-bold py-2 px-4 rounded-full 
@@ -142,6 +143,7 @@ export const LogIn = (props: any) => {
                 >
                   <img src={facebookIcon} />
                 </button>
+
                 <button
                   className="bg-white hover:bg-gray-100 active:ring-1 ring-black font-bold py-2 px-4 rounded-full 
                 drop-shadow-md hover:drop-shadow-lg"

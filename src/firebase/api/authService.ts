@@ -39,9 +39,10 @@ export function createUser(
   );
 }
 
-export async function logOut() {
+export async function logOutAuth() {
   try {
     await auth.signOut();
+    console.log("User logged out");
   } catch (error) {
     console.log("error", error);
   }

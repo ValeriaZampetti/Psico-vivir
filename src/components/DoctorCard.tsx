@@ -11,7 +11,7 @@ function DoctorCard(props: DoctorCardProps) {
   const [ranking, setRanking] = React.useState<number>(props.doctor.ranking);
   return (
     <div
-      className="bg-white border-gray-700 border-2 rounded-xl p-4 backdrop-filter backdrop-blur-lg
+      className="bg-white border-secondary-normal border-4 rounded-3xl p-4 backdrop-filter backdrop-blur-lg
       flex flex-col justify-center w-80"
     >
       <img src={Profile}></img>
@@ -20,7 +20,7 @@ function DoctorCard(props: DoctorCardProps) {
       {
         props.doctor.specialties.map((specialty, index) => {
           return (
-            <p className="bg-secondary-strong rounded-lg  px-4 py-2
+            <p className="bg-secondary-normal rounded-lg  px-4 py-2
             font-semibold  text-center" key={index}>{specialty}</p>
           );
         })

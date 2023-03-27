@@ -17,7 +17,7 @@ export const Register = (prop: any) => {
   const [confirmarcontraseña, setconfirmarcontraseña] = useState("");
   const [tipoUsuario, setTipoUsuario] = useState(1);
 
-  const { register, loginWithGoogle } = useAuth();
+  const { register, logInWithGoogle: loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   // FIXME - Hacer que el form se resetee cuando se cambia el tipo de usuario

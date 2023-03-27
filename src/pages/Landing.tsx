@@ -171,7 +171,7 @@ function Landing() {
             {opinions.map((opinion) => (
               <div
                 key={opinion.id}
-                className="bg-quaternary-normal h-72 w-72 p-8 rounded-2xl"
+                className="bg-quaternary-normal/50 h-72 w-72 p-8 rounded-2xl"
               >
                 <p className="text-gray-700">"{opinion.title}".</p>
 

@@ -5,20 +5,19 @@ module.exports = {
     extend: {
       colors: {
         primary: {
+          light: "#49a3a2",
           normal: "#1C8C8B",
+          strong: "#197e7d",
         },
         secondary: {
           normal: "#9ED1CD",
         },
         tertiary: {
-          normal: "#628693",
+          normal: "#9AC1BA",
         },
         quaternary: {
-          normal: "#9AC1BA",
-        }
-      },
-      screens: {
-        "ml": "970px",
+          normal: "#c7edfa",
+        },
       },
     },
   },
