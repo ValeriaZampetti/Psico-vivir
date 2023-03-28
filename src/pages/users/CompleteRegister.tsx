@@ -1,30 +1,26 @@
-import React, { useState, useContext, useEffect } from "react";
-import { Navigate, useNavigate, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { Dropdown } from "../../components/forms/Dropdown";
+import { getSpecialties, getUserById } from "../../firebase/api/UserService";
+import { useAuth } from "../../hooks/useAuth";
+import {
+  UserType,
+  DoctorCreate,
+  ClientCreate,
+  UserNotAuthCreate,
+  UserNotAuth,
+} from "../../interfaces/Client";
+import { Specialty } from "../../interfaces/Specialty";
 import registerImage from "../../assets/images/Register.jpg";
 import arrow from "../../assets/icons/arrow.svg";
 import xImage from "../../assets/icons/x.svg";
-import {
-  Client,
-  ClientCreate,
-  UserType,
-  Doctor,
-  DoctorCreate,
-} from "../../interfaces/Client";
-import googleIcon from "../../assets/icons/google.svg";
-import facebookIcon from "../../assets/icons/facebook.svg";
-import { Dropdown } from "../../components/forms/Dropdown";
-import { ToastContainer, toast } from "react-toastify";
-import { useAuth } from "../../hooks/useAuth";
-import { getSpecialties } from "../../firebase/api/UserService";
-import { Specialty } from "../../interfaces/Specialty";
 
 const STEP_VIEW_CLIENT = 1;
 const STEP_VIEW_DOCTOR = 2;
 
-export const Register = (prop: any) => {
+function CompleteRegister() {
   const [nombre, setNombre] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   const [phone, setPhone] = useState("");
   const [countryCode, setCountryCode] = useState<number>(58);
@@ -33,18 +29,28 @@ export const Register = (prop: any) => {
   const [specialties, setSpecialties] = useState<Specialty[]>([]);
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
 
-  const [confirmarcontraseña, setconfirmarcontraseña] = useState("");
   const [tipoUsuario, setTipoUsuario] = useState(UserType.CLIENT);
   const [step, setStep] = useState(STEP_VIEW_CLIENT);
 
-  const { register, logInWithGoogle, logInWithGithub } = useAuth();
+  const { completeRegister } = useAuth();
   const navigate = useNavigate();
+
+  const { userId } = useParams();
+  const [userFromUrl, setUserFromUrl] = useState<UserNotAuth | null>(null);
 
   useEffect(() => {
     async function getSpecialtiesFromApi() {
       const specialties = await getSpecialties();
       setSpecialties(specialties);
       console.log(specialties);
+    }
+
+    async function getUser() {
+      const user = await getUserById(userId ?? "");
+      if (user) {
+        setUserFromUrl(user);
+        setNombre(user.name);
+      }
     }
 
     getSpecialtiesFromApi();
@@ -56,20 +62,10 @@ export const Register = (prop: any) => {
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
 
-    if (password.length <= 7) {
-      toast.warning("La contraseña debe tener al menos 8 caracteres");
-      return;
-    }
-
-    if (!email || !password || !nombre || !phone || !confirmarcontraseña) {
+    if (!nombre || !phone) {
       toast.warning("No puedes dejar espacios en blanco", {
         position: "top-right",
       });
-      return;
-    }
-
-    if (password !== confirmarcontraseña) {
-      toast.warning("Las contraseñas no coinciden");
       return;
     }
 
@@ -77,7 +73,7 @@ export const Register = (prop: any) => {
       if (tipoUsuario === UserType.DOCTOR) {
         const doctor: DoctorCreate = {
           name: nombre,
-          email,
+          email: userFromUrl?.email ?? "",
           phone: parseInt(phone),
           countryCode,
           type: tipoUsuario,
@@ -87,8 +83,8 @@ export const Register = (prop: any) => {
           numberOfReviews: 0,
           completed: true,
         };
-        const userCredential = await register(doctor, password);
-        if (userCredential) {
+        const completed = await completeRegister(doctor, userFromUrl?.id ?? "");
+        if (completed) {
           toast.success("Usuario creado exitosamente", {
             position: "top-right",
             autoClose: 3000,
@@ -105,15 +101,15 @@ export const Register = (prop: any) => {
 
       const client: ClientCreate = {
         name: nombre,
-        email,
+        email: userFromUrl?.email ?? "",
         phone: parseInt(phone),
         countryCode,
         type: tipoUsuario,
         completed: true,
       };
 
-      const userCredential = await register(client, password);
-      if (userCredential) {
+      const completed = await completeRegister(client, userFromUrl?.id ?? "");
+      if (completed) {
         toast.success("Usuario creado exitosamente");
         setTimeout(() => {
           navigate("/psico");
@@ -178,26 +174,9 @@ export const Register = (prop: any) => {
     }
   }
 
-  const handleGoogleSignIn = async () => {
-    try {
-      const userCredential = await logInWithGoogle();
-      navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
-  const handleGithubSignIn = async () => {
-    try {
-      const userCredential = await logInWithGithub();
-      navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
-
   const clientForm = (
     <form
-      className=" self-center"
+      className="flex flex-col justify-center self-center w-[90%]"
       // onSubmit={handleSubmit}
     >
       <section className="my-10 flex flex-col sm:flex-row justify-center gap-5 self-center ">
@@ -207,14 +186,6 @@ export const Register = (prop: any) => {
             placeholder="Ingrese su nombre y apellido"
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
-          ></input>
-
-          <input
-            className="rounded-lg p-4 border-2 border-primary-strong outline-none w-full"
-            placeholder="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
           ></input>
 
           <Dropdown
@@ -247,21 +218,6 @@ export const Register = (prop: any) => {
             }
           />
           {/* </div> */}
-          <input
-            className="rounded-lg p-4 border-2 border-primary-strong outline-none w-full"
-            placeholder="Contraseña"
-            value={password}
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-          ></input>
-
-          <input
-            className="rounded-lg p-4 border-2 border-primary-strong w-full"
-            placeholder="Confirmar contraseña"
-            value={confirmarcontraseña}
-            type="password"
-            onChange={(e) => setconfirmarcontraseña(e.target.value)}
-          ></input>
         </div>
       </section>
 
@@ -269,18 +225,24 @@ export const Register = (prop: any) => {
       {tipoUsuario == UserType.DOCTOR ? (
         <button
           onClick={() => setStep(STEP_VIEW_DOCTOR)}
-          className="w-full py-3 text-black font-bold rounded-lg shadow-lg flex flex-row justify-evenly duration-300 bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90 hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
+          className="min-w-[6rem] w-full max-w-[10rem] py-3 text-black font-bold rounded-lg shadow-lg 
+            flex flex-row justify-evenly duration-300 bg-primary-light self-center
+            hover:bg-primary-normal hover:scale-95 active:scale-90 
+            hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
         >
-          <p className="ml-2">CONTINUAR</p>
+          <p className="max-[320px]:hidden">Continuar</p>
           <img src={arrow} className="h-5 w-auto" />
         </button>
       ) : (
         <button
           // type="submit"
           onClick={handleSubmit}
-          className="w-full py-3 text-black font-bold rounded-lg shadow-lg duration-300 bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90 hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
+          className="min-w-[6rem] w-full max-w-[10rem] py-3 text-black font-bold rounded-lg shadow-lg 
+          duration-300 bg-primary-light hover:bg-primary-normal 
+          hover:scale-95 active:scale-90 self-center 
+          hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
         >
-          REGISTRARSE
+          Registrarse
         </button>
       )}
     </form>
@@ -383,45 +345,20 @@ export const Register = (prop: any) => {
           />
         </div>
         <main className="flex flex-col  justify-center lg:w-[50%]">
-          <p className="text-center">
-            ¿Ya tienes una cuenta?{" "}
-            <Link
-              to="/users/Login"
-              className="text-blue-500 hover:text-blue-700 cursor-pointer"
-            >
-              Inicia sesión
-            </Link>
-          </p>
-          <h1 className="text-2xl font-bold text-center">Bienvenido!</h1>
-          <h2 className="text-center text-xl font-medium">
-            Registrate ingresando los siguientes datos
+          <h1 className="text-2xl font-bold text-center break-words">
+            Bienvenido de vuelta!
+          </h1>
+          <h2 className="text-center text-xl font-medium break-words">
+            Completa tu perfil para continuar
           </h2>
           {/* FIXME - Averiguar por que el submit no se ejecuta */}
 
           {step === STEP_VIEW_CLIENT && clientForm}
           {step === STEP_VIEW_DOCTOR && doctorForm}
-          <footer className="mb-5">
-            <p className="text-center">O inicia sesión con</p>
-            <div className="flex justify-center gap-5 mt-5">
-              <button
-                className="bg-white hover:bg-gray-100 active:ring-1 ring-black font-bold py-2 px-4 rounded-full 
-                drop-shadow-md hover:drop-shadow-lg"
-              >
-                <img src={facebookIcon} />
-              </button>
-              <button
-                className="bg-white hover:bg-gray-100 active:ring-1 ring-black font-bold py-2 px-4 rounded-full 
-                drop-shadow-md hover:drop-shadow-lg"
-                onClick={handleGoogleSignIn}
-              >
-                <img src={googleIcon} />
-              </button>
-            </div>
-          </footer>
         </main>
       </div>
     </div>
   );
-};
+}
 
-export default Register;
+export default CompleteRegister;

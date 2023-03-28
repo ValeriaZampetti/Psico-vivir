@@ -6,6 +6,7 @@ import {
   signInWithGithub,
   createUser,
   logOutAuth,
+  updateUser,
 } from "../firebase/api/authService";
 import { getUserById } from "../firebase/api/UserService";
 import { auth } from "../firebase/config";
@@ -28,16 +29,21 @@ export const AuthContext = createContext<IAuthProvider>({
     return new Promise(() => {});
   },
 
-  logInWithGoogle: (client?: Client) => {
+  logInWithGoogle: () => {
     console.log("no estas usando la funcion que es");
     return new Promise(() => {});
   },
 
-  logInWithGithub: (client?: Client) => {
+  logInWithGithub: () => {
     console.log("no estas usando la funcion que es");
     return new Promise(() => {});
   },
   logOut: () => {
+    console.log("no estas usando la funcion que es");
+    return new Promise(() => {});
+  },
+
+  completeRegister: (client: ClientCreate | DoctorCreate, userId: string) => {
     console.log("no estas usando la funcion que es");
     return new Promise(() => {});
   },
@@ -84,7 +90,7 @@ function AuthProvider({ children }: IProps) {
     }
   }
 
-  async function loginWithGoogle() {
+  async function logInWithGoogle() {
     return signInWithGoogle();
   }
 
@@ -95,12 +101,19 @@ function AuthProvider({ children }: IProps) {
     return createUser(client, password);
   }
 
-  async function loginWithGithub() {
+  async function logInWithGithub() {
     return signInWithGithub();
   }
 
+  async function completeRegister(
+    client: ClientCreate | DoctorCreate,
+    userId: string
+  ): Promise<boolean> {
+    return updateUser(client, userId);
+  }
+
   async function logOut() {
-    logOutAuth()
+    logOutAuth();
     setUser(null);
   }
 
@@ -108,10 +121,11 @@ function AuthProvider({ children }: IProps) {
     user,
     loading,
     logIn: login,
-    logInWithGoogle: loginWithGoogle,
+    logInWithGoogle,
     register,
-    logInWithGithub: loginWithGithub,
+    logInWithGithub,
     logOut,
+    completeRegister,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

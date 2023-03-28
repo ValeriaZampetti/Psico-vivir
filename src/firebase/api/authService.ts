@@ -1,6 +1,22 @@
-import { UserCredential, signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, getDoc, doc, setDoc, serverTimestamp } from "firebase/firestore";
-import { ClientCreate, DoctorCreate } from "../../interfaces/Client";
+import {
+  UserCredential,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
+import {
+  collection,
+  getDoc,
+  doc,
+  setDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+import {
+  Client,
+  ClientCreate,
+  DoctorCreate,
+  UserNotAuthCreate,
+} from "../../interfaces/Client";
 import { auth, googleAuthProvider, db, githubAuthProvider } from "../config";
 
 export async function signIn(
@@ -55,14 +71,14 @@ export async function signInWithGoogle(): Promise<UserCredential | null> {
 
     const document = await getDoc(doc(collectionRef, result.user?.uid));
     if (!document.exists()) {
-      const client: ClientCreate = {
+      const user: UserNotAuthCreate = {
         email: result.user?.email ?? "",
         name: result.user?.displayName ?? "",
-        type: 1,
+        completed: false,
       };
 
-      const clientRef = doc(collectionRef, result.user?.uid);
-      setDoc(clientRef, client);
+      const userRef = doc(collectionRef, result.user?.uid);
+      setDoc(userRef, user);
     }
 
     await auth.updateCurrentUser(result.user);
@@ -80,14 +96,14 @@ export async function signInWithGithub(): Promise<UserCredential | null> {
 
     const document = await getDoc(doc(collectionRef, result.user?.uid));
     if (!document.exists()) {
-      const client: ClientCreate = {
+      const user: UserNotAuthCreate = {
         email: result.user?.email ?? "",
         name: result.user?.displayName ?? "",
-        type: 1,
+        completed: false,
       };
 
-      const clientRef = doc(collectionRef, result.user?.uid);
-      setDoc(clientRef, client);
+      const userRef = doc(collectionRef, result.user?.uid);
+      setDoc(userRef, user);
     }
 
     auth.updateCurrentUser(result.user);
@@ -95,5 +111,21 @@ export async function signInWithGithub(): Promise<UserCredential | null> {
   } catch (error) {
     console.log("error", error);
     throw error;
+  }
+}
+
+export async function updateUser(
+  user: ClientCreate | DoctorCreate,
+  userId: string
+): Promise<boolean> {
+  try {
+    const collectionRef = collection(db, "users");
+    const userRef = doc(collectionRef, userId);
+
+    await setDoc(userRef, user);
+
+    return true;
+  } catch (error) {
+    return false;
   }
 }
