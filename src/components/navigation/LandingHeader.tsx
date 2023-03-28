@@ -46,7 +46,7 @@ function LandingHeader() {
         </Link>
       </li>
 
-      <li className="md:ml-2 md:my-0 my-7">
+      <li className="md:my-0 my-7">
         <Link
           className="bg-primary-normal drop-shadow-md text-white border-2 border-primary-strong
             rounded-lg text-center duration-300 font-[Poppins] text-sm
@@ -82,10 +82,10 @@ function LandingHeader() {
           }`}
         >
           {links.map((section) => (
-            <li key={section.name} className=" md:my-0 my-7">
+            <li key={section.name} className="md:my-0 my-7">
               <a
                 href={section.link}
-                className="text-gray-800 hover:text-gray-400 duration-500"
+                className="text-black hover:text-primary-strong duration-500"
               >
                 {section.name}
               </a>

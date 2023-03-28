@@ -25,7 +25,7 @@ function ProtectedHeader() {
   ];
 
   const buttonLogOut = (
-    <li className="md:ml-8 md:my-0 my-7">
+    <li className="md:my-0 my-7">
       <button
         className="bg-[#ed4747] drop-shadow-md text-white border-2 border-primary-light
         rounded-lg text-center duration-300 font-[Poppins] ml-3 
@@ -54,7 +54,7 @@ function ProtectedHeader() {
         </Link>
       </li>
 
-      <li className="md:ml-2 md:my-0 my-7">
+      <li className="md:my-0 my-7">
         <Link
           className="bg-primary-normal drop-shadow-md text-white border-2 border-primary-strong
             rounded-lg text-center duration-300 font-[Poppins] text-sm
@@ -70,13 +70,13 @@ function ProtectedHeader() {
   );
 
   const clientLinksHtml = clientLinks.map((section) => (
-    <li key={section.name} className=" md:my-0 my-7">
+    <li key={section.name} className=" md:my-0 my-7 hover:text-primary-strong">
       <Link to={`/psico/${section.link}`}>{section.name}</Link>
     </li>
   ));
 
   const doctorLinksHtml = doctorLinks.map((section) => (
-    <li key={section.name} className=" md:my-0 my-7">
+    <li key={section.name} className=" md:my-0 my-7 hover:text-primary-strong">
       <Link to={`/psico/${section.link}`}>{section.name}</Link>
     </li>
   ));
