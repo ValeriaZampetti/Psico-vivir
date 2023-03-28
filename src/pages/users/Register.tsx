@@ -406,6 +406,7 @@ export const Register = (prop: any) => {
               <button
                 className="bg-white hover:bg-gray-100 active:ring-1 ring-black font-bold py-2 px-4 rounded-full 
                 drop-shadow-md hover:drop-shadow-lg"
+                onClick={handleGithubSignIn}
               >
                 <img src={facebookIcon} />
               </button>
