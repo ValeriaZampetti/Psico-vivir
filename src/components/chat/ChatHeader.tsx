@@ -1,23 +1,44 @@
 import { Timestamp } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useAuth } from "../../hooks/useAuth";
 import { useChat } from "../../hooks/useChat";
+import { UserType } from "../../interfaces/Client";
 
 function ChatHeader() {
   const [canCancelChat, setCanCancelChat] = useState(false);
 
   const { currentUserToChat, currentChat, endChat } = useChat();
+  const { user } = useAuth();
 
   useEffect(() => {
+    if (!currentChat?.lastAppointmentActive){
+      setCanCancelChat(false);
+      return;
+    };
+
+    const SECONDS_IN_A_MINUTE = 60;
+
     const lastAppointment = currentChat?.appointments.at(-1)!;
 
     const endAppointmentSeconds =
-      lastAppointment.date.seconds + lastAppointment.duration * 60;
+      lastAppointment.date.seconds +
+      lastAppointment.duration * SECONDS_IN_A_MINUTE;
 
     const nowSeconds = new Timestamp(Date.now() / 1000, 0).seconds;
 
-    setCanCancelChat(nowSeconds <= endAppointmentSeconds);
-  }, []);
+    setCanCancelChat(endAppointmentSeconds <= nowSeconds);
+
+    if (!canCancelChat) {
+      const timer = setInterval(() => {
+        const actualSeconds = new Timestamp(Date.now() / 1000, 0).seconds;
+
+        setCanCancelChat(endAppointmentSeconds <= actualSeconds);
+      }, 1000 * SECONDS_IN_A_MINUTE);
+
+      return () => clearInterval(timer);
+    }
+  }, [currentChat]);
 
   function cancelChat(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -72,7 +93,7 @@ function ChatHeader() {
           {currentUserToChat!.name}
         </span>
       </div>
-      {cancelChatButton}
+      {user!.type === UserType.DOCTOR && cancelChatButton}
     </div>
   );
 }
