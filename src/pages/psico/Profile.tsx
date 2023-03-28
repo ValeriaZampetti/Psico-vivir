@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
-import  k  from "../../assets/mock/pic.jpg"
+import  k  from "../../assets/images/register.jpg"
 import iconEdit from "../../assets/icons/edit.svg"
 import { useAuth } from "../../hooks/useAuth";
+import { storage } from "../../firebase/config";
+import { ref, getDownloadURL, uploadBytesResumable, uploadBytes } from "firebase/storage";
 
 function Profile() {
   const { user } = useAuth();
@@ -39,18 +41,35 @@ function Profile() {
     setValueButtonPhone(!valueButtonPhone);
   };
 
+  const [imageUpload, setImageUpload] = useState< Event | null >(null);
+  const uploadImage = (event: any) => {
+    if (imageUpload != null) {
+      const imageRef = ref(storage, `imagesUsers/${user?.id}`);
+      uploadBytes(imageRef, imageUpload).then(() => {
+        alert("Imagen subida correctamente");
+      });
+  };
+
   // const handleInputBiography = (event: any) => {
   //   setValueBiography(event.target.value);
   // };
 
   return (
     <div className="pt-4">
-      <h1 className="text-4xl font-bold pl-2">Información personal</h1>
+      <h1 className="text-4xl font-bold pl-2">Editar información personal</h1>
       <div className="my-10 md:flex">
 
         <div className={`flex flex-col items-center ${user?.type == 1? "md:w-1/4 md:max-w-[483px] w-full":""}  ${user?.type == 2? "justify-center":""} md:ml-10`}>
 
-          <img src={k} alt="profile-pic" className="rounded-full w-2/3 border-8 border-primary-normal max-w-xs md:w-64"/>
+          <div className="rounded-full w-2/3 border-8 border-primary-normal max-w-xs md:w-64 aspect-square overflow-hidden flex justify-center items-center">
+            <img src={k} alt="profile-pic"/>
+          </div>
+
+          <div className="m-4 flex flex-col items-center justify-center">
+            <input type="file" onChange={(event) => {setImageUpload(event.target.files[0])}} className="flex items-center justify-center"/>
+            <button onClick={uploadImage} className="w-auto h-12 p-2 rounded-xl bg-secondary-normal hover:scale-105 
+            font-bold hover:drop-shadow-md transition-all mt-3">Subir imagen</button>
+          </div>
 
           {
             user?.type == 2?           <>

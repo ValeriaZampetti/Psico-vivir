@@ -86,6 +86,7 @@ export const Register = (prop: any) => {
           specialties: selectedSpecialties,
           numberOfReviews: 0,
           completed: true,
+          img: "gs://psico-vivir.appspot.com/imagesUsers/default.png"
         };
         const userCredential = await register(doctor, password);
         if (userCredential) {
@@ -110,6 +111,7 @@ export const Register = (prop: any) => {
         countryCode,
         type: tipoUsuario,
         completed: true,
+        img: "gs://psico-vivir.appspot.com/imagesUsers/default.png"
       };
 
       const userCredential = await register(client, password);
