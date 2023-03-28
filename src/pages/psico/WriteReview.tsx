@@ -11,6 +11,7 @@ import {
   getChatById,
 } from "../../firebase/api/chatService";
 import { updateRankingDoctor } from "../../firebase/api/UserService";
+import { Timestamp } from "firebase/firestore";
 
 function WriteReview() {
   const [rating, setRating] = useState(0);
@@ -63,6 +64,7 @@ function WriteReview() {
           rating: ratingToSend,
           message: commentToSend,
           userId: userIdToSend,
+          timestamp: Timestamp.now(),
         });
       }
 

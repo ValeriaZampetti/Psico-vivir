@@ -17,6 +17,7 @@ import Register from "./pages/users/Register";
 import ScheduleAppointment from "./pages/psico/ScheduleAppointment";
 import "react-toastify/dist/ReactToastify.css";
 import PatientsReviews from "./pages/psico/PatientsReviews";
+// import ReviewCard from "./components/ReviewCard";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
             <Route path="*" element={<Error404 />} />
             <Route path="writereview/:chatId/:index" element={<WriteReview />} /> {/* de mientras aqui*/}
             <Route path="patientsreviews" element={<PatientsReviews />} /> {/* de mientras aqui*/}
+            {/* <Route path="reviewcard" element={<ReviewCard doctor={undefined} feedback={undefined} userId={""} />} /> de mientras aqui */}
           </Route>
 
           <Route path="/psico" element={<ProtectedLayout />}>
