@@ -78,7 +78,7 @@ function ReviewCard(props: ReviewCardProps) {
         id="profile-pic"
         src="../../src/assets/mock/pic.jpg"
         alt="user-profile-pic"
-        className="h-32 aspect-square rounded-full border-rose-300 border-8 max-[900px]:h-52"
+        className="h-32 aspect-square rounded-full border-primary-normal border-8 max-[900px]:h-52"
       />
 
       <header className="h-1/2 w-1/5 flex flex-col gap-1 bg-white max-[900px]:w-full">
