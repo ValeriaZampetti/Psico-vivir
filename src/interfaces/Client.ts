@@ -7,16 +7,26 @@ export enum UserType {
 }
 
 /**
- * Interface used when creating a new client and id is yet unknown
+ * Interface used when creating a new user with Google or Github
+ * and the other fields are yet unknown
  */
-export interface ClientCreate {
+export interface UserNotAuthCreate {
   email: string;
   name: string;
+  completed: boolean;
+}
+
+export interface UserNotAuth extends UserNotAuthCreate {
+  id: string;
+}
+
+/**
+ * Interface used when creating a new client and id is yet unknown
+ */
+export interface ClientCreate extends UserNotAuthCreate {
   type: UserType;
   phone: number;
   countryCode: number;
-  
-  
 }
 
 export interface Client extends ClientCreate {

@@ -18,6 +18,7 @@ import ScheduleAppointment from "./pages/psico/ScheduleAppointment";
 import "react-toastify/dist/ReactToastify.css";
 import PatientsReviews from "./pages/psico/PatientsReviews";
 import ProfileDoctor from "./pages/psico/ProfileDoctor";
+import CompleteRegister from "./pages/users/CompleteRegister";
 
 function App() {
   return (
@@ -38,8 +39,10 @@ function App() {
             <Route index element={<Navigate to="login" />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
+            <Route path="completeRegister/:id" element={<CompleteRegister />} />
             <Route path="*" element={<Error404 />} />
-            <Route path="patientsreviews" element={<PatientsReviews />} /> {/* de mientras aqui*/}
+            <Route path="patientsreviews" element={<PatientsReviews />} />{" "}
+            {/* de mientras aqui*/}
             <Route path="checkout" element={<Checkout />} />
           </Route>
 
@@ -51,7 +54,10 @@ function App() {
             <Route path="chat" element={<Chat />} />
             <Route path="chats" element={<Chat />} />
             <Route path="checkout" element={<Checkout />} />
-            <Route path="writeReview/:chatId/:index" element={<WriteReview />} />
+            <Route
+              path="writeReview/:chatId/:index"
+              element={<WriteReview />}
+            />
             <Route path="doctor/:id" element={<ProfileDoctor />} />
             <Route path="*" element={<Error404 />} />
           </Route>
