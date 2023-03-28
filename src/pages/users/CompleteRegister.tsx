@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Dropdown } from "../../components/forms/Dropdown";
-import { getSpecialties, getUserById } from "../../firebase/api/UserService";
+import { getSpecialties, getUserById } from "../../firebase/api/userService";
 import { useAuth } from "../../hooks/useAuth";
 import {
   UserType,

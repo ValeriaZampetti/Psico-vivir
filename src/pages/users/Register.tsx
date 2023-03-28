@@ -15,7 +15,7 @@ import facebookIcon from "../../assets/icons/facebook.svg";
 import { Dropdown } from "../../components/forms/Dropdown";
 import { ToastContainer, toast } from "react-toastify";
 import { useAuth } from "../../hooks/useAuth";
-import { getSpecialties } from "../../firebase/api/UserService";
+import { getSpecialties } from "../../firebase/api/userService";
 import { Specialty } from "../../interfaces/Specialty";
 
 const STEP_VIEW_CLIENT = 1;

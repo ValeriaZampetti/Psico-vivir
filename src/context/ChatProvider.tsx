@@ -13,7 +13,7 @@ import {
 import {
   getClientsByChats,
   getDoctorsByChats,
-} from "../firebase/api/UserService";
+} from "../firebase/api/userService";
 import { db } from "../firebase/config";
 import { useAuth } from "../hooks/useAuth";
 import { Chat } from "../interfaces/Chat";

@@ -1,7 +1,7 @@
 import { DocumentData, DocumentSnapshot } from "firebase/firestore";
 import React from "react";
 import DoctorCard from "../../components/DoctorCard";
-import { getDoctorsPaginated } from "../../firebase/api/UserService";
+import { getDoctorsPaginated } from "../../firebase/api/userService";
 import useInfiniteLoading from "../../hooks/useInfiniteLoading";
 import { Doctor } from "../../interfaces/Client";
 
