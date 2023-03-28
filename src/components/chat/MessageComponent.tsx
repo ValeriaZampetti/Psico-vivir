@@ -12,13 +12,17 @@ function MessageComponent(props: MessageComponentProps) {
 
   const owner = props.message.senderId === user?.id;
 
-  const dateString = getRelativeTimeString(props.message.date.toDate());
+  // Refactored to show in PM or Am
+  const dateString = props.message.date
+    .toDate()
+    .toLocaleString(navigator.language, {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
 
   return (
-    <div
-      id="message"
-      className={`flex gap-2 mb-5 ${owner && "flex-row-reverse"}`}
-    >
+    <div id="message" className={`flex gap-2 ${owner && "flex-row-reverse"}`}>
       <section
         id="messageInfo"
         className="flex flex-col text-gray-400 items-center "

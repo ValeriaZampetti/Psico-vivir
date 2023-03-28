@@ -10,7 +10,9 @@ module.exports = {
           strong: "#197e7d",
         },
         secondary: {
+          light: "#b1dad7",
           normal: "#9ED1CD",
+          strong: "#8ebcb8",
         },
         tertiary: {
           normal: "#9AC1BA",
