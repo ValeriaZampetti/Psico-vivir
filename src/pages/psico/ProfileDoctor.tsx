@@ -39,6 +39,7 @@ function ProfileDoctor() {
                             <h1 className="font-bold text-4xl md:text-5xl">Dr. {doctor?.name}</h1>
                         <h1 className="font-bold">Ranking en la pagina <span className="font-medium">{doctor?.ranking}</span></h1>
                         </div>
+                        <div className="h-24 bg-yellow-500 w-full">Rating</div>
                     </div>
                     <div>
                         <div className="p-2">
