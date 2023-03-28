@@ -11,18 +11,18 @@ function UsersToChat(props: IProps) {
 
   // TODO - Si no hay usuarios, poner un mensaje de que no hay usuarios
   // TODO - Si es el mismo usuario que esta seleccionado, ponerle un borde, background o algo
-  const usersTochat = props.users.map((user, index) => {    
+  const usersTochat = props.users.map((user, index) => {
     return (
       <section
         key={user.id}
         onClick={() => handleSelectUserToChat(user)}
-        className={`flex flex-col border-b-2 border-gray-400 gap-y-2 w-full px-4 py-2
+        className={`flex flex-col  gap-y-2 w-full px-4 py-2 border-2 
           ${
             user.id === (currentUserToChat?.id ?? "")
-              ? "bg-secondary-strong"
-              : ""
+              ? "bg-quaternary-normal  border-primary-strong"
+              : "border-gray-400  bg-secondary-normal"
           } 
-          cursor-pointer hover:bg-secondary-strong duration-100`}
+          cursor-pointer hover:bg-quaternary-normal duration-100`}
       >
         <main className="flex flex-row items-center gap-x-10 justify-center sm:justify-start">
           <img
@@ -40,7 +40,7 @@ function UsersToChat(props: IProps) {
 
   // TODO - Arreglar overflow y eso
   return (
-    <div id="userChat" className="flex flex-col items-center text-white ">
+    <div id="userChat" className="flex flex-col items-center text-white">
       {usersTochat}
     </div>
   );

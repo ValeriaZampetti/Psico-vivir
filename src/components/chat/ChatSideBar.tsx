@@ -9,41 +9,46 @@ import ListCheck from "../../assets/icons/list-check.svg";
 
 function ChatSideBar() {
   const [search, setSearch] = useState<string>("");
-  const [usersToChatFiltered, setClientsToChatFiltered] = useState<
-    Client[] | Doctor[]
-  >([]);
 
   const [activeChatsDisplay, setActiveChatsDisplay] = useState<boolean>(true);
-  const [activeChats, setActiveChats] = useState<Client[] | Doctor[]>([]);
-  const [inactiveChats, setInactiveChats] = useState<Client[] | Doctor[]>([]);
 
-  const { usersToChat } = useChat();
+  const [activeChats, setActiveChats] = useState<Client[] | Doctor[]>([]);
+  const [activeFilteredChats, setActiveFilteredChats] = useState<Client[] | Doctor[]>([]);
+
+  const [inactiveChats, setInactiveChats] = useState<Client[] | Doctor[]>([]);
+  const [inactiveFilteredChats, setInactiveFilteredChats] = useState<Client[] | Doctor[]>([]);
+
+  const { usersActive, usersInactive } = useChat();
   const { user } = useAuth();
 
   useEffect(() => {
-    setClientsToChatFiltered(usersToChat);
-    // Populate activeChats and inactiveChats by filtering usersToChat
-  }, [usersToChat]);
+    setActiveChats(usersActive);
+    setActiveFilteredChats(usersActive);
+
+    setInactiveChats(usersInactive);
+    setInactiveFilteredChats(usersInactive);
+  }, [usersActive, usersInactive]);
 
   useEffect(() => {}, [activeChatsDisplay]);
 
+  // FIXME - Si no hay usuarios, que no se borer la lista
   function handleSearchChange(value: string) {
     setSearch(value);
     if (activeChatsDisplay) {
       const filteredClients = activeChats.filter((user) => {
         return user.name.toLowerCase().includes(value.toLowerCase());
       });
-      setClientsToChatFiltered(filteredClients);
+      setActiveFilteredChats(filteredClients);
     } else {
       const filteredClients = inactiveChats.filter((user) => {
         return user.name.toLowerCase().includes(value.toLowerCase());
       });
-      setClientsToChatFiltered(filteredClients);
+      setInactiveFilteredChats(filteredClients);
     }
   }
 
   return (
-    <div className="flex-1 border-secondary-normal bg-secondary-normal">
+    <div className="flex-1 border-gray-400 border-r-2 bg-tertiary-normal">
       <section id="navbar" className="flex items-center bg-secondary-strong">
         <div className="flex gap-3 h-28 p-3 justify-between">
           <img
@@ -64,16 +69,20 @@ function ChatSideBar() {
         <div className="flex w-full py-4">
           <button
             className={`${
-              activeChatsDisplay ? "bg-primary-strong border-2" : "bg-primary-normal"
-            } self-center flex justify-center h-12  basis-1/2`}
+              activeChatsDisplay
+                ? "bg-primary-normal border-[3px]"
+                : "bg-secondary-normal hover:border-[1px] active:scale-95 "
+            } self-center flex justify-center  basis-1/2 border-primary-strong `}
             onClick={() => setActiveChatsDisplay(true)}
           >
             <img src={List} alt="" className="h-10" />
           </button>
           <button
             className={`${
-              !activeChatsDisplay ? "bg-primary-strong border-2" : "bg-primary-normal"
-            } flex justify-center  basis-1/2`}
+              !activeChatsDisplay
+              ? "bg-primary-normal border-[3px]"
+              : "bg-secondary-normal hover:border-[1px] active:scale-95 "
+          } self-center flex justify-center  basis-1/2 border-primary-strong `}
             onClick={() => setActiveChatsDisplay(false)}
           >
             <img src={ListCheck} alt="" className="h-10 " />
@@ -82,7 +91,7 @@ function ChatSideBar() {
       </section>
 
       <SearchBar value={search} onChange={handleSearchChange} />
-      <UsersToChat users={usersToChatFiltered} />
+      <UsersToChat users={activeChatsDisplay ? activeFilteredChats : inactiveFilteredChats} />
     </div>
   );
 }

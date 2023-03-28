@@ -24,6 +24,7 @@ import {
   ClientCreate,
   DoctorCreate,
 } from "../../interfaces/Client";
+import { Specialty } from "../../interfaces/Specialty";
 import { auth, db } from "../config";
 
 export async function getUserById(userId: string): Promise<Client | Doctor> {
@@ -106,66 +107,88 @@ export async function getDoctorById(doctorId: string): Promise<Doctor> {
 
 // REVIEW - Sera que me suscribo a esto?
 export async function getClients(): Promise<Client[]> {
-  const collectionRef = collection(db, "users");
-  const q = query(collectionRef, where("type", "==", 1));
+  try {
+    const collectionRef = collection(db, "users");
+    const q = query(collectionRef, where("type", "==", 1));
+  
+    const querySnapshot = await getDocs(q);
+    const clients: Client[] = [];
 
-  const querySnapshot = await getDocs(q);
-  const clients: Client[] = [];
+    querySnapshot.forEach((doc) => {
+      clients.push({ id: doc.id, ...doc.data() } as Client);
+    });
 
-  querySnapshot.forEach((doc) => {
-    clients.push({ id: doc.id, ...doc.data() } as Client);
+    return clients;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+export async function getSpecialties(): Promise<Specialty[]> {
+  const collectionRef = collection(db, "specialties");
+  const snapShot = await getDocs(collectionRef);
+  console.log({snapShot});
+  return snapShot.docs.map((doc) => { 
+    return { id: doc.id, ...doc.data() } as Specialty;
   });
 
-  return clients;
+
 }
 
-export function createUser(
-  client: ClientCreate,
-  password: string
-): Promise<UserCredential | null> {
+export async function getClientById(clientId: string): Promise<Client | null> {
   const collectionRef = collection(db, "users");
-  console.log("Creating user", client.email);
-  return createUserWithEmailAndPassword(auth, client.email, password).then(
-    (userCredential) => {
-      const user = userCredential.user;
 
-      const clientRef = doc(collectionRef, user.uid);
-
-      setDoc(clientRef, {
-        ...client,
-        createdAt: serverTimestamp(),
-      });
-      console.log("User created", user.uid);
-      return userCredential;
-    }
-  );
+  const documentSnapshot = await getDoc(doc(collectionRef, clientId));
+  return { id: documentSnapshot.id, ...documentSnapshot.data() } as Client;
 }
 
-export async function getClientsByChats(chats: Chat[]): Promise<Client[]> {
+export async function getClientsByChats(chats: Chat[]): Promise<{
+  clients: Client[];
+  clientsActive: Client[];
+  clientsInactive: Client[];
+}> {
   const userCollectionRef = collection(db, "users");
   const clients: Client[] = [];
+  const clientsActive: Client[] = [];
+  const clientsInactive: Client[] = [];
 
   for (const chat of chats) {
     const clientRef = doc(userCollectionRef, chat.clientId);
 
     const docSnapshot = await getDoc(clientRef);
-    clients.push({ id: docSnapshot.id, ...docSnapshot.data() } as Client);
+    const client = { id: docSnapshot.id, ...docSnapshot.data() } as Client;
+    clients.push(client);
+    chat.lastAppointmentActive
+      ? clientsActive.push(client)
+      : clientsInactive.push(client);
   }
 
-  return clients;
+  return { clients, clientsActive, clientsInactive };
 }
 
-export async function getDoctorsByChats(chats: Chat[]): Promise<Doctor[]> {
+export async function getDoctorsByChats(chats: Chat[]): Promise<{
+  doctors: Doctor[];
+  doctorsActive: Doctor[];
+  doctorsInactive: Doctor[];
+}> {
   const userCollectionRef = collection(db, "users");
   const doctors: Doctor[] = [];
+  const doctorsActive: Doctor[] = [];
+  const doctorsInactive: Doctor[] = [];
 
+  console.log(chats);
   for (const chat of chats) {
     const doctorRef = doc(userCollectionRef, chat.doctorId);
 
     const docSnapshot = await getDoc(doctorRef);
-    doctors.push({ id: docSnapshot.id, ...docSnapshot.data() } as Doctor);
+    const doctor = { id: docSnapshot.id, ...docSnapshot.data() } as Doctor;
+    doctors.push(doctor);
+    chat.lastAppointmentActive
+      ? doctorsActive.push(doctor)
+      : doctorsInactive.push(doctor);
   }
-  return doctors;
+  return { doctors, doctorsActive, doctorsInactive };
 }
 
 export async function updateRankingDoctor(
@@ -191,7 +214,7 @@ export async function updateRankingDoctor(
     (doctorData.numberOfReviews + 1);
 
   await updateDoc(doctorRef, {
-    ranking: newRanking,
+    ranking: (Math.round(newRanking * 100) / 100),
     numberOfReviews: doctorData.numberOfReviews + 1,
   });
 }

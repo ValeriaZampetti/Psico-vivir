@@ -4,24 +4,25 @@ import Google from "../assets/icons/google.svg";
 import Arrow from "../assets/icons/arrow.svg";
 import Opinion from "../assets/images/opinion.png";
 import { Link } from "react-router-dom";
+import image from "../assets/images/psicoLogin.png";
 
 function Landing() {
   const circleSteps = [
     {
       id: 1,
-      title: "Crea una cuenta!",
+      title: "Crea una cuenta",
     },
     {
       id: 2,
-      title: "Selecciona tu terapeuta!",
+      title: "Selecciona tu terapeuta",
     },
     {
       id: 3,
-      title: "Agenda tu cita!",
+      title: "Agenda tu cita",
     },
     {
       id: 4,
-      title: "Comienza tu terapia!",
+      title: "Comienza tu terapia",
     },
   ];
 
@@ -56,12 +57,12 @@ function Landing() {
   ];
 
   return (
-    <div className="flex flex-col bg-primary-light justify-center">
+    <div className="flex flex-col justify-center pt-10">
       <section className="mt-3">
         <div className="flex flex-col lg:flex-row gap-10 justify-center">
           <div className="flex flex-col gap-3">
             <h1 className="font-bold text-center text-6xl">
-              Bienvenido al cambio!
+              ¡Bienvenido al cambio!
             </h1>
 
             <div className="flex flex-col gap-2 justify-center text-lg w-[25rem] self-center min-[1100px]:self-auto">
@@ -73,13 +74,14 @@ function Landing() {
                 </span>
                 , da el primer paso registrándote
               </p>
-              <div className="bg-white border-white w-96 border-[7px]  "></div>
+              <div className="bg-primary-normal border-primary-normal w-96 border-[7px]  "></div>
             </div>
 
-            <div className="flex flex-wrap gap-3 justify-center">
+            <div className="flex flex-wrap gap-3 justify-center mt-8">
               <Link
                 className="bg-secondary-normal hover:bg-secondary-strong  drop-shadow-md duration-300 
-                hover:scale-95 active:scale-90 hover:ring-4 ring-secondary-strong ring-offset-2 ring-offset-gray-100
+                border-2 border-primary-normal hover:border-primary-strong
+                hover:scale-95 active:scale-90 hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100
                 rounded-lg py-2 px-10 text-lg  w-[18rem] text-center font-bold"
                 to="/users/register"
               >
@@ -88,7 +90,8 @@ function Landing() {
 
               <button
                 className="flex gap-1 bg-white hover:bg-gray-100 active:ring-1 drop-shadow-md duration-300 
-                hover:scale-95 active:scale-90 hover:ring-4 ring-gray-200 ring-offset-2 ring-offset-white
+                border-2 border-secondary-normal hover:border-primary-strong
+                hover:scale-95 active:scale-90 hover:ring-4 ring-secondary-normal ring-offset-2 ring-offset-white
                 rounded-lg py-2 px-4  text-lg w-[18rem]"
               >
                 <img src={Google} />
@@ -108,7 +111,7 @@ function Landing() {
           {circleSteps.map((step) => (
             <div
               key={step.id}
-              className="h-56 w-56 bg-[#F0D575] rounded-[50%] relative flex flex-wrap justify-center content-center"
+              className="h-56 w-56 bg-secondary-normal rounded-[50%] relative flex flex-wrap justify-center content-center"
             >
               <h2 className="absolute top-[-1.75rem]  font-bold text-7xl text-center">
                 {step.id}
@@ -120,7 +123,56 @@ function Landing() {
       </section>
 
       <section id="AboutUs">
-        <div>hola</div>
+        <div className="flex flex-col gap-3 mt-20">
+          <h1 className="font-bold text-center text-6xl">Sobre nosotros</h1>
+
+          <div className="flex flex-col gap-2 justify-center text-lg self-center">
+            {/* TODO - En el responsive se debe centrar */}
+            <p className="flex justify-center">Conoce más de nosotros</p>
+            <div className="bg-primary-normal border-primary-normal w-96 border-[7px]  "></div>
+          </div>
+        </div>
+        <div className="h-auto mb-20 mt-12 flex flex-col items-center md:flex-row md:gap-x-4 md:px-2 md:justify-around">
+          <div
+            className="md:h-[496px] w-11/12 flex flex-col max-w-sm mt-6 md:mt-0 md:max-w-xs
+           bg-white border-2 border-gray-200 p-4 shadow-md rounded-3xl hover:scale-110 transition-all"
+          >
+            <img src={image} alt="img-a" className="h-auto" />
+            <h1 className="text-4xl flex justify-center font-extrabold">
+              Psicologos
+            </h1>
+            <p className="text-3xl my-5 md:text-xl">
+              Contamos con psicólogos colegiados con amplia experiencia en
+              diversas áreas y enfoques terapéuticos.
+            </p>
+          </div>
+          <div
+            className="md:h-[496px] w-11/12 flex flex-col max-w-sm mt-6 md:mt-0 md:max-w-xs
+           bg-white border-2 border-gray-200 p-4 shadow-md rounded-3xl hover:scale-110 transition-all"
+          >
+            <img src={image} alt="img-a" className="h-auto" />
+            <h1 className="text-3xl flex justify-center font-extrabold lg:text-3xl md:text-2xl">
+              Online/presencial
+            </h1>
+            <p className="text-3xl my-5 md:text-xl">
+              Elige como realizar la terapia, ya sea online (chat, teléfono,
+              videoconferencia) o presencial.
+            </p>
+          </div>
+          <div
+            className="md:h-[496px] w-11/12 flex flex-col max-w-sm mt-6 md:mt-0 md:max-w-xs
+           bg-white border-2 border-gray-200 p-4 shadow-md rounded-3xl hover:scale-110 transition-all"
+          >
+            <img src={image} alt="img-a" className="h-auto" />
+            <h1 className="text-4xl flex justify-center font-extrabold">
+              Comodidad
+            </h1>
+            <p className="text-3xl my-5 md:text-xl">
+              Todo desde tu navegador: calendario de citas, gestión segura de
+              pagos, mensajería con el psicólogo, materiales
+            </p>
+          </div>
+        </div>
       </section>
 
       <section id="Opinions">
@@ -130,25 +182,27 @@ function Landing() {
 
             <div className="flex flex-col gap-2 justify-center text-lg self-center">
               {/* TODO - En el responsive se debe centrar */}
-              <p>Conoce las opiniones de nuestros pacientes</p>
-              <div className="bg-white border-white w-96 border-[7px]  "></div>
+              <p className="flex justify-center">
+                Conoce las opiniones de nuestros pacientes
+              </p>
+              <div className="bg-primary-normal border-primary-normal w-96 border-[7px]  "></div>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-3 justify-center mt-12 z-1">
+          <div className="flex flex-wrap gap-3 justify-center my-12 z-1">
             {opinions.map((opinion) => (
               <div
                 key={opinion.id}
-                className="bg-[#FFF2C8] h-72 w-72 p-8 rounded-md"
+                className="bg-quaternary-normal/50 h-72 w-72 p-8 rounded-2xl"
               >
-                <p className="text-gray-400">"{opinion.title}".</p>
+                <p className="text-gray-700">"{opinion.title}".</p>
 
                 <div className="flex flex-row gap-2 mt-4">
                   <img src={Opinion} alt="opinion" className="" />
 
                   <div className="flex flex-col">
                     <p className="font-bold">{opinion.user.name}</p>
-                    <p className="text-gray-400">{opinion.user.rol}</p>
+                    <p className="text-gray-800">{opinion.user.rol}</p>
                   </div>
                 </div>
               </div>

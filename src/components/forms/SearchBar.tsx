@@ -11,7 +11,7 @@ function SearchBar(props: IProps) {
     <div id="searchBar" className="border-b-2 border-gray-400 flex">
       <div id="searchForm" className="p-2"></div>
       <input
-        className="bg-transparent text-black  placeholder:text-gray-400 text-ellipsis
+        className="bg-transparent text-black  placeholder:text-gray-500 text-ellipsis
           border-none outline-none w-[70%]  md:w-[90%] self-center flex py-1 text-center"
         type="text"
         placeholder="Buscar"
