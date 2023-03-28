@@ -11,12 +11,16 @@ function ChatContainer() {
 
   useEffect(() => {
     setAppointments(currentChat?.appointments ?? []);
-    
   }, [currentChat]);
 
   const appointmentsList = appointments.map((appointment, index) => {
     const listMessages = appointment.messages.map((message, index) => (
-      <MessageComponent key={index} message={message} />
+      <ol
+        key={index}
+        className={`${index === appointment.messages.length - 1 && "mb-10"}`}
+      >
+        <MessageComponent message={message} />
+      </ol>
     ));
 
     const dateString = getRelativeTimeString(appointment.date.toDate());
@@ -28,9 +32,12 @@ function ChatContainer() {
 
         {/* FIXME - Arreglar responsive para que se parta por linaes*/}
         <div className="text-center TitleWithLine font-bold ">
-          <span className="bg-quaternary-normal py-0 px-2 break-all">{appointment.title}</span>
+          <span className="bg-quaternary-normal py-0 px-2 break-all">
+            {appointment.title}
+          </span>
         </div>
-        {listMessages}
+
+        <li className="flex flex-col gap-y-5">{listMessages}</li>
       </div>
     );
   });
