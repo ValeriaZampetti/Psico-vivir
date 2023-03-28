@@ -13,7 +13,7 @@ function MessageComponent(props: MessageComponentProps) {
   const owner = props.message.senderId === user?.id;
 
   // Refactored to show in PM or Am
-  const dateString = props.message.date
+  const hourString = props.message.date
     .toDate()
     .toLocaleString(navigator.language, {
       hour: "numeric",
@@ -46,7 +46,7 @@ function MessageComponent(props: MessageComponentProps) {
           } `}
         >
           <h1 className="break-all">{props.message.body}</h1>
-          <p className="text-sm text-end mt-3 text-gray-600">{dateString}</p>
+          <p className="text-sm text-end mt-3 text-gray-600">{hourString}</p>
         </div>
 
         <img src="" alt="" className="w-[50%]" />
