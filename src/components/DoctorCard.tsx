@@ -2,6 +2,7 @@ import React from "react";
 import Profile from "../assets/mock/profile.png";
 import { Doctor } from "../interfaces/Client";
 import StarRating from "./forms/StarRating";
+import { useNavigate } from "react-router-dom";
 
 interface DoctorCardProps {
   doctor: Doctor;
@@ -9,6 +10,7 @@ interface DoctorCardProps {
 
 function DoctorCard(props: DoctorCardProps) {
   const [ranking, setRanking] = React.useState<number>(props.doctor.ranking);
+  const navigate = useNavigate();
   return (
     <div
       className="bg-white border-secondary-normal border-4 rounded-3xl p-4 backdrop-filter backdrop-blur-lg
@@ -42,7 +44,7 @@ function DoctorCard(props: DoctorCardProps) {
         className="w-full py-3 text-black font-bold uppercase rounded-lg shadow-lg duration-300
         bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90
         hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100
-          mt-4"
+          mt-4" onClick={() => navigate(`/psico/doctor/${props.doctor.id}`)}
       >
         Ver perfil
       </button>
