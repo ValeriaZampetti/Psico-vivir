@@ -102,11 +102,11 @@ function Profile() {
               <div className="items-center flex">
                 <input type="text" className={`h-12 rounded-xl border-4 border-secondary-normal
                  w-full max-w-xs md:max-w-sm p-2 ${valueButtonEmail? "bg-gray-300":""}`}
-                  value={valueEmail} onChange={handleInputEmail} disabled={valueButtonEmail}/>
-                <button className="w-[48px] h-auto p-2 border-4 border-primary-normal
+                  value={valueEmail} onChange={handleInputEmail} disabled/>
+                {/* <button className="w-[48px] h-auto p-2 border-4 border-primary-normal
                  rounded-xl bg-secondary-normal ml-3 hover:scale-105" onClick={handleButtonEmail}>
                   <img src={iconEdit} alt="edit" />
-                </button>
+                </button> */}
               </div>
             </div>
           </div>

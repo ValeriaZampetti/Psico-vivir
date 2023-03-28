@@ -48,7 +48,7 @@ const AppointmentBooking = () => {
 
           <div className="hidden md:flex justify-center mt-12">
             <button className="bg-secondary-normal h-12 w-32 border-4 border-primary-normal
-            rounded-2xl text-primary-normal font-bold hidden md:block">Agendar cita</button>
+            rounded-2xl text-primary-normal font-bold hidden md:block hover:scale-105">Agendar cita</button>
           </div>
 
         </div>
