@@ -7,5 +7,6 @@ export interface Appointment {
   date: Timestamp;
   duration: number;
   paid: boolean;
+  clientCanTalk: boolean;
   messages: Message[];
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import StarRating from "../../components/forms/StarRating";
 import Profile from "../../assets/mock/pic.jpg";
-import { Doctor } from "../../interfaces/Client"; // Pasarle el nombre del doc auto
+import { Client, Doctor } from "../../interfaces/Client"; // Pasarle el nombre del doc auto
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { useParams } from "react-router-dom";
@@ -10,140 +10,185 @@ import {
   getChatsByDoctorId,
   getChatById,
 } from "../../firebase/api/chatService";
-import { updateRankingDoctor } from "../../firebase/api/UserService";
-import { Timestamp } from "firebase/firestore";
+import {
+  getClientById,
+  getDoctorById,
+  updateRankingDoctor,
+} from "../../firebase/api/UserService";
+import { Chat } from "../../interfaces/Chat";
+import Loading from "../../components/Loading";
+import Error404 from "../Error404";
+import { useAuth } from "../../hooks/useAuth";
+import { toast } from "react-toastify";
+import { FeedbackCreate } from "../../interfaces/feedback";
+import { createFeedback } from "../../firebase/api/feedBackService";
 
 function WriteReview() {
   const [rating, setRating] = useState(0);
-
   const [comment, setComment] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const [success, setSuccess] = useState(false);
-
-  const [danger, setDanger] = useState(false);
-
-  const commentRef = useRef<HTMLTextAreaElement>(null);
+  const [loadingChat, setLoadingChat] = useState(true);
+  const [chat, setChat] = useState<Chat | null>(null);
+  const [doctor, setDoctor] = useState<Doctor | null>(null);
+  const [client, setClient] = useState<Client | null>(null);
+  const [sendingFeedback, setSendingFeedback] = useState(false);
 
   const { chatId, index } = useParams<{ chatId: string; index: string }>();
+  const { user } = useAuth();
 
-  // useEffect(() => {
-  //   console.log(index);
-  //   chatId && console.log(getChatsByClientId(chatId));
-  //   chatId && console.log(getChatsByDoctorId(chatId));
-  //   chatId && console.log(getChatById(chatId));
-  //   console.log(updateRankingDoctor("aZ9hfOr8dAOfI4MytoSdaexEuzU2", rating));
-  // });
+  async function intializeChat() {
+    setLoadingChat(true);
+
+    if (isNaN(parseInt(index ?? ""))) {
+      setErrorMessage("Ingrese un índice válido");
+      console.log("No se encontró el chat");
+      setLoadingChat(false);
+      return;
+    }
+
+    if (chatId) {
+      const chatInfo = await getChatById(chatId);
+      setChat(chatInfo);
+
+      setLoadingChat(false);
+      if (!chatInfo) {
+        setErrorMessage("No se encontró el chat");
+        return;
+      }
+
+      initializeClient(chatInfo);
+    }
+  }
+
+  async function initializeClient(chatInfo: Chat) {
+    const clientInfo = await getClientById(chatInfo!.clientId);
+    setClient(clientInfo);
+
+    if (!clientInfo) {
+      setErrorMessage("No se encontró el cliente");
+      return;
+    }
+
+    if (clientInfo.id !== user!.id) {
+      setErrorMessage("No tienes permisos para acceder a este chat");
+      return;
+    }
+
+    initializeDoctor(chatInfo);
+  }
+
+  async function initializeDoctor(chatInfo: Chat) {
+    const doctorInfo = await getDoctorById(chatInfo.doctorId);
+    setDoctor(doctorInfo);
+  }
 
   useEffect(() => {
-    console.log(rating);
-  }, [rating]);
+    intializeChat();
+  }, [chatId, index]);
 
-  const sendComment = async (e: { preventDefault: () => void }) => {
+  const sendFeedback = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    if (comment === "") {
-      setDanger(true);
-    } else {
+    try {
+      setSendingFeedback(true);
+      if (comment == "") {
+        toast.error("Debes escribir un comentario");
+        setSendingFeedback(false);
+        return;
+      }
+
+      const feedback: FeedbackCreate = {
+        chatId: chatId!,
+        appointmentIndex: parseInt(index!, 10),
+        rating: rating,
+        message: comment,
+        userId: user!.id,
+      };
+
+      const documentReference = await createFeedback(feedback, doctor!.id);
+
+      toast.success("Comentario enviado exitosamente", {
+        autoClose: 3000,
+      });
+
       setTimeout(() => {
         setComment("");
-      }, 2000);
-
-      setSuccess(true);
-
-      const chatInfo = chatId && (await getChatById(chatId));
-      if (chatInfo) {
-        const userIdToSend = chatInfo.clientId;
-        const indexInt = index && parseInt(index, 10);
-        const commentToSend = comment;
-        const ratingToSend = rating;
-        setComment("");
+        setSendingFeedback(false);
         setRating(0);
-        await addDoc(collection(db, "feedback"), {
-          chatId: chatId,
-          appointmentIndex: indexInt,
-          rating: ratingToSend,
-          message: commentToSend,
-          userId: userIdToSend,
-          timestamp: Timestamp.now(),
-        });
-      }
-
-      if (chatInfo) {
-        updateRankingDoctor(chatInfo.doctorId, rating);
-      }
+      }, 3000);
+    } catch (error: any) {
+      setSendingFeedback(false);
+      console.log(error);
+      toast.error(error.message, {
+        autoClose: 3000,
+      });
     }
+
     setTimeout(() => {
-      setDanger(false);
-      setSuccess(false);
-    }, 4000);
+      setComment("");
+    }, 2000);
   };
+
+  const whileLoading = (
+    <div className="bg-gray-400 relative h-48 w-full p-[15rem]">
+      <Loading
+        svgClass="h-[20rem] w-[20rem]"
+        statusClass="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2"
+      />
+    </div>
+  );
+
+  if (loadingChat) {
+    return whileLoading;
+  }
+
+  if (errorMessage) {
+    return <Error404 errorMessage={errorMessage} />;
+  }
 
   return (
     <div className="p-5 lg:p-10">
-      <div className="relative flex items-center text-center text-3xl md:text-4xl lg:text-5xl font-bold border-solid drop-shadow-md mb-8 md:mb-10">
-        Califique su experiencia
-      </div>
-
-      <div className="flex flex-col items-center mb-10">
+      <div className="flex flex-col gap-4 items-center justify-center mb-10">
         <img
           src={Profile}
           alt="doctor-profile-pic"
           className="h-40 md:h-48 lg:h-64 rounded-full border-rose-300 border-8 mb-4 md:mb-6"
         />
 
-        <div className="text-2xl md:text-3xl lg:text-4xl font-medium text-center border-solid drop-shadow-md mb-2 md:mb-4">
-          Dr. Juan Perez
-        </div>
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium text-center border-solid drop-shadow-md">
+          Dr. {doctor?.name}
+        </h2>
 
-        <div className="flex flex-row items-center gap-4 md:gap-6">
-          <div className="flex items-center">
-            <StarRating
-              currentRating={rating}
-              handleCurrentRating={(newRating: number) => setRating(newRating)}
-              svgClass="h-7 md:h-9 w-10 md:w-12"
-            />
-          </div>
-        </div>
-
-        <div className="text-xl md:text-2xl font-bold mt-6 border-solid drop-shadow-md">
-          Comentarios
-        </div>
-
-        <textarea
-          placeholder="Escribe tu comentario aqui..."
-          className="rounded-lg px-4 resize-none h-24 md:h-32 w-full md:w-2/3 border-2 border-rose-300 outline-none mt-4 md:mt-6"
-          ref={commentRef}
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
+        <StarRating
+          currentRating={rating}
+          handleCurrentRating={(newRating: number) => setRating(newRating)}
+          svgClass="h-7 md:h-9 w-10 md:w-12"
         />
+
+        <section className="w-full md:w-2/3 h-full self-center">
+          <h3 className="text-xl text-center md:text-2xl font-bold mt-6 border-solid drop-shadow-md">
+            Comentarios
+          </h3>
+          <textarea
+            placeholder="Escribe tu comentario aqui..."
+            className="rounded-lg px-4 resize-none h-24 md:h-32 w-full border-2 border-rose-300 outline-none mt-4 md:mt-6"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            required={true}
+          />
+        </section>
 
         <button
           type="button"
-          className="bg-rose-300 rounded-lg px-4 py-2 mt-8 md:mt-10 text-white font-bold w-full md:w-auto text-xl md:text-2xl"
-          onClick={sendComment}
+          className="bg-primary-strong text-white font-bold w-auto rounded-lg px-4 py-2 text-xl md:text-2xl 
+            hover:scale-95 active:scale-90 transition-all duration-300
+            disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
+          disabled={sendingFeedback}
+          onClick={sendFeedback}
         >
           Enviar
         </button>
-
-        <div className="w-full relative mt-3 flex justify-center">
-          {danger && (
-            <div
-              id="danger"
-              className="text-red-500 text-2xl font-bold absolute transition duration-300 animate-buttons"
-            >
-              Error, por favor escriba un mensaje.
-            </div>
-          )}
-
-          {success && (
-            <div
-              id=""
-              className="text-green-500 text-2xl font-bold absolute animate-buttons"
-            >
-              Tu mensaje ha sido enviado con exito!
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );

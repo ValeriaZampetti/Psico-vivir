@@ -18,6 +18,7 @@ import {
   where,
 } from "firebase/firestore";
 import { Chat } from "../../interfaces/Chat";
+import { UserType } from "../../interfaces/Client";
 import { MessageCreate } from "../../interfaces/Message";
 import { db } from "../config";
 
@@ -144,7 +145,8 @@ export async function getChatsClientPaginated(
 
 export async function updateChatByMessage(
   message: MessageCreate,
-  currentChat: Chat
+  currentChat: Chat,
+  userType: UserType
 ): Promise<void> {
   try {
     const lastAppointment =
@@ -156,17 +158,35 @@ export async function updateChatByMessage(
       date: Timestamp.now(),
     };
 
+    if (userType === UserType.DOCTOR) {
+      lastAppointment.clientCanTalk = true;
+    }
+
+    lastAppointment.messages.push(newMessage);
+
     return updateDoc(docRef, {
       updatedAt: serverTimestamp(),
       appointments: [
         ...currentChat.appointments.slice(0, -1),
         {
           ...lastAppointment,
-          messages: [...lastAppointment.messages, newMessage],
         },
       ],
     });
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function desactiveChat(chatId: string): Promise<void> {
+  try {
+    const docRef = doc(db, "chats", chatId);
+
+    return updateDoc(docRef, {
+      lastAppointmentActive: false,
+    });
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 }

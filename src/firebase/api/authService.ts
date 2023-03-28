@@ -1,62 +1,23 @@
-import { User, UserCredential } from "@firebase/auth";
 import {
-  createUserWithEmailAndPassword,
+  UserCredential,
   signInWithEmailAndPassword,
   signInWithPopup,
+  createUserWithEmailAndPassword,
 } from "firebase/auth";
 import {
   collection,
-  addDoc,
-  updateDoc,
-  onSnapshot,
-  deleteDoc,
-  doc,
   getDoc,
-  getDocs,
-  QuerySnapshot,
-  DocumentData,
-  where,
-  query,
-  DocumentSnapshot,
+  doc,
   setDoc,
-  orderBy,
-  Timestamp,
-  limit,
-  startAfter,
   serverTimestamp,
 } from "firebase/firestore";
-import { Appointment } from "../interfaces/Appointment";
 import {
   Client,
   ClientCreate,
-  Doctor,
   DoctorCreate,
-} from "../interfaces/Client";
-import { Feedback, FeedbackCreate } from "../interfaces/Feedback";
-
-import { auth, db, githubAuthProvider, googleAuthProvider } from "./config";
-
-// FIXME - mejorar logica para addFeedback
-export function addFeedback(
-  chatId: string,
-  appointmentId: string,
-  message: string,
-  rating: number
-) {
-  const feedbackCollectionRef = collection(db, "feedback");
-  const feedbackObj: FeedbackCreate = {
-    appointmentId,
-    message,
-    rating,
-  };
-  addDoc(feedbackCollectionRef, feedbackObj);
-
-  const chatCollectionRef = collection(db, "chats");
-  setDoc(doc(chatCollectionRef, chatId), {
-    lastAppointmentActive: false,
-  });
-}
-
+  UserNotAuthCreate,
+} from "../../interfaces/Client";
+import { auth, googleAuthProvider, db, githubAuthProvider } from "../config";
 
 export async function signIn(
   email: string,
@@ -68,13 +29,36 @@ export async function signIn(
     return result;
   } catch (error) {
     console.log("error", error);
-    return null;
+    throw error;
   }
 }
 
-export async function logOut() {
+export function createUser(
+  client: ClientCreate | DoctorCreate,
+  password: string
+): Promise<UserCredential | null> {
+  const collectionRef = collection(db, "users");
+  console.log("Creating user", client.email);
+  return createUserWithEmailAndPassword(auth, client.email, password).then(
+    (userCredential) => {
+      const user = userCredential.user;
+
+      const clientRef = doc(collectionRef, user.uid);
+
+      setDoc(clientRef, {
+        ...client,
+        createdAt: serverTimestamp(),
+      });
+      console.log("User created", user.uid);
+      return userCredential;
+    }
+  );
+}
+
+export async function logOutAuth() {
   try {
     await auth.signOut();
+    console.log("User logged out");
   } catch (error) {
     console.log("error", error);
   }
@@ -87,14 +71,14 @@ export async function signInWithGoogle(): Promise<UserCredential | null> {
 
     const document = await getDoc(doc(collectionRef, result.user?.uid));
     if (!document.exists()) {
-      const client: ClientCreate = {
+      const user: UserNotAuthCreate = {
         email: result.user?.email ?? "",
         name: result.user?.displayName ?? "",
-        type: 1,
+        completed: false,
       };
 
-      const clientRef = doc(collectionRef, result.user?.uid);
-      setDoc(clientRef, client);
+      const userRef = doc(collectionRef, result.user?.uid);
+      setDoc(userRef, user);
     }
 
     await auth.updateCurrentUser(result.user);
@@ -112,14 +96,14 @@ export async function signInWithGithub(): Promise<UserCredential | null> {
 
     const document = await getDoc(doc(collectionRef, result.user?.uid));
     if (!document.exists()) {
-      const client: ClientCreate = {
+      const user: UserNotAuthCreate = {
         email: result.user?.email ?? "",
         name: result.user?.displayName ?? "",
-        type: 1,
+        completed: false,
       };
 
-      const clientRef = doc(collectionRef, result.user?.uid);
-      setDoc(clientRef, client);
+      const userRef = doc(collectionRef, result.user?.uid);
+      setDoc(userRef, user);
     }
 
     auth.updateCurrentUser(result.user);
@@ -127,5 +111,21 @@ export async function signInWithGithub(): Promise<UserCredential | null> {
   } catch (error) {
     console.log("error", error);
     throw error;
+  }
+}
+
+export async function updateUser(
+  user: ClientCreate | DoctorCreate,
+  userId: string
+): Promise<boolean> {
+  try {
+    const collectionRef = collection(db, "users");
+    const userRef = doc(collectionRef, userId);
+
+    await setDoc(userRef, user);
+
+    return true;
+  } catch (error) {
+    return false;
   }
 }
