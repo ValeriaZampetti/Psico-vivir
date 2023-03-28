@@ -51,7 +51,6 @@ function useInfiniteLoading(props: Props) {
 
   // TODO - Mejorar manera de mostrar que se esta cargando
   // TODO - Tener una manera de mostrar algo cuando ya no hay mas items
-  // TODO - Considerar crear un segundo batch para que el tiempo de carga sea menor
   async function loadItems(): Promise<DocumentSnapshot<DocumentData>[]> {
     if (!hasMore || isLoading) {
       return items;
