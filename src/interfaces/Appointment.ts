@@ -9,6 +9,6 @@ export interface Appointment {
   paid: boolean;
   clientCanTalk: boolean;
   messages: Message[];
-  paymentData: any;
+  paymentData?: any;
   
 }
