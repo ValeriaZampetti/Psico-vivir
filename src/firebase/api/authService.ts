@@ -14,6 +14,7 @@ import {
 import {
   Client,
   ClientCreate,
+  Doctor,
   DoctorCreate,
   UserNotAuthCreate,
 } from "../../interfaces/Client";
@@ -79,10 +80,10 @@ export async function signInWithGoogle(): Promise<UserCredential | null> {
 
       const userRef = doc(collectionRef, result.user?.uid);
       setDoc(userRef, user);
+      return result;
     }
-
     await auth.updateCurrentUser(result.user);
-    return result;
+    return null;
   } catch (error) {
     console.log("error", error);
     throw error;
@@ -104,10 +105,11 @@ export async function signInWithGithub(): Promise<UserCredential | null> {
 
       const userRef = doc(collectionRef, result.user?.uid);
       setDoc(userRef, user);
+      return result;
     }
 
-    auth.updateCurrentUser(result.user);
-    return result;
+    await auth.updateCurrentUser(result.user);
+    return null;
   } catch (error) {
     console.log("error", error);
     throw error;
@@ -115,7 +117,7 @@ export async function signInWithGithub(): Promise<UserCredential | null> {
 }
 
 export async function updateUser(
-  user: ClientCreate | DoctorCreate,
+  user: ClientCreate | DoctorCreate | Client | Doctor,
   userId: string
 ): Promise<boolean> {
   try {

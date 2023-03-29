@@ -5,7 +5,7 @@ import { Client } from "../interfaces/Client";
 import { storage } from "../firebase/config";
 import { ref, getDownloadURL } from "firebase/storage";
 import { Link } from "react-router-dom";
-import { getUserById } from "../firebase/api/UserService";
+import { getUserById } from "../firebase/api/userService";
 
 interface ReservationCardProps {
   appointment: Appointment;
@@ -76,14 +76,6 @@ export const ReservationCard = (props: ReservationCardProps) => {
             className="h-8"
           />
         </Link>
-
-        <button className="h-full aspect-square rounded-2xl  border-rose-400 border-4 flex items-center justify-center hover:scale-110">
-          <img
-            src="../../src/assets/icons/check.svg"
-            alt="check-icon"
-            className="h-12"
-          />
-        </button>
       </footer>
     </main>
   );

@@ -10,4 +10,7 @@ export interface IAuthProvider {
   register: (client: ClientCreate | DoctorCreate, password: string) => Promise<UserCredential | null>;
   logOut: () => Promise<void>;
   completeRegister: (client: ClientCreate | DoctorCreate, userId: string) => Promise<boolean>;
+  
+  updateUser: (user: ClientCreate | DoctorCreate | Client | Doctor,
+  userId: string) => Promise<boolean> 
 }

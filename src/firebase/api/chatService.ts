@@ -128,7 +128,7 @@ export async function getChatsClientPaginated(
       )
     : query(
         collectionRef,
-        where("doctorId", "==", id),
+        where("clientId", "==", id),
         where("lastAppointmentActive", "==", true),
         orderBy("updatedAt", "desc"),
         limit(numerOfEntitiesByPage)

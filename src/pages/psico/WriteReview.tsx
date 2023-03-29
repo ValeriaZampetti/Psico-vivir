@@ -14,7 +14,7 @@ import {
   getClientById,
   getDoctorById,
   updateRankingDoctor,
-} from "../../firebase/api/UserService";
+} from "../../firebase/api/userService";
 import { Chat } from "../../interfaces/Chat";
 import Loading from "../../components/Loading";
 import Error404 from "../Error404";

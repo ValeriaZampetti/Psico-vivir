@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Dropdown } from "../../components/forms/Dropdown";
-import { getSpecialties, getUserById } from "../../firebase/api/UserService";
+import { getSpecialties, getUserById } from "../../firebase/api/userService";
 import { useAuth } from "../../hooks/useAuth";
 import {
   UserType,
@@ -35,25 +35,27 @@ function CompleteRegister() {
   const { completeRegister } = useAuth();
   const navigate = useNavigate();
 
-  const { userId } = useParams();
+  const { id } = useParams();
   const [userFromUrl, setUserFromUrl] = useState<UserNotAuth | null>(null);
 
+  async function getUser() {
+    const user = await getUserById(id ?? "");
+
+    if (user) {
+      setUserFromUrl(user);
+      setNombre(user.name);
+    }
+  }
+
+  async function getSpecialtiesFromApi() {
+    const specialties = await getSpecialties();
+    setSpecialties(specialties);
+    console.log(specialties);
+  }
+
   useEffect(() => {
-    async function getSpecialtiesFromApi() {
-      const specialties = await getSpecialties();
-      setSpecialties(specialties);
-      console.log(specialties);
-    }
-
-    async function getUser() {
-      const user = await getUserById(userId ?? "");
-      if (user) {
-        setUserFromUrl(user);
-        setNombre(user.name);
-      }
-    }
-
     getSpecialtiesFromApi();
+    getUser();
   }, []);
 
   // FIXME - Hacer que el form se resetee cuando se cambia el tipo de usuario
@@ -83,7 +85,12 @@ function CompleteRegister() {
           numberOfReviews: 0,
           completed: true,
         };
+
+        console.log(userFromUrl?.id);
+
         const completed = await completeRegister(doctor, userFromUrl?.id ?? "");
+
+        console.log(completed);
         if (completed) {
           toast.success("Usuario creado exitosamente", {
             position: "top-right",
@@ -280,8 +287,9 @@ function CompleteRegister() {
 
           {selectedSpecialties.length > 0 && (
             <div className="flex flex-row flex-wrap gap-2">
-              {selectedSpecialties.map((specialty) => (
+              {selectedSpecialties.map((specialty, index) => (
                 <div
+                  key={index}
                   className="bg-quaternary-normal px-4 py-1 rounded-xl
                   flex flex-row justify-center items-center gap-2"
                 >

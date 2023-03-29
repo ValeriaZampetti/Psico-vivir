@@ -15,7 +15,7 @@ import facebookIcon from "../../assets/icons/facebook.svg";
 import { Dropdown } from "../../components/forms/Dropdown";
 import { ToastContainer, toast } from "react-toastify";
 import { useAuth } from "../../hooks/useAuth";
-import { getSpecialties } from "../../firebase/api/UserService";
+import { getSpecialties } from "../../firebase/api/userService";
 import { Specialty } from "../../interfaces/Specialty";
 
 const STEP_VIEW_CLIENT = 1;
@@ -88,7 +88,11 @@ export const Register = (prop: any) => {
           completed: true,
           img: "gs://psico-vivir.appspot.com/imagesUsers/default.png"
         };
+        console.log("FUNCIONAAAA");
+
         const userCredential = await register(doctor, password);
+        console.log("AAAAA");
+
         if (userCredential) {
           toast.success("Usuario creado exitosamente", {
             position: "top-right",
@@ -183,15 +187,24 @@ export const Register = (prop: any) => {
   const handleGoogleSignIn = async () => {
     try {
       const userCredential = await logInWithGoogle();
-      navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+      if (userCredential) {
+        navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+        return;
+      }
+      navigate("/psico");
     } catch (error: any) {
       toast.error(error.message);
     }
   };
+
   const handleGithubSignIn = async () => {
     try {
       const userCredential = await logInWithGithub();
-      navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+      if (userCredential) {
+        navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+        return;
+      }
+      navigate("/psico");
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -320,8 +333,9 @@ export const Register = (prop: any) => {
 
           {selectedSpecialties.length > 0 && (
             <div className="flex flex-row flex-wrap gap-2">
-              {selectedSpecialties.map((specialty) => (
+              {selectedSpecialties.map((specialty, index) => (
                 <div
+                  key={index}
                   className="bg-quaternary-normal px-4 py-1 rounded-xl
                   flex flex-row justify-center items-center gap-2"
                 >
@@ -395,6 +409,7 @@ export const Register = (prop: any) => {
             </Link>
           </p>
           <h1 className="text-2xl font-bold text-center">Bienvenido!</h1>
+
           <h2 className="text-center text-xl font-medium">
             Registrate ingresando los siguientes datos
           </h2>
@@ -402,6 +417,7 @@ export const Register = (prop: any) => {
 
           {step === STEP_VIEW_CLIENT && clientForm}
           {step === STEP_VIEW_DOCTOR && doctorForm}
+
           <footer className="mb-5">
             <p className="text-center">O inicia sesión con</p>
             <div className="flex justify-center gap-5 mt-5">
