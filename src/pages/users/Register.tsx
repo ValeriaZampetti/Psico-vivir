@@ -56,6 +56,8 @@ export const Register = (prop: any) => {
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
 
+    console.log("FUNCIONAAAA");
+
     if (password.length <= 7) {
       toast.warning("La contraseña debe tener al menos 8 caracteres");
       return;
@@ -87,7 +89,11 @@ export const Register = (prop: any) => {
           numberOfReviews: 0,
           completed: true,
         };
+        console.log("FUNCIONAAAA");
+
         const userCredential = await register(doctor, password);
+        console.log("AAAAA");
+
         if (userCredential) {
           toast.success("Usuario creado exitosamente", {
             position: "top-right",
@@ -318,8 +324,9 @@ export const Register = (prop: any) => {
 
           {selectedSpecialties.length > 0 && (
             <div className="flex flex-row flex-wrap gap-2">
-              {selectedSpecialties.map((specialty) => (
+              {selectedSpecialties.map((specialty, index) => (
                 <div
+                  key={index}
                   className="bg-quaternary-normal px-4 py-1 rounded-xl
                   flex flex-row justify-center items-center gap-2"
                 >
