@@ -316,6 +316,12 @@ export const Register = (prop: any) => {
                       value: specialty.id,
                       label: specialty.name,
                       onClick: () => {
+                        if (selectedSpecialties.length === 5) {
+                          toast.error(
+                            "No puedes seleccionar más de 5 especialidades"
+                          );
+                          return;
+                        }
                         setSelectedSpecialties([
                           ...selectedSpecialties,
                           specialty.id,

@@ -4,19 +4,37 @@ import {
   QueryFieldFilterConstraint,
   where,
 } from "firebase/firestore";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DoctorCard from "../../components/DoctorCard";
-import { getDoctorsPaginated } from "../../firebase/api/userService";
+import { Dropdown } from "../../components/forms/Dropdown";
+import {
+  createMocked10Doctors,
+  getDoctorsPaginated,
+  getSpecialties,
+} from "../../firebase/api/userService";
 import useInfiniteLoading from "../../hooks/useInfiniteLoading";
 import { Doctor } from "../../interfaces/Client";
+import { Specialty } from "../../interfaces/Specialty";
+import xImage from "../../assets/icons/x.svg";
+import { toast } from "react-toastify";
 
 function Searcher() {
   const [search, setSearch] = useState("");
+  const [specialties, setSpecialties] = useState<Specialty[]>([]);
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
 
   const [optionalWheres, setOptionalWheres] = useState<
     QueryFieldFilterConstraint[]
   >([]);
+
+  async function initalizeSpecialties() {
+    const specialties = await getSpecialties();
+    setSpecialties(specialties);
+  }
+
+  useEffect(() => {
+    initalizeSpecialties();
+  }, []);
 
   function applyFilters(e: any) {
     e.preventDefault();
@@ -25,7 +43,7 @@ function Searcher() {
 
     if (search !== "") {
       const query = where("name", "==", search);
-      setOptionalWheres(prev => [...prev, query]);
+      setOptionalWheres((prev) => [...prev, query]);
     }
 
     if (selectedSpecialties.length !== 0) {
@@ -34,21 +52,18 @@ function Searcher() {
         "array-contains-any",
         selectedSpecialties
       );
-      setOptionalWheres(prev => [...prev, query]);
+      setOptionalWheres((prev) => [...prev, query]);
     }
 
-  
-    resetItems()
-    
-    setSearch("");
-    setSelectedSpecialties([]);
+    resetItems();
 
+    setSearch("");
   }
 
   function removeFilters(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    setOptionalWheres([]);
 
+    setOptionalWheres([]);
   }
 
   const { items, lastItemRef, resetItems, loadItems } = useInfiniteLoading({
@@ -74,18 +89,93 @@ function Searcher() {
         Doctores disponibles
       </h1>
 
-      <div className="flex flex-wrap flex-row justify-between items-center px-8 gap-y-4 mt-6">
-      <button
+      <div className="flex flex-col gap-5 justify-center px-16 mt-8">
+        <div className="flex flex-row justify-between">
+          <div>
+            <Dropdown
+              title="Especialidades"
+              changeTitle={false}
+              options={
+                specialties
+                  ? specialties.map((specialty) => {
+                      return {
+                        value: specialty.id,
+                        label: specialty.name,
+                        onClick: () => {
+                          if (selectedSpecialties.length === 5) {
+                            toast.error(
+                              "No puedes seleccionar más de 5 especialidades"
+                            );
+                            return;
+                          }
+                          setSelectedSpecialties([
+                            ...selectedSpecialties,
+                            specialty.id,
+                          ]);
+                          setSpecialties(
+                            specialties.filter(
+                              (item) => item.id !== specialty.id
+                            )
+                          );
+                        },
+                      };
+                    })
+                  : []
+              }
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="text-black hidden md:block bg-quaternary-normal border-2 border-primary-normal
+          focus:ring-4 outline-none duration-300 focus:ring-blue-300
+          font-medium rounded-lg px-4 py-2 active:scale-90"
+            onClick={removeFilters}
+          >
+            Remover filtros
+          </button>
+        </div>
+
+        {selectedSpecialties.length > 0 && (
+          <div className="flex flex-row flex-wrap gap-2 w-[80%]">
+            {selectedSpecialties.map((specialty, index) => (
+              <div
+                key={index}
+                className="bg-quaternary-normal px-4 py-1 rounded-xl
+                  flex flex-row justify-center items-center gap-2"
+              >
+                <p className="text-black">{specialty}</p>
+                <img
+                  src={xImage}
+                  className="h-4 cursor-pointer"
+                  onClick={() => {
+                    setSelectedSpecialties(
+                      selectedSpecialties.filter((item) => item !== specialty)
+                    );
+                    setSpecialties([
+                      ...specialties,
+                      { id: specialty, name: specialty },
+                    ]);
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
+        <button
           type="submit"
-          className="text-black bg-quaternary-normal border-2 border-primary-normal
+          className="text-black md:hidden bg-quaternary-normal border-2 border-primary-normal
           focus:ring-4 outline-none duration-300 focus:ring-blue-300
           font-medium rounded-lg px-4 py-2 active:scale-90"
           onClick={removeFilters}
         >
           Remover filtros
         </button>
+      </div>
 
-        <section className="w-[60%]" id="search">
+      <div className="flex flex-wrap flex-row justify-between items-center px-16 gap-y-4 mt-6">
+        <section className="w-[90%] md:w-[60%]" id="search">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <svg
@@ -122,8 +212,6 @@ function Searcher() {
             />
           </div>
         </section>
-
-        <p>Ordenar por</p>
 
         <button
           type="submit"
