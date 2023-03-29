@@ -1,4 +1,5 @@
 import {
+  addDoc,
   collection,
   doc,
   DocumentData,
@@ -17,7 +18,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { Chat } from "../../interfaces/Chat";
+import { Chat, ChatCreate } from "../../interfaces/Chat";
 import { UserType } from "../../interfaces/Client";
 import { MessageCreate } from "../../interfaces/Message";
 import { db } from "../config";
@@ -184,6 +185,19 @@ export async function desactiveChat(chatId: string): Promise<void> {
 
     return updateDoc(docRef, {
       lastAppointmentActive: false,
+    });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function createChat(chat: ChatCreate): Promise<void> {
+  try {
+    const collectionRef = collection(db, "chats");
+    const DocumentReference = await addDoc(collectionRef, {
+      ...chat,
+      updatedAt: serverTimestamp(),
     });
   } catch (error) {
     console.log(error);
