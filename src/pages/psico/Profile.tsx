@@ -12,22 +12,33 @@ import {
 import { Doctor, UserType } from "../../interfaces/Client";
 import StarRating from "../../components/forms/StarRating";
 import PhoneInputWithCountrySelect from "react-phone-number-input";
+import { toast } from "react-toastify";
+import { getSpecialties } from "../../firebase/api/userService";
+import { Specialty } from "../../interfaces/Specialty";
+import { Dropdown } from "../../components/forms/Dropdown";
+import xImage from "../../assets/icons/x.svg";
+
 
 function Profile() {
   const { user, updateUser } = useAuth();
 
-  const [doctor, setDoctor] = useState<Doctor | null>(null);
+  const [specialties, setSpecialties] = useState<Specialty[]>([]);
+  const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
 
-  const [valueName, setValueName] = useState(user?.name);
+  const [valueName, setValueName] = useState(user?.name ?? "");
   const [valueButtonName, setValueButtonName] = useState(true);
 
-  const [valueEmail, setValueEmail] = useState(user?.email);
+  const [valueEmail, setValueEmail] = useState(user?.email ?? "");
   const [valueButtonEmail, setValueButtonEmail] = useState(true);
 
   const [valuePhone, setValuePhone] = useState(user?.phone ?? "");
   const [valueButtonPhone, setValueButtonPhone] = useState(true);
 
-  // const [valueBiography, setValueBiography] = useState((user as Doctor?)?.biography ?? "");
+  const [valueBiography, setValueBiography] = useState(
+    user?.type === UserType.DOCTOR
+      ? (user as Doctor | null)?.biography ?? ""
+      : ""
+  );
   const [valueButtonBiography, setValueButtonBiography] = useState(true);
 
   const handleInputName = (event: any) => {
@@ -40,13 +51,7 @@ function Profile() {
   const handleInputEmail = (event: any) => {
     setValueEmail(event.target.value);
   };
-  const handleButtonEmail = (event: any) => {
-    setValueButtonEmail(!valueButtonEmail);
-  };
 
-  const handleInputPhone = (event: any) => {
-    setValuePhone(event.target.value);
-  };
   const handleButtonPhone = (event: any) => {
     setValueButtonPhone(!valueButtonPhone);
   };
@@ -55,11 +60,112 @@ function Profile() {
     Blob | Uint8Array | ArrayBuffer | null
   >(null);
 
-  useEffect(() => {
-    if (user?.type === UserType.DOCTOR) {
-      setDoctor(user as Doctor);
+  function selectSpecialty(specialty: Specialty) {
+    if (selectedSpecialties.length === 5) {
+      toast.error("No puedes seleccionar más de 5 especialidades");
+      return;
     }
+    setSelectedSpecialties([...selectedSpecialties, specialty.id]);
+    setSpecialties(specialties.filter((item) => item.id !== specialty.id));
+  }
+
+  function removeSpecialty(specialty: string) {
+    setSelectedSpecialties(
+      selectedSpecialties.filter((item) => item !== specialty)
+    );
+    setSpecialties([...specialties, { id: specialty, name: specialty }]);
+  }
+
+
+  useEffect(() => {
+    async function getSpecialtiesFromApi() {
+      if (user === null || user.type === UserType.CLIENT) return;
+      const specialties = await getSpecialties();
+      setSpecialties(
+        specialties.filter(
+          (specialty) =>
+            !(user as Doctor).specialties.includes(specialty.id)
+        )
+      );
+    }
+
+    getSpecialtiesFromApi();
+    setSelectedSpecialties(
+      user?.type === UserType.DOCTOR
+        ? (user as Doctor).specialties
+        : []
+    )
   }, [user]);
+
+  
+
+  function uploadImage() {
+    if (imageUpload == null) return;
+    const imageRef = ref(storage, `imagesUsers/${user?.id}`);
+    uploadBytes(imageRef, imageUpload).then(() => {
+      user!.img = user!.id;
+    });
+  }
+
+  function validateValues(): boolean {
+    if (valueName === "") {
+      toast.error("El nombre no puede estar vacío");
+      return false;
+    }
+
+    if (valueEmail === "") {
+      toast.error("El correo no puede estar vacío");
+      return false;
+    }
+
+    if (valuePhone.length !== 13) {
+      toast.warning("El número de teléfono debe tener 13 dígitos");
+      return false;
+    }
+
+    if (user?.type === UserType.DOCTOR) {
+      if (valueBiography.length < 40) {
+        toast.warning("La biografía debe tener al menos 40 caracteres");
+        return false;
+      }
+
+      if (selectedSpecialties.length < 2 || selectedSpecialties.length > 5) {
+        toast.warning("Debes seleccionar de 2 a 5 especialidades");
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  function saveChanges(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    if (user === null) return;
+
+    if (!validateValues()) return;
+
+    try {
+      user.name = valueName;
+      user.phone = valuePhone;
+      uploadImage();
+
+      if (user.type === UserType.DOCTOR) {
+        (user as Doctor).biography = valueBiography;
+
+        (user as Doctor).specialties = selectedSpecialties;
+      }
+
+      updateUser(user, user.id);
+
+      setValueButtonBiography(true);
+      setValueButtonEmail(true);
+      setValueButtonName(true);
+
+      toast.success("Cambios guardados");
+    } catch (error) {
+      toast.error("Error al guardar cambios");
+    }
+  }
 
   const doctorInputs = (
     <>
@@ -67,7 +173,9 @@ function Profile() {
         <h1 className="text-xl font-bold pl-5 w-ful text-center">Rating</h1>
         <StarRating
           readonly={true}
-          currentRating={doctor?.ranking ?? 0}
+          currentRating={
+            user?.type === UserType.DOCTOR ? (user as Doctor).ranking : 0
+          }
           svgClass="h-[2rem]"
         />
       </section>
@@ -77,36 +185,48 @@ function Profile() {
         className="flex flex-col justify-center gap-y-2
         backdrop-blur-lg bg-[#dceee6]  drop-shadow-lg px-3  md:px-6 py-3 rounded-2xl"
       >
-        <h1 className="text-xl md:text-xl font-bold pl-5 w-full text-center">
-          Especialidades
-        </h1>
+        <div>
+          <Dropdown
+            title="Especialidades"
+            changeTitle={false}
+            options={
+              specialties
+                ? specialties.map((specialty) => {
+                    return {
+                      value: specialty.id,
+                      label: specialty.name,
+                      onClick: () => {
+                        selectSpecialty(specialty);
+                      },
+                    };
+                  })
+                : []
+            }
+          />
+        </div>
 
         <div className="flex flex-row flex-wrap gap-2 w-[80%] justify-center self-center">
-          {doctor?.specialties.map((specialty, index) => (
-            <div
-              key={index}
-              className="bg-quaternary-normal px-4 py-1 rounded-xl
+          {user?.type === UserType.DOCTOR &&
+            selectedSpecialties.map((specialty, index) => (
+              <div
+                key={index}
+                className="bg-quaternary-normal px-4 py-1 rounded-xl
                   flex flex-row justify-center items-center gap-2"
-            >
-              <p className="text-black">{specialty}</p>
-            </div>
-          ))}
+              >
+                <p className="text-black">{specialty}</p>
+                <img
+                  src={xImage}
+                  className="h-4 cursor-pointer"
+                  onClick={() => {
+                    removeSpecialty(specialty);
+                  }}
+                />
+              </div>
+            ))}
         </div>
       </section>
     </>
   );
-
-  const uploadImage = (event: any) => {
-    if (imageUpload == null) return;
-    const imageRef = ref(storage, `imagesUsers/${user?.id}`);
-    uploadBytes(imageRef, imageUpload).then(() => {
-      user!.img = user!.id;
-    });
-  };
-  // const saveChanges = () => {
-  //   user.
-  // };
-
   // const gsReference = ref(
   //   storage,
   //   "gs://psico-vivir.appspot.com/imagesUsers/aiudaporfavor.jpg"
@@ -150,6 +270,7 @@ function Profile() {
                 Cambiar imagen
               </label>
 
+              {/* FIXME - Hacer que la imagen se muestre al cambiarla */}
               <input
                 id="imageUpload"
                 type="file"
@@ -160,50 +281,35 @@ function Profile() {
                 }}
                 className="hidden"
               />
-
-              {/* <button
-                onClick={uploadImage}
-                className="w-auto h-12 p-2 rounded-xl bg-secondary-normal hover:scale-105 
-            font-bold hover:drop-shadow-md transition-all mt-3"
-              >
-                Subir imagen
-              </button> */}
             </div>
 
             {user?.type == 2 ? (
               <>
                 <div className="w-full mt-10 flex flex-col items-center">
-                  <h1 className="text-2xl font-bold pl-5 w-full">Biografia</h1>
-                  {doctor?.biography != null && (
-                    // <textarea
-                    //   id="biography"
-                    //   className={`w-10/12 h-40 p-4 mt-2 rounded-3xl border-4 border-secondary-normal font-semibold max-w-sm`}
-                    //   value={valueBiography}
-                    //   disabled={valueButtonBiography}
-                    // ></textarea>
-                    <></>
-                  )}
-                  <button
-                    className="w-16 h-16 aspect-square mb-6 mt-2 p-3 border-4 border-primary-normal rounded-2xl bg-secondary-normal hover:scale-105"
-                    onClick={handleButtonName}
-                  >
-                    <img src={iconEdit} alt="edit" />
-                  </button>
-                </div>
+                  <div className="flex flex-row items-center justify-between w-full">
+                    <h1 className="text-2xl font-bold pl-5 w-full">
+                      Biografia
+                    </h1>
 
-                <div className="w-full flex p-4 justify-around">
-                  <h1 className="text-xl font-bold pl-2 w-1/2 flex items-center">
-                    Precio de hora de consulta ($)
-                  </h1>
-                  <div className="w-1/2 items-center flex">
-                    <textarea
-                      id="price"
-                      className="w-[90px] m-2 rounded-xl border-4 border-secondary-normal h-12 mr-4 text-lg p-1 bg-gray-300"
-                      disabled
+                    <button
+                      className="w-12 h-12 aspect-square p-3 border-4 border-primary-normal rounded-2xl bg-secondary-normal hover:scale-105"
+                      onClick={(e) =>
+                        setValueButtonBiography(!valueButtonBiography)
+                      }
                     >
-                      $20
-                    </textarea>
+                      <img src={iconEdit} alt="edit" />
+                    </button>
                   </div>
+
+                  {user.type === UserType.DOCTOR && (
+                    <textarea
+                      id="biography"
+                      className={`w-10/12 h-40 p-4 mt-2 rounded-3xl border-4 border-secondary-normal font-semibold max-w-sm`}
+                      value={valueBiography}
+                      onChange={(e) => setValueBiography(e.target.value)}
+                      disabled={valueButtonBiography}
+                    />
+                  )}
                 </div>
               </>
             ) : (
@@ -217,20 +323,21 @@ function Profile() {
                 <label htmlFor="" className="pl-3 text-xl font-bold">
                   Nombre completo
                 </label>
+
                 <div className="items-center flex">
                   <input
                     type="text"
                     className={`h-12 rounded-xl border-4 border-secondary-normal
-                 w-full max-w-xs md:max-w-sm p-2 ${
-                   valueButtonName ? "bg-gray-300" : ""
-                 }`}
+                      w-full max-w-xs md:max-w-sm p-2 ${
+                        valueButtonName ? "bg-gray-300" : ""
+                      }`}
                     value={valueName}
                     onChange={handleInputName}
                     disabled={valueButtonName}
                   />
                   <button
                     className="w-[48px] h-auto p-2 border-4 border-primary-normal
-                 rounded-xl bg-secondary-normal ml-3 hover:scale-105"
+                      rounded-xl bg-secondary-normal ml-3 hover:scale-105"
                     onClick={handleButtonName}
                   >
                     <img src={iconEdit} alt="edit" />
@@ -291,6 +398,7 @@ function Profile() {
 
             <div className="flex justify-center max-w-md mt-5">
               <button
+                onClick={saveChanges}
                 className="w-auto h-12 p-2 rounded-xl bg-secondary-normal hover:scale-105 
             font-bold hover:drop-shadow-md transition-all"
               >
