@@ -36,7 +36,7 @@ function DoctorCard(props: DoctorCardProps) {
         handleCurrentRating={(rating: number) => {
           setRanking(rating);
         }}
-        readonly={false}
+        readonly={true}
       />
       {/* TODO - Poner máximo de lineas */}
       <p className="text-gray-700 text-center mt-2 text-lg line-clamp-3">{props.doctor.biography}</p>

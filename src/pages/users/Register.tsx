@@ -31,7 +31,6 @@ export const Register = (prop: any) => {
   const [password, setPassword] = useState("");
 
   const [phone, setPhone] = useState("");
-  const [countryCode, setCountryCode] = useState<number>(58);
 
   const [biography, setBiography] = useState("");
   const [specialties, setSpecialties] = useState<Specialty[]>([]);
@@ -63,6 +62,7 @@ export const Register = (prop: any) => {
     setStep(STEP_VIEW_DOCTOR);
   }
 
+
   function validForm() {
     if (password.length <= 7) {
       toast.warning("La contraseña debe tener al menos 8 caracteres");
@@ -76,21 +76,26 @@ export const Register = (prop: any) => {
       return false;
     }
 
+    if(phone.length !== 13){
+      toast.warning("El número de teléfono debe tener 13 dígitos");
+      return false;
+    }
+
     if (password !== confirmarcontraseña) {
       toast.warning("Las contraseñas no coinciden");
       return false;
     }
 
-    //Estas validaciones son cuando eres doctor y estas en el segundo formulario
 
+    //Estas validaciones son cuando eres doctor y estas en el segundo formulario
     if (step === STEP_VIEW_DOCTOR) {
       if (biography.length < 40) {
         toast.warning("La biografía debe tener al menos 40 caracteres");
         return false;
       }
 
-      if (selectedSpecialties.length < 2) {
-        toast.warning("Debes seleccionar al menos 2 especialidades");
+      if (selectedSpecialties.length < 2 || selectedSpecialties.length > 5) {
+        toast.warning("Debes seleccionar de 2 a 5 especialidades");
         return false;
       }
     }
@@ -107,8 +112,7 @@ export const Register = (prop: any) => {
         const doctor: DoctorCreate = {
           name: nombre,
           email,
-          phone: parseInt(phone),
-          countryCode,
+          phone: phone,
           type: tipoUsuario,
           biography,
           ranking: 3,
@@ -140,8 +144,7 @@ export const Register = (prop: any) => {
       const client: ClientCreate = {
         name: nombre,
         email,
-        phone: parseInt(phone),
-        countryCode,
+        phone: phone,
         type: tipoUsuario,
         completed: true,
         img: "gs://psico-vivir.appspot.com/imagesUsers/default.png"
