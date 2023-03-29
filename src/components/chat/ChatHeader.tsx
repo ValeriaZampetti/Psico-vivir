@@ -12,10 +12,10 @@ function ChatHeader() {
   const { user } = useAuth();
 
   useEffect(() => {
-    if (!currentChat?.lastAppointmentActive){
+    if (!currentChat?.lastAppointmentActive) {
       setCanCancelChat(false);
       return;
-    };
+    }
 
     const SECONDS_IN_A_MINUTE = 60;
 
@@ -47,6 +47,7 @@ function ChatHeader() {
 
     try {
       endChat(currentChat!.id);
+      
       toast.success("Chat cancelado");
     } catch (error: any) {
       toast.error(error.message);
