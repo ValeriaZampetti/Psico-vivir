@@ -88,6 +88,33 @@ function Profile() {
             !(user as Doctor).specialties.includes(specialty.id)
         )
       );
+
+      const gsReference = ref(
+        storage,
+        `gs://psico-vivir.appspot.com/imagesUsers/${user?.id}`
+      );
+
+const defaultGsReference = ref(
+  storage,
+  "gs://psico-vivir.appspot.com/imagesUsers/default.png"
+);
+
+const img = document.getElementById("profile-pic");
+
+getMetadata(gsReference)
+  .then(() => {
+    
+    getDownloadURL(gsReference).then((url) => {
+      img?.setAttribute("src", url);
+    });
+  })
+  .catch((error) => {
+    console.log(error);
+    
+    getDownloadURL(defaultGsReference).then((url) => {
+      img?.setAttribute("src", url);
+    });
+  });  
     }
 
     getSpecialtiesFromApi();
@@ -258,33 +285,6 @@ function Profile() {
     </>
 
   );
-
-  const gsReference = ref(
-        storage,
-        `gs://psico-vivir.appspot.com/imagesUsers/${user?.id}`
-      );
-
-const defaultGsReference = ref(
-  storage,
-  "gs://psico-vivir.appspot.com/imagesUsers/default.png"
-);
-
-const img = document.getElementById("profile-pic");
-
-getMetadata(gsReference)
-  .then(() => {
-    
-    getDownloadURL(gsReference).then((url) => {
-      img?.setAttribute("src", url);
-    });
-  })
-  .catch((error) => {
-    console.log(error);
-    
-    getDownloadURL(defaultGsReference).then((url) => {
-      img?.setAttribute("src", url);
-    });
-  });  
 
   
   // const gsReference = ref(
