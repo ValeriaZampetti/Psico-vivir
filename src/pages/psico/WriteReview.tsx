@@ -9,6 +9,7 @@ import {
   getChatsByClientId,
   getChatsByDoctorId,
   getChatById,
+  updateChat,
 } from "../../firebase/api/chatService";
 import {
   getClientById,
@@ -105,9 +106,13 @@ function WriteReview() {
         message: comment,
         userId: user!.id,
         timestamp: Timestamp.now(),
+        doctorId: doctor!.id,
       };
 
+
       const documentReference = await createFeedback(feedback, doctor!.id);
+      chat!.lastAppointmentReviewed = true;
+      updateChat(chat!);
 
       toast.success("Comentario enviado exitosamente", {
         autoClose: 3000,

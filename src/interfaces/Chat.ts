@@ -9,6 +9,7 @@ export interface ChatCreate {
    * (If it has, it will alwayas be the last element of the array)
    */
   lastAppointmentActive: boolean;
+  lastAppointmentReviewed: boolean;
   appointments: Appointment[];
 }
 

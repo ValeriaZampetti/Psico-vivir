@@ -193,13 +193,29 @@ export async function desactiveChat(chatId: string): Promise<void> {
   }
 }
 
-export async function createChat(chat: ChatCreate): Promise<void> {
+export async function updateChat(chat: Chat): Promise<void> {
+  try {
+    const docRef = doc(db, "chats", chat.id);
+
+    return updateDoc(docRef, {
+      ...chat,
+      updatedAt: serverTimestamp(),
+    });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function createChat(chat: ChatCreate): Promise<string> {
   try {
     const collectionRef = collection(db, "chats");
     const documentReference = await addDoc(collectionRef, {
       ...chat,
       updatedAt: serverTimestamp(),
     });
+
+    return documentReference.id;
   } catch (error) {
     console.log(error);
     throw error;

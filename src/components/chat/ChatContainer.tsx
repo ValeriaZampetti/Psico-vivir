@@ -46,7 +46,7 @@ function ChatContainer() {
       {currentChat && <ChatHeader />}
       <div
         id="messages"
-        className="bg-quaternary-normal px-8 py-6 h-[94.5%] overflow-y-scroll"
+        className="bg-quaternary-normal px-8 py-6 h-full overflow-y-scroll"
       >
         {appointmentsList}
       </div>

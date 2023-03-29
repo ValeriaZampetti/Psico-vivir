@@ -7,6 +7,7 @@ export interface FeedbackCreate {
   message: string;
   userId: string;
   timestamp: Timestamp;
+  doctorId: string;
 }
 
 export interface Feedback extends FeedbackCreate {

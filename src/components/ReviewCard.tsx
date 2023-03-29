@@ -16,7 +16,9 @@ interface ReviewCardProps {
 }
 
 function ReviewCard(props: ReviewCardProps) {
-  const [ranking, setRanking] = React.useState<number>(props.doctor.ranking);
+  // if (props.doctor) {
+  // }
+  const [ranking, setRanking] = React.useState<number>(props.feedback.rating);
 
   const [user, setUser] = useState<Client>();
 
@@ -28,8 +30,9 @@ function ReviewCard(props: ReviewCardProps) {
     initializeClient();
   }, []);
 
-  const dateString = useTimestampToString(props.feedback.timestamp.seconds);
+  const dateString = useTimestampToString(props.feedback?.timestamp.seconds);
   
+  // console.log(dateString)
 
   // // const [timestamp, setTimestamp] = useState("");
   // // const [message, setMessage] = useState("");
@@ -111,7 +114,7 @@ function ReviewCard(props: ReviewCardProps) {
         </h3>
 
         <h4 className="max-[900px]:text-sm max-[900px]:flex text-justify justify-center">
-          {props.feedback.message}
+          {props.feedback?.message}
         </h4>
       </section>
     </main>

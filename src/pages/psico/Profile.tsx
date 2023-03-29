@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import k from "../../assets/images/register.jpg";
+import k from "../../assets/images/default.png";
 import iconEdit from "../../assets/icons/edit.svg";
 import { useAuth } from "../../hooks/useAuth";
 import { storage } from "../../firebase/config";
@@ -8,6 +8,7 @@ import {
   getDownloadURL,
   uploadBytesResumable,
   uploadBytes,
+  getMetadata,
 } from "firebase/storage";
 import { Doctor, UserType } from "../../interfaces/Client";
 import StarRating from "../../components/forms/StarRating";
@@ -87,6 +88,33 @@ function Profile() {
             !(user as Doctor).specialties.includes(specialty.id)
         )
       );
+
+      const gsReference = ref(
+        storage,
+        `gs://psico-vivir.appspot.com/imagesUsers/${user?.id}`
+      );
+
+const defaultGsReference = ref(
+  storage,
+  "gs://psico-vivir.appspot.com/imagesUsers/default.png"
+);
+
+const img = document.getElementById("profile-pic");
+
+getMetadata(gsReference)
+  .then(() => {
+    
+    getDownloadURL(gsReference).then((url) => {
+      img?.setAttribute("src", url);
+    });
+  })
+  .catch((error) => {
+    console.log(error);
+    
+    getDownloadURL(defaultGsReference).then((url) => {
+      img?.setAttribute("src", url);
+    });
+  });  
     }
 
     getSpecialtiesFromApi();
@@ -100,7 +128,9 @@ function Profile() {
   
 
   function uploadImage() {
+    console.log("dssdsdsddsdsdsdsdsdss");
     if (imageUpload == null) return;
+    console.log("dssdsdsds");
     const imageRef = ref(storage, `imagesUsers/${user?.id}`);
     uploadBytes(imageRef, imageUpload).then(() => {
       user!.img = user!.id;
@@ -160,6 +190,33 @@ function Profile() {
       setValueButtonBiography(true);
       setValueButtonEmail(true);
       setValueButtonName(true);
+
+      const gsReference = ref(
+        storage,
+        `gs://psico-vivir.appspot.com/imagesUsers/${user?.id}`
+      );
+      
+      const defaultGsReference = ref(
+        storage,
+        'gs://psico-vivir.appspot.com/imagesUsers/default.png'
+      );
+      
+      const img = document.getElementById("profile-pic");
+      
+      getMetadata(gsReference)
+        .then(() => {
+          
+          getDownloadURL(gsReference).then((url) => {
+            img?.setAttribute("src", url);
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          
+          getDownloadURL(defaultGsReference).then((url) => {
+            img?.setAttribute("src", url);
+          });
+        });  
 
       toast.success("Cambios guardados");
     } catch (error) {
@@ -226,10 +283,13 @@ function Profile() {
         </div>
       </section>
     </>
+
   );
+
+  
   // const gsReference = ref(
   //   storage,
-  //   "gs://psico-vivir.appspot.com/imagesUsers/aiudaporfavor.jpg"
+  //   `gs://psico-vivir.appspot.com/imagesUsers/${user!.id}.jpg`
   // );
   // const img = document.getElementById("profile-pic");
   // getDownloadURL(gsReference).then((url) => {
@@ -261,17 +321,18 @@ function Profile() {
             </div>
 
             <div className="m-4 flex flex-col items-center justify-center">
-              <label
+              {/* <label
                 htmlFor="imageUpload"
                 className="text-black bg-quaternary-normal border-2 border-primary-normal
           focus:ring-4 outline-none duration-300 focus:ring-blue-300 cursor-pointer
           font-medium rounded-lg px-4 py-2 active:scale-90"
               >
                 Cambiar imagen
-              </label>
+              </label> */}
 
               {/* FIXME - Hacer que la imagen se muestre al cambiarla */}
-              <input
+              <input 
+                className="mt-3"
                 id="imageUpload"
                 type="file"
                 onChange={(event) => {
@@ -279,7 +340,6 @@ function Profile() {
                     event.target.files ? event.target.files[0] : null
                   );
                 }}
-                className="hidden"
               />
             </div>
 
