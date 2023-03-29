@@ -71,7 +71,6 @@ function useInfiniteLoading(props: Props) {
     }
     setIsLoading(true);
 
-    console.log('lastItem', lastItem?.data())
     const { snapShot, lastVisible } = props.idToPass
       ? await getItemsWithId!(props.idToPass, lastItem)
       : await getItems!(lastItem, props.optionalWheres);
