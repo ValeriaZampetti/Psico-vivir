@@ -35,11 +35,17 @@ function ProtectedLayout() {
         "No estas logueado mi loco, seras redirigido en 5 segundos al login"
       );
       navigate("/users/login");
-    }, 5000);
+    }, 3500);
     return (
-      <h1>
-        No estas logueado mi loco, seras redirigido en 5 segundos al login
-      </h1>
+      <div className="flex items-center justify-center h-screen">
+        <h1 className="mx-auto text-2xl sm:text-4xl md:text-5xl font-bold text-gray-800 leading-tight sm:leading-snug md:leading-normal text-center sm:max-w-md md:max-w-lg">
+          No has iniciado sesion, seras redirigido en 3 segundos al login
+        </h1>
+      </div>
+
+
+
+
     );
   }
 
