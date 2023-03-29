@@ -62,7 +62,6 @@ export const Register = (prop: any) => {
     setStep(STEP_VIEW_DOCTOR);
   }
 
-
   function validForm() {
     if (password.length <= 7) {
       toast.warning("La contraseña debe tener al menos 8 caracteres");
@@ -76,7 +75,7 @@ export const Register = (prop: any) => {
       return false;
     }
 
-    if(phone.length !== 13){
+    if (phone.length !== 13) {
       toast.warning("El número de teléfono debe tener 13 dígitos");
       return false;
     }
@@ -85,7 +84,6 @@ export const Register = (prop: any) => {
       toast.warning("Las contraseñas no coinciden");
       return false;
     }
-
 
     //Estas validaciones son cuando eres doctor y estas en el segundo formulario
     if (step === STEP_VIEW_DOCTOR) {
@@ -119,12 +117,10 @@ export const Register = (prop: any) => {
           specialties: selectedSpecialties,
           numberOfReviews: 0,
           completed: true,
-          img: "gs://psico-vivir.appspot.com/imagesUsers/default.png"
+          img: "gs://psico-vivir.appspot.com/imagesUsers/default.png",
         };
-        console.log("FUNCIONAAAA");
 
         const userCredential = await register(doctor, password);
-        console.log("AAAAA");
 
         if (userCredential) {
           toast.success("Usuario creado exitosamente", {
@@ -147,7 +143,7 @@ export const Register = (prop: any) => {
         phone: phone,
         type: tipoUsuario,
         completed: true,
-        img: "gs://psico-vivir.appspot.com/imagesUsers/default.png"
+        img: "gs://psico-vivir.appspot.com/imagesUsers/default.png",
       };
 
       const userCredential = await register(client, password);
@@ -461,7 +457,7 @@ export const Register = (prop: any) => {
                 drop-shadow-md hover:drop-shadow-lg"
                 onClick={handleGithubSignIn}
               >
-                <img src={githubIcon} className="h-[33px]"/>
+                <img src={githubIcon} className="h-[33px]" />
               </button>
               <button
                 className="bg-white hover:bg-gray-100 active:ring-1 ring-black font-bold py-2 px-4 rounded-full 

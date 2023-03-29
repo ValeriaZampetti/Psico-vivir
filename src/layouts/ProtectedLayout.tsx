@@ -29,17 +29,13 @@ function ProtectedLayout() {
   }
 
   // // TODO - Crear componente para usuario no logueado
+  console.log({ user });
   if (!user) {
     setTimeout(() => {
-      console.log(
-        "No estas logueado mi loco, seras redirigido en 5 segundos al login"
-      );
       navigate("/users/login");
     }, 5000);
     return (
-      <h1>
-        No estas logueado mi loco, seras redirigido en 5 segundos al login
-      </h1>
+      <h1>No estas logueado, te redireccionaremos a la pagina de login en 5</h1>
     );
   }
 

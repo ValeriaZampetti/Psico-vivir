@@ -2,6 +2,7 @@ import React from "react";
 import paypalLogo from "../../assets/images/logo-Paypal.png";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 function Checkout() {
   const navigate = useNavigate();
@@ -59,11 +60,13 @@ function Checkout() {
                 }}
                 onApprove={(data: any, actions: any) => {
                   return actions.order?.capture().then(function (details: any) {
+                    toast.success("Pago realizado con éxito");
+                    console.log(details.payer.name?.given_name);
                     alert(
                       "Transaction completed by " +
                         details.payer.name?.given_name
                     );
-                    navigate("/landing");
+                    navigate("/psico/chat");
                   });
                 }}
               />
