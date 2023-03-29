@@ -65,7 +65,11 @@ function LandingHeader() {
       <header className="md:flex items-center justify-between bg-secondary-normal py-3 md:px-10 px-7 h-[71px]">
         <Link to={"/landing"} className="">
           <img src={Logo} alt="logo" className="w-64 h-auto hidden md:block" />
-          <img src={LogoResponsive} alt="logo" className="h-12 block md:hidden" />
+          <img
+            src={LogoResponsive}
+            alt="logo"
+            className="h-12 block md:hidden"
+          />
         </Link>
         <div
           onClick={() => setOpen(!open)}
@@ -77,7 +81,7 @@ function LandingHeader() {
         <ul
           className={`md:flex md:items-center md:pb-0 pb-12 absolute md:static gap-4
           bg-secondary-normal md:z-auto z-[-1] left-0 w-3/4 md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${
-            open ? "top-28" : "top-[-24rem] text-base lg:text-xl"
+            open ? "top-18" : "top-[-24rem] text-base lg:text-xl"
           }`}
         >
           {links.map((section) => (
@@ -90,11 +94,18 @@ function LandingHeader() {
               </a>
             </li>
           ))}
-          {user != null? <li key="Perfil" className="md:my-0 my-7">
-            <Link to={`/psico/profile/${user?.id}`} className="text-black hover:text-primary-strong duration-500">
-              Perfil
-            </Link>
-          </li>: <></>}
+          {user != null ? (
+            <li key="Perfil" className="md:my-0 my-7">
+              <Link
+                to={`/psico/profile/${user?.id}`}
+                className="text-black hover:text-primary-strong duration-500"
+              >
+                Perfil
+              </Link>
+            </li>
+          ) : (
+            <></>
+          )}
           {user ? buttonLogOut : buttonsNotLogIn}
         </ul>
       </header>
