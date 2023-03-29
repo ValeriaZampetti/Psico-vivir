@@ -7,9 +7,20 @@ import k from "../../assets/mock/pic.jpg";
 import { getDoctorById } from "../../firebase/api/userService";
 import { Doctor, UserType } from "../../interfaces/Client";
 import { Chat, ChatCreate } from "../../interfaces/Chat";
-import { addAppointmentToChat, createChat, getChatsByDoctorId } from "../../firebase/api/chatService";
+import {
+  addAppointmentToChat,
+  createChat,
+  getChatsByDoctorId,
+} from "../../firebase/api/chatService";
 import { Appointment } from "../../interfaces/Appointment";
-import { collection, onSnapshot, orderBy, query, Timestamp, where } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  Timestamp,
+  where,
+} from "firebase/firestore";
 import { Dropdown } from "../../components/forms/Dropdown";
 import { useAuth } from "../../hooks/useAuth";
 import { toast } from "react-toastify";
@@ -43,7 +54,7 @@ const AppointmentBooking = () => {
 
   useEffect(() => {
     initializeDoctor();
-    
+
     const collectionRef = collection(db, "chats");
 
     switch (user?.type) {
@@ -81,7 +92,6 @@ const AppointmentBooking = () => {
 
         return () => clientUnsub();
     }
-
   }, []);
 
   function validateValues(): boolean {
@@ -126,23 +136,32 @@ const AppointmentBooking = () => {
           return;
         }
 
+        if (!chatClientDoctor.lastAppointmentReviewed) {
+          toast.error(
+            "Debes calificar la última cita para poder agendar una nueva"
+          );
+          return;
+        }
+
         addAppointmentToChat(chatClientDoctor, newAppointment);
         toast.success("Cita creada con éxito");
+        navigate(`/psico/checkout/${chatClientDoctor.id}`);
         return;
       }
 
-      
       const chat: ChatCreate = {
         clientId: user?.id ?? "",
         doctorId: doctor?.id ?? "",
         lastAppointmentActive: true,
         appointments: [newAppointment],
+        lastAppointmentReviewed: false,
       };
 
-      await createChat(chat);
+      const id = await createChat(chat);
       toast.success("Cita creada con éxito");
+      navigate(`/psico/checkout/${id}`);
     } catch (error) {
-      toast.error("Error al crear la cita")
+      toast.error("Error al crear la cita");
     }
 
     console.log(startDate.toISOString());

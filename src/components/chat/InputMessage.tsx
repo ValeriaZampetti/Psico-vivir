@@ -28,6 +28,8 @@ function InputMessage() {
       setCanTalk(false);
       return;
     }
+
+    setPlaceholder("Escribe un mensaje");
     setCanTalk(true);
   }, [currentChat]);
 

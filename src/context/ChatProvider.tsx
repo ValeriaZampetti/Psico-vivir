@@ -6,6 +6,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import React, { createContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   desactiveChat,
   updateChatByMessage,
@@ -50,6 +51,7 @@ function ChatProvider({ children }: IProps) {
 
   const params = new URLSearchParams(window.location.search);
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     initializeChats();
@@ -64,6 +66,22 @@ function ChatProvider({ children }: IProps) {
       setCurrentChat(newcurrentChat);
     }
   }, [chats]);
+
+  useEffect(() => {
+    if (currentChat === null) return;
+
+    if (
+      !currentChat.lastAppointmentActive &&
+      !currentChat.lastAppointmentReviewed &&
+      user?.type === UserType.CLIENT
+    ) {
+      navigate(
+        `/psico/writeReview/${currentChat.id}/${
+          currentChat.appointments.length - 1
+        }`
+      );
+    }
+  }, [currentChat]);
 
   async function initializeClientsToChat(chats: Chat[]) {
     switch (user?.type) {
@@ -85,8 +103,6 @@ function ChatProvider({ children }: IProps) {
           );
           console.log(clients);
           setCurrentUserToChat(doctorToChat ?? null);
-
-          
         }
         break;
 

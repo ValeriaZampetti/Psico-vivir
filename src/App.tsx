@@ -42,7 +42,6 @@ function App() {
             <Route path="completeRegister/:id" element={<CompleteRegister />} />
             <Route path="*" element={<Error404 />} />
             <Route path="checkout" element={<Checkout />} />
-            {/* <Route path="reviewcard" element={<ReviewCard doctor={undefined} feedback={undefined} userId={""} />} /> de mientras aqui */}
           </Route>
 
           <Route path="/psico" element={<ProtectedLayout />}>
@@ -61,7 +60,7 @@ function App() {
               element={<WriteReview />}
             />
             <Route path="doctor/:id" element={<ProfileDoctor />} />
-            <Route path="patientsreviews" element={<PatientsReviews />} /> {/* de mientras aqui*/}
+            <Route path="patientsreviews" element={<PatientsReviews />} />
             <Route path="*" element={<Error404 />} />
           </Route>
         </Routes>
