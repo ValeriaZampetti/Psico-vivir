@@ -11,6 +11,7 @@ import {
   query,
   QuerySnapshot,
   serverTimestamp,
+  setDoc,
   startAfter,
   Timestamp,
   Unsubscribe,
@@ -190,3 +191,23 @@ export async function desactiveChat(chatId: string): Promise<void> {
     throw error;
   }
 }
+
+  export async function updateChat(
+    chat:  Chat,
+    chatId: string,
+  ): Promise<boolean> {
+    try {
+      const chatRef = doc(db, "chats",chatId);
+
+      await setDoc(chatRef, chat);
+  
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  
+
+  
+

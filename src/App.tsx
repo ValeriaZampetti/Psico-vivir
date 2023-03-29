@@ -41,7 +41,8 @@ function App() {
             <Route path="register" element={<Register />} />
             <Route path="completeRegister/:id" element={<CompleteRegister />} />
             <Route path="*" element={<Error404 />} />
-            <Route path="patientsreviews" element={<PatientsReviews />} /> {/* de mientras aqui*/}
+            <Route path="patientsreviews" element={<PatientsReviews />} />{" "}
+            {/* de mientras aqui*/}
             <Route path="checkout" element={<Checkout />} />
             {/* <Route path="reviewcard" element={<ReviewCard doctor={undefined} feedback={undefined} userId={""} />} /> de mientras aqui */}
           </Route>
@@ -56,7 +57,7 @@ function App() {
               <Route path={path} element={<Chat />} key={index} />
             ))}
 
-            <Route path="checkout" element={<Checkout />} />
+            <Route path="checkout/:chatId" element={<Checkout />} />
             <Route
               path="writeReview/:chatId/:index"
               element={<WriteReview />}

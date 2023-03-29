@@ -18,7 +18,6 @@ import { Specialty } from "../../interfaces/Specialty";
 import { Dropdown } from "../../components/forms/Dropdown";
 import xImage from "../../assets/icons/x.svg";
 
-
 function Profile() {
   const { user, updateUser } = useAuth();
 
@@ -76,28 +75,22 @@ function Profile() {
     setSpecialties([...specialties, { id: specialty, name: specialty }]);
   }
 
-
   useEffect(() => {
     async function getSpecialtiesFromApi() {
       if (user === null || user.type === UserType.CLIENT) return;
       const specialties = await getSpecialties();
       setSpecialties(
         specialties.filter(
-          (specialty) =>
-            !(user as Doctor).specialties.includes(specialty.id)
+          (specialty) => !(user as Doctor).specialties.includes(specialty.id)
         )
       );
     }
 
     getSpecialtiesFromApi();
     setSelectedSpecialties(
-      user?.type === UserType.DOCTOR
-        ? (user as Doctor).specialties
-        : []
-    )
+      user?.type === UserType.DOCTOR ? (user as Doctor).specialties : []
+    );
   }, [user]);
-
-  
 
   function uploadImage() {
     if (imageUpload == null) return;
