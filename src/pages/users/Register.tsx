@@ -310,6 +310,7 @@ export const Register = (prop: any) => {
         <div className="flex flex-col gap-5">
           <Dropdown
             title="Especialidades"
+            changeTitle={false}
             options={
               specialties
                 ? specialties.map((specialty) => {
@@ -317,6 +318,12 @@ export const Register = (prop: any) => {
                       value: specialty.id,
                       label: specialty.name,
                       onClick: () => {
+                        if (selectedSpecialties.length === 5) {
+                          toast.error(
+                            "No puedes seleccionar más de 5 especialidades"
+                          );
+                          return;
+                        }
                         setSelectedSpecialties([
                           ...selectedSpecialties,
                           specialty.id,
@@ -342,7 +349,7 @@ export const Register = (prop: any) => {
                   <p className="text-black">{specialty}</p>
                   <img
                     src={xImage}
-                    className="h-4"
+                    className="h-4 cursor-pointer"
                     onClick={() => {
                       setSelectedSpecialties(
                         selectedSpecialties.filter((item) => item !== specialty)

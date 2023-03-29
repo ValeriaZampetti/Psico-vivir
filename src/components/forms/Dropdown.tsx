@@ -6,16 +6,20 @@ export interface DropdownOption {
   label: string;
   value: string;
   onClick: () => void;
+ 
 }
 
 interface Props {
   title: string;
   options?: DropdownOption[];
+  changeTitle?: boolean;
 }
 
 export const Dropdown = (props: Props) => {
   const [showOptions, setShowOptions] = useState(false);
   const [optionSelected, setOptionSelected] = useState<string | null>(null);
+
+  const changeTitle = props.changeTitle || false
 
   useEffect(() => {
     function closeOptions(e: MouseEvent) {
@@ -42,7 +46,7 @@ export const Dropdown = (props: Props) => {
         aria-expanded="true"
         aria-haspopup="true"
       >
-        {optionSelected ? optionSelected : props.title}
+        {optionSelected && changeTitle ? optionSelected : props.title}
         <svg
           className="-mr-1 ml-2 h-7 w-7"
           xmlns="http://www.w3.org/2000/svg"
