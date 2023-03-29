@@ -102,7 +102,7 @@ function ProtectedHeader() {
         <ul
           className={`md:flex md:items-center md:pb-0 pb-12 absolute md:static gap-4 text-xl
           bg-secondary-normal md:z-auto z-[-1] left-0 w-3/4 md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${
-            open ? "top-28" : "top-[-24rem]"
+            open ? "top-18" : "top-[-24rem]"
           }`}
         >
           {user?.type === UserType.CLIENT ? clientLinksHtml : doctorLinksHtml}
