@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { Dropdown } from "../../components/forms/Dropdown";
 import { getSpecialties, getUserById } from "../../firebase/api/userService";
 import { useAuth } from "../../hooks/useAuth";
+import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-input";
 import {
   UserType,
   DoctorCreate,
@@ -214,15 +216,11 @@ function CompleteRegister() {
 
         <div className="flex flex-col gap-5 w-full">
           {/* <div> */}
-          <input
+          <PhoneInput
             className="rounded-lg p-4 border-2 border-primary-strong outline-none w-full"
             placeholder="Número de teléfono"
-            type="number"
-            pattern="[0-9]*"
             value={phone}
-            onChange={(e) =>
-              setPhone((v) => (e.target.validity.valid ? e.target.value : v))
-            }
+            onChange={(value) => setPhone(value || "")}
           />
           {/* </div> */}
         </div>
@@ -249,7 +247,7 @@ function CompleteRegister() {
           hover:scale-95 active:scale-90 self-center 
           hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
         >
-          Registrarse aaaa
+          Registrarse
         </button>
       )}
     </form>
