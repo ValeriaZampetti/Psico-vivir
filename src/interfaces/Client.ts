@@ -25,8 +25,7 @@ export interface UserNotAuth extends UserNotAuthCreate {
  */
 export interface ClientCreate extends UserNotAuthCreate {
   type: UserType;
-  phone: number;
-  countryCode: number;
+  phone: string;
   img: string;
 }
 
