@@ -249,7 +249,7 @@ function CompleteRegister() {
           hover:scale-95 active:scale-90 self-center 
           hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
         >
-          Registrarse
+          Registrarse aaaa
         </button>
       )}
     </form>
@@ -329,7 +329,6 @@ function CompleteRegister() {
           <img src={arrow} className="h-5 w-auto rotate-180" />
         </button>
         <button
-          // type="submit"
           onClick={handleSubmit}
           className="min-w-[10rem] py-3 text-black font-bold rounded-lg shadow-lg duration-300 bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90 hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
         >

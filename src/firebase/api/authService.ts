@@ -92,6 +92,7 @@ export async function signInWithGoogle(): Promise<UserCredential | null> {
 export async function signInWithGithub(): Promise<UserCredential | null> {
   try {
     const result = await signInWithPopup(auth, githubAuthProvider);
+    
     const collectionRef = collection(db, "users");
 
     const document = await getDoc(doc(collectionRef, result.user?.uid));

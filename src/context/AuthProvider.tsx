@@ -38,6 +38,7 @@ export const AuthContext = createContext<IAuthProvider>({
     console.log("no estas usando la funcion que es");
     return new Promise(() => {});
   },
+
   logOut: () => {
     console.log("no estas usando la funcion que es");
     return new Promise(() => {});

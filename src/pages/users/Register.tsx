@@ -3,6 +3,9 @@ import { Navigate, useNavigate, Link } from "react-router-dom";
 import registerImage from "../../assets/images/Register.jpg";
 import arrow from "../../assets/icons/arrow.svg";
 import xImage from "../../assets/icons/x.svg";
+import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-input";
+
 import {
   Client,
   ClientCreate,
@@ -53,25 +56,50 @@ export const Register = (prop: any) => {
   // FIXME - Hacer que el form se resetee cuando se cambia el tipo de usuario
   // FIXME - Utilizar esto en el submit
 
-  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
+  function handleContinue() {
+    if (!validForm()) return;
 
+    setStep(STEP_VIEW_DOCTOR);
+  }
+
+  function validForm() {
     if (password.length <= 7) {
       toast.warning("La contraseña debe tener al menos 8 caracteres");
-      return;
+      return false;
     }
 
     if (!email || !password || !nombre || !phone || !confirmarcontraseña) {
       toast.warning("No puedes dejar espacios en blanco", {
         position: "top-right",
       });
-      return;
+      return false;
     }
 
     if (password !== confirmarcontraseña) {
       toast.warning("Las contraseñas no coinciden");
-      return;
+      return false;
     }
+
+    //Estas validaciones son cuando eres doctor y estas en el segundo formulario
+
+    if (step === STEP_VIEW_DOCTOR) {
+      if (biography.length < 40) {
+        toast.warning("La biografía debe tener al menos 40 caracteres");
+        return false;
+      }
+
+      if (selectedSpecialties.length < 2) {
+        toast.warning("Debes seleccionar al menos 2 especialidades");
+        return false;
+      }
+    }
+    return true;
+  }
+
+  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+
+    if (!validForm()) return;
 
     try {
       if (tipoUsuario === UserType.DOCTOR) {
@@ -240,15 +268,11 @@ export const Register = (prop: any) => {
 
         <div className="flex flex-col gap-5 w-full">
           {/* <div> */}
-          <input
+          <PhoneInput
             className="rounded-lg p-4 border-2 border-primary-strong outline-none w-full"
             placeholder="Número de teléfono"
-            type="number"
-            pattern="[0-9]*"
             value={phone}
-            onChange={(e) =>
-              setPhone((v) => (e.target.validity.valid ? e.target.value : v))
-            }
+            onChange={(value) => setPhone(value || "")}
           />
           {/* </div> */}
           <input
@@ -272,7 +296,7 @@ export const Register = (prop: any) => {
       {/* TODO - Cambiar bg-green */}
       {tipoUsuario == UserType.DOCTOR ? (
         <button
-          onClick={() => setStep(STEP_VIEW_DOCTOR)}
+          onClick={handleContinue}
           className="w-full py-3 text-black font-bold rounded-lg shadow-lg flex flex-row justify-evenly duration-300 bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90 hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
         >
           <p className="ml-2">CONTINUAR</p>
