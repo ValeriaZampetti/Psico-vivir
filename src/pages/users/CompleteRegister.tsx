@@ -104,7 +104,7 @@ function CompleteRegister() {
           specialties: selectedSpecialties,
           numberOfReviews: 0,
           completed: true,
-          img: "",
+          img: "gs://psico-vivir.appspot.com/imagesUsers/default.png",
         };
 
         console.log(userFromUrl?.id);
@@ -133,7 +133,7 @@ function CompleteRegister() {
         phone: phone,
         type: tipoUsuario,
         completed: true,
-        img: "",
+        img: "gs://psico-vivir.appspot.com/imagesUsers/default.png",
       };
 
       const completed = await completeRegister(client, userFromUrl?.id ?? "");
