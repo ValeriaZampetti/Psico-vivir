@@ -31,8 +31,9 @@ import { auth, db } from "../config";
 
 export async function getUserById(userId: string): Promise<Client | Doctor> {
   const collectionRef = collection(db, "users");
-
+ 
   const document = await getDoc(doc(collectionRef, userId));
+ 
   const client = document.data()!;
   client.id = document.id;
   return client.type === 1 ? (client as Client) : (client as Doctor);

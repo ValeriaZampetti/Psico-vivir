@@ -118,7 +118,10 @@ export async function updateUser(
   user: ClientCreate | DoctorCreate,
   userId: string
 ): Promise<boolean> {
+
+  
   try {
+
     const collectionRef = collection(db, "users");
     const userRef = doc(collectionRef, userId);
 
