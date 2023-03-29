@@ -59,7 +59,6 @@ export async function getDoctorsPaginated(
 
   optionalWheres = optionalWheres || [];
 
-  console.log(docDoctorToStart ? "si docDoctorToStart" : "no docDoctorToStart");
   const numerOfEntitiesByPage = 10;
   const q = docDoctorToStart
     ? query(
@@ -78,19 +77,8 @@ export async function getDoctorsPaginated(
         limit(numerOfEntitiesByPage)
       );
 
-  // REVIEW - Para Sergio ver si lo hago en tiempo real
-  // const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  //   const cities = [];
-  //   querySnapshot.forEach((doc) => {
-  //       cities.push(doc.data().name);
-  //   });
-  //   console.log("Current cities in CA: ", cities.join(", "));
-  // });
-
   const querySnapshot = await getDocs(q);
-  // querySnapshot.forEach((doc) => {
-  //   console.log(doc.id, " => ", doc.data());
-  // });
+
   const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
 
   return { snapShot: querySnapshot, lastVisible };
@@ -125,7 +113,7 @@ export async function getClients(): Promise<Client[]> {
 export async function getSpecialties(): Promise<Specialty[]> {
   const collectionRef = collection(db, "specialties");
   const snapShot = await getDocs(collectionRef);
-  console.log({ snapShot });
+  
   return snapShot.docs.map((doc) => {
     return { id: doc.id, ...doc.data() } as Specialty;
   });
