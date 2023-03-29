@@ -47,7 +47,6 @@ function App() {
 
           <Route path="/psico" element={<ProtectedLayout />}>
             <Route index element={<Searcher />} />
-            <Route path="patientsreviews" element={<PatientsReviews />} /> {/* de mientras aqui*/}
             <Route path="profile/:id" element={<Profile />} />
             <Route path="appointments" element={<Reservations />} />
             <Route path="schedule/:id" element={<ScheduleAppointment />} />
@@ -62,6 +61,7 @@ function App() {
               element={<WriteReview />}
             />
             <Route path="doctor/:id" element={<ProfileDoctor />} />
+            <Route path="patientsreviews" element={<PatientsReviews />} /> {/* de mientras aqui*/}
             <Route path="*" element={<Error404 />} />
           </Route>
         </Routes>
