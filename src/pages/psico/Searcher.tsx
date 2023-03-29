@@ -1,16 +1,8 @@
-import {
-  DocumentData,
-  DocumentSnapshot,
-  QueryFieldFilterConstraint,
-  where,
-} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import DoctorCard from "../../components/DoctorCard";
 import { Dropdown } from "../../components/forms/Dropdown";
 import {
-  createMocked10Doctors,
   getDoctors,
-  getDoctorsPaginated,
   getSpecialties,
 } from "../../firebase/api/userService";
 import useInfiniteLoading from "../../hooks/useInfiniteLoading";

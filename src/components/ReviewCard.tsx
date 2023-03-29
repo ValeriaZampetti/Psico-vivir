@@ -2,7 +2,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { getDownloadURL, ref } from "firebase/storage";
 import React, { useEffect, useRef, useState } from "react";
 import StarRating from "../components/forms/StarRating";
-import { getUserById } from "../firebase/api/UserService";
+import { getUserById } from "../firebase/api/userService";
 import { db, storage } from "../firebase/config";
 import { useTimestampToString } from "../hooks/useTimestampToString";
 import { Client, Doctor } from "../interfaces/Client";

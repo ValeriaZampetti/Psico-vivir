@@ -6,7 +6,6 @@ export interface DropdownOption {
   label: string;
   value: string;
   onClick: () => void;
- 
 }
 
 interface Props {
@@ -19,7 +18,7 @@ export const Dropdown = (props: Props) => {
   const [showOptions, setShowOptions] = useState(false);
   const [optionSelected, setOptionSelected] = useState<string | null>(null);
 
-  const changeTitle = props.changeTitle || false
+  const changeTitle = props.changeTitle || true;
 
   useEffect(() => {
     function closeOptions(e: MouseEvent) {
@@ -71,6 +70,14 @@ export const Dropdown = (props: Props) => {
             {props.options?.map((option, index) => (
               <button
                 key={index}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    option.onClick();
+                    setOptionSelected(option.value);
+                    setShowOptions(false)
+                  }
+                }}
                 onClick={(e) => {
                   e.preventDefault();
                   option.onClick();
