@@ -308,6 +308,7 @@ export const Register = (prop: any) => {
         <div className="flex flex-col gap-5">
           <Dropdown
             title="Especialidades"
+            changeTitle={false}
             options={
               specialties
                 ? specialties.map((specialty) => {
@@ -340,7 +341,7 @@ export const Register = (prop: any) => {
                   <p className="text-black">{specialty}</p>
                   <img
                     src={xImage}
-                    className="h-4"
+                    className="h-4 cursor-pointer"
                     onClick={() => {
                       setSelectedSpecialties(
                         selectedSpecialties.filter((item) => item !== specialty)
