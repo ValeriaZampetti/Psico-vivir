@@ -105,6 +105,7 @@ function WriteReview() {
         message: comment,
         userId: user!.id,
         timestamp: Timestamp.now(),
+        doctorId: doctor!.id,
       };
 
       const documentReference = await createFeedback(feedback, doctor!.id);
