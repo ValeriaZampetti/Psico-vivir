@@ -17,6 +17,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { useAuth } from "../../hooks/useAuth";
 import { getSpecialties } from "../../firebase/api/userService";
 import { Specialty } from "../../interfaces/Specialty";
+import githubIcon from "../../assets/icons/github.svg";
 
 const STEP_VIEW_CLIENT = 1;
 const STEP_VIEW_DOCTOR = 2;
@@ -433,7 +434,7 @@ export const Register = (prop: any) => {
                 drop-shadow-md hover:drop-shadow-lg"
                 onClick={handleGithubSignIn}
               >
-                <img src={facebookIcon} />
+                <img src={githubIcon} className="h-[33px]"/>
               </button>
               <button
                 className="bg-white hover:bg-gray-100 active:ring-1 ring-black font-bold py-2 px-4 rounded-full 

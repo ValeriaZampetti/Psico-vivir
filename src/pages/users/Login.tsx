@@ -7,6 +7,7 @@ import googleIcon from "../../assets/icons/google.svg";
 import facebookIcon from "../../assets/icons/facebook.svg";
 import { useAuth } from "../../hooks/useAuth";
 import { ToastContainer, toast } from "react-toastify";
+import githubIcon from "../../assets/icons/github.svg";
 
 //import { Context } from "../store/appContext";
 //import Swal from "sweetalert2";\
@@ -167,7 +168,7 @@ export const LogIn = (props: any) => {
                 drop-shadow-md hover:drop-shadow-lg"
                   onClick={handleGithubSignIn}
                 >
-                  <img src={facebookIcon} />
+                  <img src={githubIcon} className="h-[33px]"/>
                 </button>
                 <button
                   className="bg-white hover:bg-gray-100 active:ring-1 ring-black font-bold py-2 px-4 rounded-full 
