@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate, useParams } from "react-router-dom";
 import a from "../../assets/mock/profile.png";
-import k from "../../assets/mock/pic.jpg";
+import k from "../../assets/images/default.png";
 import { getDoctorById } from "../../firebase/api/userService";
 import { Doctor, UserType } from "../../interfaces/Client";
 import { Chat, ChatCreate } from "../../interfaces/Chat";
@@ -24,7 +24,8 @@ import {
 import { Dropdown } from "../../components/forms/Dropdown";
 import { useAuth } from "../../hooks/useAuth";
 import { toast } from "react-toastify";
-import { db } from "../../firebase/config";
+import { db, storage } from "../../firebase/config";
+import { getDownloadURL, getMetadata, ref } from "firebase/storage";
 
 const AppointmentBooking = () => {
   const [startDate, setStartDate] = useState<Date>(
@@ -55,6 +56,34 @@ const AppointmentBooking = () => {
   useEffect(() => {
     initializeDoctor();
 
+    
+  const gsReference = ref(
+    storage,
+    `gs://psico-vivir.appspot.com/imagesUsers/${id}`
+  );
+
+const defaultGsReference = ref(
+storage,
+"gs://psico-vivir.appspot.com/imagesUsers/default.png"
+);
+
+const img = document.getElementById("profile-pic");
+
+getMetadata(gsReference)
+.then(() => {
+
+getDownloadURL(gsReference).then((url) => {
+  img?.setAttribute("src", url);
+});
+})
+.catch((error) => {
+console.log(error);
+
+getDownloadURL(defaultGsReference).then((url) => {
+  img?.setAttribute("src", url);
+});
+}); 
+    
     const collectionRef = collection(db, "chats");
 
     switch (user?.type) {
