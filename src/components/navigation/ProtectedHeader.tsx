@@ -19,9 +19,10 @@ function ProtectedHeader() {
 
   const doctorLinks = [
     { name: "Perfil", link: `profile/${user?.id}` },
-    { name: "Citas", link: "reservations" },
+    { name: "Citas", link: "appointments" },
     { name: "Chat", link: "chat" },
     { name: "Reviews", link: "patientsreviews" },
+    
   ];
 
   const buttonLogOut = (
@@ -59,8 +60,8 @@ function ProtectedHeader() {
           className="bg-primary-normal drop-shadow-md text-white border-2 border-primary-strong
             rounded-lg text-center duration-300 font-[Poppins] text-sm
             outline-none ring-offset-1 hover:ring-2 focus:ring-2 
-            ring-primary-strong h-11 w-24  flex justify-center items-center xl:w-32 xl:text-lg
-            font-bold hover:scale-105   active:bg-white active:text-primary-normal active:scale-95"
+            ring-primary-strong h-11 w-24 flex justify-center items-center xl:w-32 xl:text-lg
+            font-bold hover:scale-105  active:bg-white active:text-primary-normal active:scale-95"
           to="/users/register"
         >
           Registrarse
