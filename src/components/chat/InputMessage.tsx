@@ -3,6 +3,7 @@ import Attach from "../../assets/icons/paperclip.svg";
 import Image from "../../assets/icons/image.svg";
 import { useChat } from "../../hooks/useChat";
 import { useAuth } from "../../hooks/useAuth";
+import { UserType } from "../../interfaces/Client";
 
 // TODO - Si el doctor no habla, el cliente no puede
 function InputMessage() {
@@ -11,7 +12,7 @@ function InputMessage() {
   const [canTalk, setCanTalk] = useState<boolean>(true);
   const [placeholder, setPlaceholder] = useState<string>("Escribe un mensaje");
 
-  const {  sendMessage, currentChat } = useChat();
+  const { sendMessage, currentChat } = useChat();
   const { user } = useAuth();
 
   useEffect(() => {
@@ -53,9 +54,7 @@ function InputMessage() {
         type="text"
         className="w-full border-none outline-none text-lg placeholder:text-gray-400 
         disabled:cursor-not-allowed disabled:bg-white"
-        placeholder={
-          placeholder
-        }
+        placeholder={placeholder}
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={(e) => {
