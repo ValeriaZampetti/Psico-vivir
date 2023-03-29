@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
-import k from "../../assets/mock/pic.jpg";
+import k from "../../assets/images/default.png";
 import { getDoctorById } from "../../firebase/api/userService";
 import { Doctor } from "../../interfaces/Client";
 import StarRating from "../../components/forms/StarRating";
+import { storage } from "../../firebase/config";
+import { getDownloadURL, getMetadata, ref } from "firebase/storage";
 
 function ProfileDoctor() {
   const { id } = useParams();
@@ -18,6 +20,33 @@ function ProfileDoctor() {
 
   useEffect(() => {
     initializeDoctor();
+
+  const gsReference = ref(
+      storage,
+      `gs://psico-vivir.appspot.com/imagesUsers/${id}`
+    );
+  
+  const defaultGsReference = ref(
+  storage,
+  "gs://psico-vivir.appspot.com/imagesUsers/default.png"
+  );
+  
+  const img = document.getElementById("profile-pic");
+  
+  getMetadata(gsReference)
+  .then(() => {
+  
+  getDownloadURL(gsReference).then((url) => {
+    img?.setAttribute("src", url);
+  });
+  })
+  .catch((error) => {
+  console.log(error);
+  
+  getDownloadURL(defaultGsReference).then((url) => {
+    img?.setAttribute("src", url);
+  });
+  }); 
   }, []);
 
   const handleReserveButton = () => {
@@ -34,12 +63,12 @@ function ProfileDoctor() {
         <div className="py-5 md:flex">
           <div className="flex justify-center w-full md:w-1/3">
             <div className="w-2/3 ">
-              <img
-                src={k}
-                alt=""
-                className="border-8 border-primary-normal 
-                      rounded-full aspect-square w-full max-w-xs m-auto"
-              />
+              <div
+              className="border-8 border-primary-normal 
+                    rounded-full aspect-square w-full max-w-xs m-auto flex justify-center items-center overflow-hidden"
+              >
+                <img src={k}/>
+              </div>
             </div>
           </div>
 

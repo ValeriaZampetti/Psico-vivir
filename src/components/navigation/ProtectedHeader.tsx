@@ -22,14 +22,13 @@ function ProtectedHeader() {
     { name: "Citas", link: "appointments" },
     { name: "Chat", link: "chat" },
     { name: "Reviews", link: "patientsreviews" },
-    
   ];
 
   const buttonLogOut = (
     <li className="md:my-0 my-7">
       <button
         className="bg-[#ed4747] drop-shadow-md text-white border-2 border-primary-light
-        rounded-lg text-center duration-300 font-[Poppins] ml-3 
+        rounded-lg text-center duration-300 font-[Poppins]  
         outline-none ring-offset-1 hover:ring-2 focus:ring-2 
         ring-[#ed4747] h-11 w-24 text-sm flex justify-center items-center xl:w-32 xl:text-lg
         font-bold hover:scale-105   active:bg-white active:text-[#ed4747] active:scale-95"
@@ -103,7 +102,7 @@ function ProtectedHeader() {
         <ul
           className={`md:flex md:items-center md:pb-0 pb-12 absolute md:static gap-4 text-xl
           bg-secondary-normal md:z-auto z-[-1] left-0 w-3/4 md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${
-            open ? "top-28" : "top-[-24rem]"
+            open ? "top-18" : "top-[-24rem]"
           }`}
         >
           {user?.type === UserType.CLIENT ? clientLinksHtml : doctorLinksHtml}

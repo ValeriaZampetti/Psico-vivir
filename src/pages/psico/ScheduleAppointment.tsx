@@ -3,17 +3,29 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate, useParams } from "react-router-dom";
 import a from "../../assets/mock/profile.png";
-import k from "../../assets/mock/pic.jpg";
+import k from "../../assets/images/default.png";
 import { getDoctorById } from "../../firebase/api/userService";
 import { Doctor, UserType } from "../../interfaces/Client";
 import { Chat, ChatCreate } from "../../interfaces/Chat";
-import { addAppointmentToChat, createChat, getChatsByDoctorId } from "../../firebase/api/chatService";
+import {
+  addAppointmentToChat,
+  createChat,
+  getChatsByDoctorId,
+} from "../../firebase/api/chatService";
 import { Appointment } from "../../interfaces/Appointment";
-import { collection, onSnapshot, orderBy, query, Timestamp, where } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  Timestamp,
+  where,
+} from "firebase/firestore";
 import { Dropdown } from "../../components/forms/Dropdown";
 import { useAuth } from "../../hooks/useAuth";
 import { toast } from "react-toastify";
-import { db } from "../../firebase/config";
+import { db, storage } from "../../firebase/config";
+import { getDownloadURL, getMetadata, ref } from "firebase/storage";
 
 const AppointmentBooking = () => {
   const [startDate, setStartDate] = useState<Date>(
@@ -43,6 +55,34 @@ const AppointmentBooking = () => {
 
   useEffect(() => {
     initializeDoctor();
+
+    
+  const gsReference = ref(
+    storage,
+    `gs://psico-vivir.appspot.com/imagesUsers/${id}`
+  );
+
+const defaultGsReference = ref(
+storage,
+"gs://psico-vivir.appspot.com/imagesUsers/default.png"
+);
+
+const img = document.getElementById("profile-pic");
+
+getMetadata(gsReference)
+.then(() => {
+
+getDownloadURL(gsReference).then((url) => {
+  img?.setAttribute("src", url);
+});
+})
+.catch((error) => {
+console.log(error);
+
+getDownloadURL(defaultGsReference).then((url) => {
+  img?.setAttribute("src", url);
+});
+}); 
     
     const collectionRef = collection(db, "chats");
 
@@ -81,7 +121,6 @@ const AppointmentBooking = () => {
 
         return () => clientUnsub();
     }
-
   }, []);
 
   function validateValues(): boolean {
@@ -126,23 +165,32 @@ const AppointmentBooking = () => {
           return;
         }
 
+        if (!chatClientDoctor.lastAppointmentReviewed) {
+          toast.error(
+            "Debes calificar la última cita para poder agendar una nueva"
+          );
+          return;
+        }
+
         addAppointmentToChat(chatClientDoctor, newAppointment);
         toast.success("Cita creada con éxito");
+        navigate(`/psico/checkout/${chatClientDoctor.id}`);
         return;
       }
 
-      
       const chat: ChatCreate = {
         clientId: user?.id ?? "",
         doctorId: doctor?.id ?? "",
         lastAppointmentActive: true,
         appointments: [newAppointment],
+        lastAppointmentReviewed: false,
       };
 
-      await createChat(chat);
+      const id = await createChat(chat);
       toast.success("Cita creada con éxito");
+      navigate(`/psico/checkout/${id}`);
     } catch (error) {
-      toast.error("Error al crear la cita")
+      toast.error("Error al crear la cita");
     }
 
     console.log(startDate.toISOString());

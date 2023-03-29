@@ -1,41 +1,26 @@
-import { collection, DocumentData, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  DocumentData,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { comment } from "postcss";
 import React, { useEffect, useRef, useState } from "react";
 import StarRating from "../../components/forms/StarRating";
 import ReviewCard from "../../components/ReviewCard";
 import { db } from "../../firebase/config";
 import { useAuth } from "../../hooks/useAuth";
-import { Doctor } from "../../interfaces/Client";
+import { Doctor, UserType } from "../../interfaces/Client";
 import { Feedback } from "../../interfaces/feedback";
+import Error404 from "../Error404";
 
 function PatientsReviews() {
   const { user } = useAuth();
   const [message, setMessage] = useState<Feedback[]>([]);
   const [doctor, setDoctor] = useState<Doctor | null>(null);
-  // const [feedback, setFeedback] = useState<Feedback | null>(null);
 
-  // const [timestamp, setTimestamp] = useState("");
-
-  // const getComments = async () => {
-  //   const feedbackCollection = collection(db, "feedback");
-  //   const feedbackSnapshot = await getDocs(feedbackCollection);
-  //   const comments = feedbackSnapshot.docs.map((doc) => doc.data());
-
-    // console.log(comments);
-
-  //   setMessage(comments);
-
-  //   //   if (feedbackSnapshot) {
-  //   //     console.log(comments[0]["rating"])
-  //   //     for (let index = 0; index < comments.length; index++) { // aqui hay que usar la funcion map no un ciclo for
-  //   //       const commentsDate = comments[index]["timestamp"]["seconds"];
-  //   //       const commentsMessage = comments[index]["message"];
-  //   //       console.log(commentsDate)
-  //   //       setTimestamp(commentsDate);
-  //   //       setMessage(commentsMessage);
-  //   //     }
-  //   //   }
-  // };
+  const [errorMessage, setErrorMessage] = useState("");
 
   const getComments = async () => {
     const feedbackCollection = collection(db, "feedback");
@@ -54,18 +39,29 @@ function PatientsReviews() {
         doctorId: data.doctorId,
       } as Feedback;
     });
-  
+
     setMessage(comments);
-    
+
     // if(user?.id == data.doctorId){
     // }
   };
 
   useEffect(() => {
+    if (!user) {
+      setErrorMessage("No tiene sesión iniciada");
+      return;
+    }
+
+    if (user?.type !== UserType.DOCTOR) {
+      setErrorMessage("No tiene permisos para acceder a esta página");
+      return;
+    }
+
     getComments();
-  }, []);
+  }, [user]);
 
-
+  if (!user || user.type === UserType.CLIENT)
+    return <Error404 errorMessage={errorMessage} />;
 
   return (
     <div className="p-5 lg:p-10">
@@ -74,14 +70,22 @@ function PatientsReviews() {
       </div>
 
       <div>
+        {message.length === 0 && (
+          <div className="text-center">
+            <h1 className="text-3xl font-bold">
+              No ha recibido ningun review aún
+            </h1>
+            <h2 className="text-x font-mediuml">
+              Empiece a chatear con clientes para poder visualizarlos
+            </h2>
+          </div>
+        )}
         {message.map((comment) => (
           <div key={comment.id}>
             <ReviewCard
               doctor={doctor!}
               feedback={comment}
               userId={comment.userId}
-
-
             />
             {/* <p>{comment.rating}</p>
             <p>{comment.message}</p>
