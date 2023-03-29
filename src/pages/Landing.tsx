@@ -3,8 +3,10 @@ import Landing1 from "../assets/images/Landing1.jpg";
 import Google from "../assets/icons/google.svg";
 import Arrow from "../assets/icons/arrow.svg";
 import Opinion from "../assets/images/opinion.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import image from "../assets/images/psicoLogin.png";
+import { useAuth } from "../hooks/useAuth";
+import { toast } from "react-toastify";
 
 function Landing() {
   const circleSteps = [
@@ -55,6 +57,18 @@ function Landing() {
       },
     },
   ];
+
+  const { logInWithGoogle } = useAuth();
+  const navigate = useNavigate();
+
+  async function handleGoogleLogin() {
+    try {
+      const userCredential = await logInWithGoogle();
+      navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  }
 
   return (
     <div className="flex flex-col justify-center pt-10">
