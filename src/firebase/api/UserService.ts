@@ -200,27 +200,3 @@ export async function updateRankingDoctor(
     numberOfReviews: doctorData.numberOfReviews + 1,
   });
 }
-
-export async function createMocked10Doctors() {
-  const collectionRef = collection(db, "users");
-
-  for (let index = 0; index < 10; index++) {
-    const doctor: Doctor = {
-      name: `Doctor ${index}`,
-      email: `${index}@gmail.com`,
-      biography: `Biografia Biografia Biografia BiografiaBiografiaBiografiaBiografia Biografia Biografia Biografia ${index}`,
-      ranking: 4.5,
-      numberOfReviews: 10,
-      type: 2,
-      specialties: ["Ansiedad", "Depresión", "Estrés"],
-      countryCode: 58,
-      phone: 41234567,
-      completed: true,
-      createdAt: Timestamp.now(),
-      img: "https://picsum.photos/200/300",
-      id: "",
-    };
-
-    const docRef = await addDoc(collectionRef, doctor);
-  }
-}

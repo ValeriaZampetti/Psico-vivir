@@ -50,7 +50,7 @@ function Checkout() {
                     purchase_units: [
                       {
                         amount: {
-                          value: "90.0",
+                          value: "20.0",
                           currency_code: "USD",
                         },
                       },

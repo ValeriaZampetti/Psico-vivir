@@ -14,6 +14,7 @@ import {
 import {
   Client,
   ClientCreate,
+  Doctor,
   DoctorCreate,
   UserNotAuthCreate,
 } from "../../interfaces/Client";
@@ -117,7 +118,7 @@ export async function signInWithGithub(): Promise<UserCredential | null> {
 }
 
 export async function updateUser(
-  user: ClientCreate | DoctorCreate,
+  user: ClientCreate | DoctorCreate | Client | Doctor,
   userId: string
 ): Promise<boolean> {
   try {
