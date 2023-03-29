@@ -74,7 +74,11 @@ export const LogIn = (props: any) => {
   const handleGoogleSignIn = async () => {
     try {
       const userCredential = await logInWithGoogle();
-      navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+      if (userCredential) {
+        navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+        return;
+      }
+      navigate("/psico");
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -83,7 +87,11 @@ export const LogIn = (props: any) => {
   const handleGithubSignIn = async () => {
     try {
       const userCredential = await logInWithGithub();
-      navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+      if (userCredential) {
+        navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+        return;
+      }
+      navigate("/psico");
     } catch (error: any) {
       toast.error(error.message);
     }

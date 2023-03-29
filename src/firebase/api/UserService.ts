@@ -1,4 +1,3 @@
-import { UserCredential, createUserWithEmailAndPassword } from "firebase/auth";
 import {
   collection,
   query,
@@ -18,22 +17,18 @@ import {
   updateDoc,
   WhereFilterOp,
   QueryFieldFilterConstraint,
+  Timestamp,
 } from "firebase/firestore";
 import { Chat } from "../../interfaces/Chat";
-import {
-  Doctor,
-  Client,
-  ClientCreate,
-  DoctorCreate,
-} from "../../interfaces/Client";
+import { Doctor, Client } from "../../interfaces/Client";
 import { Specialty } from "../../interfaces/Specialty";
-import { auth, db } from "../config";
+import { db } from "../config";
 
 export async function getUserById(userId: string): Promise<Client | Doctor> {
   const collectionRef = collection(db, "users");
- 
+
   const document = await getDoc(doc(collectionRef, userId));
- 
+
   const client = document.data()!;
   client.id = document.id;
   return client.type === 1 ? (client as Client) : (client as Doctor);
@@ -55,7 +50,7 @@ export async function getDoctors(): Promise<Doctor[]> {
 
 export async function getDoctorsPaginated(
   docDoctorToStart?: DocumentSnapshot<DocumentData> | null,
-  optionalWheres?: QueryFieldFilterConstraint[],
+  optionalWheres?: QueryFieldFilterConstraint[]
 ): Promise<{
   snapShot: QuerySnapshot<DocumentData>;
   lastVisible: DocumentSnapshot<DocumentData> | null;
@@ -218,37 +213,26 @@ export async function updateRankingDoctor(
   });
 }
 
-async function filterDoctorsPaginated(
-  specialtyIds: string[],
-  name: string,
-  optionalWheres: QueryFieldFilterConstraint[],
-  docDoctorToStart?: DocumentSnapshot<DocumentData> | null
-): Promise<{
-  snapShot: QuerySnapshot<DocumentData>;
-  lastVisible: DocumentSnapshot<DocumentData> | null;
-}> {
+export async function createMocked10Doctors() {
   const collectionRef = collection(db, "users");
 
-  const numerOfEntitiesByPage = 10;
+  for (let index = 0; index < 10; index++) {
+    const doctor: Doctor = {
+      name: `Doctor ${index}`,
+      email: `${index}@gmail.com`,
+      biography: `Biografia Biografia Biografia BiografiaBiografiaBiografiaBiografia Biografia Biografia Biografia ${index}`,
+      ranking: 4.5,
+      numberOfReviews: 10,
+      type: 2,
+      specialties: ["Ansiedad", "Depresión", "Estrés"],
+      countryCode: 58,
+      phone: 41234567,
+      completed: true,
+      createdAt: Timestamp.now(),
+      img: "https://picsum.photos/200/300",
+      id: "",
+    };
 
-  const q = docDoctorToStart
-    ? query(
-        collectionRef,
-        where("type", "==", 2),
-        orderBy("ranking", "desc"),
-        startAfter(docDoctorToStart),
-        limit(numerOfEntitiesByPage)
-      )
-    : query(
-        collectionRef,
-        where("type", "==", 2),
-        orderBy("ranking", "desc"),
-        ...optionalWheres,
-        limit(numerOfEntitiesByPage)
-      );
-
-  const querySnapshot = await getDocs(q);
-  const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
-
-  return { snapShot: querySnapshot, lastVisible };
+    const docRef = await addDoc(collectionRef, doctor);
+  }
 }

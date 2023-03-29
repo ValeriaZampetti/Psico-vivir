@@ -185,7 +185,11 @@ export const Register = (prop: any) => {
   const handleGoogleSignIn = async () => {
     try {
       const userCredential = await logInWithGoogle();
-      navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+      if (userCredential) {
+        navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+        return;
+      }
+      navigate("/psico");
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -194,7 +198,11 @@ export const Register = (prop: any) => {
   const handleGithubSignIn = async () => {
     try {
       const userCredential = await logInWithGithub();
-      navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+      if (userCredential) {
+        navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+        return;
+      }
+      navigate("/psico");
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -399,7 +407,7 @@ export const Register = (prop: any) => {
             </Link>
           </p>
           <h1 className="text-2xl font-bold text-center">Bienvenido!</h1>
-          
+
           <h2 className="text-center text-xl font-medium">
             Registrate ingresando los siguientes datos
           </h2>
