@@ -5,26 +5,31 @@ import { useNavigate, useParams } from "react-router-dom";
 import a from "../../assets/mock/profile.png";
 import k from "../../assets/mock/pic.jpg";
 import { getDoctorById } from "../../firebase/api/userService";
-import { Doctor } from "../../interfaces/Client";
+import { Doctor, UserType } from "../../interfaces/Client";
 import { Chat, ChatCreate } from "../../interfaces/Chat";
-import { createChat, getChatsByDoctorId } from "../../firebase/api/chatService";
+import { addAppointmentToChat, createChat, getChatsByDoctorId } from "../../firebase/api/chatService";
 import { Appointment } from "../../interfaces/Appointment";
-import { Timestamp } from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query, Timestamp, where } from "firebase/firestore";
 import { Dropdown } from "../../components/forms/Dropdown";
 import { useAuth } from "../../hooks/useAuth";
+import { toast } from "react-toastify";
+import { db } from "../../firebase/config";
 
 const AppointmentBooking = () => {
   const [startDate, setStartDate] = useState<Date>(
     new Date(new Date().setHours(0, 0, 0, 0))
   );
-  const navigate = useNavigate();
-  const { id } = useParams();
+  const [selectedDuration, setSelectedDuration] = useState<number>(0);
 
   const [doctor, setDoctor] = useState<Doctor | null>(null);
   const [chats, setChats] = useState<Chat[]>([]);
-  const [selectedDuration, setSelectedDuration] = useState<number>(0);
 
-    const {user} = useAuth()
+  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState("");
+
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   const initializeDoctor = async () => {
     const doctor = await getDoctorById(id ?? "");
@@ -38,43 +43,114 @@ const AppointmentBooking = () => {
 
   useEffect(() => {
     initializeDoctor();
-    initilizeChats();
+    
+    const collectionRef = collection(db, "chats");
+
+    switch (user?.type) {
+      case UserType.DOCTOR:
+        const doctorQuery = query(
+          collectionRef,
+          where("doctorId", "==", user!.id),
+          orderBy("updatedAt", "desc")
+        );
+
+        const doctorUnsub = onSnapshot(doctorQuery, (querySnapshot) => {
+          setChats(
+            querySnapshot.docs.map(
+              (doc) => ({ id: doc.id, ...doc.data() } as Chat)
+            )
+          );
+        });
+
+        return () => doctorUnsub();
+
+      case UserType.CLIENT:
+        const clientQuery = query(
+          collectionRef,
+          where("clientId", "==", user!.id),
+          orderBy("updatedAt", "desc")
+        );
+
+        const clientUnsub = onSnapshot(clientQuery, (querySnapshot) => {
+          setChats(
+            querySnapshot.docs.map(
+              (doc) => ({ id: doc.id, ...doc.data() } as Chat)
+            )
+          );
+        });
+
+        return () => clientUnsub();
+    }
+
   }, []);
 
-  const handleSubmit = (e: any) => {
+  function validateValues(): boolean {
+    if (selectedDuration === 0) {
+      toast.error("Selecciona una duración");
+      return false;
+    }
+
+    if (title.length <= 5) {
+      toast.error("El título necesita al menos 5 caracteres");
+      return false;
+    }
+
+    if (description.length <= 20) {
+      toast.error("La descripción necesita al menos 20 caracteres");
+      return false;
+    }
+
+    return true;
+  }
+
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    if(checkIfChatExists()){
-      return 
-    }
+    if (!validateValues()) return;
 
-    const newAppointment: Appointment = {
-      title: "",
-      description: textareaValue,
-      date: Timestamp.fromDate(startDate),
-      duration: selectedDuration,
-      paid: false,
-      clientCanTalk: false,
-      messages: []
-    }
+    try {
+      const chatClientDoctor = checkIfChatExists();
+      const newAppointment: Appointment = {
+        title: title,
+        description: description,
+        date: Timestamp.fromDate(startDate),
+        duration: selectedDuration,
+        paid: false,
+        clientCanTalk: false,
+        messages: [],
+      };
 
-    const chat: ChatCreate = {
-      clientId: user?.id ?? "",
-      doctorId: doctor?.id ?? "",
-      lastAppointmentActive: true,
-      appointments: [newAppointment]
-    }
+      if (chatClientDoctor) {
+        if (chatClientDoctor.lastAppointmentActive) {
+          toast.error("Ya tienes una cita activa con este doctor");
+          return;
+        }
 
-    createChat(chat)
+        addAppointmentToChat(chatClientDoctor, newAppointment);
+        toast.success("Cita creada con éxito");
+        return;
+      }
+
+      
+      const chat: ChatCreate = {
+        clientId: user?.id ?? "",
+        doctorId: doctor?.id ?? "",
+        lastAppointmentActive: true,
+        appointments: [newAppointment],
+      };
+
+      await createChat(chat);
+      toast.success("Cita creada con éxito");
+    } catch (error) {
+      toast.error("Error al crear la cita")
+    }
 
     console.log(startDate.toISOString());
   };
 
-  const [textareaValue, setTextareaValue] = useState("");
-
-  function checkIfChatExists(): boolean {
-    const chat = chats.find((chat) => chat.clientId === id);
-    return chat !== undefined;
+  function checkIfChatExists(): Chat | null {
+    const chat = chats.find((chat) => chat.clientId === user?.id);
+    return chat ?? null;
   }
 
   return (
@@ -140,18 +216,31 @@ const AppointmentBooking = () => {
 
             <div className="flex flex-col self-center md:self-start">
               <label htmlFor="biography" className="font-medium text-2xl">
-                Descripción de la cita:
+                Titulo de la cita
+              </label>
+              <input
+                onChange={(e) => setTitle(e.target.value)}
+                value={title}
+                className="w-10/12 max-w-[300px] h-12 p-4 mt-2 rounded-3xl border-4 border-secondary-normal font-semibold "
+                placeholder="Título"
+              />
+            </div>
+
+            <div className="flex flex-col self-center md:self-start">
+              <label htmlFor="biography" className="font-medium text-2xl">
+                Descripció n de la cita:
               </label>
               <textarea
-                onChange={(e) => setTextareaValue(e.target.value)}
+                onChange={(e) => setDescription(e.target.value)}
                 id="biography"
-                className="md:w-10/12 max-w-[300px] h-40 p-4 mt-2 rounded-3xl border-4 border-secondary-normal font-semibold md:max-w-sm"
+                className="w-10/12 h-40 p-4 mt-2 rounded-3xl border-4 border-secondary-normal font-semibold max-w-sm resize-y"
                 placeholder="Aqui la descripción de la cita"
-              ></textarea>
+              />
             </div>
 
             <div className="hidden md:flex justify-center mt-12">
               <button
+                onClick={handleSubmit}
                 className="bg-secondary-normal h-12 w-32 border-4 border-primary-normal
             rounded-2xl text-primary-normal font-bold hidden md:block hover:scale-105"
               >
@@ -162,7 +251,7 @@ const AppointmentBooking = () => {
 
           <section className="flex flex-col items-center md:items-baseline">
             <div
-              className="backdrop-blur-lg bg-quaternary-normal drop-shadow-lg
+              className="backdrop-blur-lg bg-quaternary-normal drop-shadow-lg w-full
           py-6 lg:px-6 px-3 rounded-2xl justify-center"
             >
               <h1 className="text-xl font-bold text-center">Contactos</h1>
