@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import StarRating from "../../components/forms/StarRating";
 import Profile from "../../assets/mock/pic.jpg";
 import { Client, Doctor } from "../../interfaces/Client"; // Pasarle el nombre del doc auto
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { useParams } from "react-router-dom";
 import {
@@ -14,7 +14,7 @@ import {
   getClientById,
   getDoctorById,
   updateRankingDoctor,
-} from "../../firebase/api/UserService";
+} from "../../firebase/api/userService";
 import { Chat } from "../../interfaces/Chat";
 import Loading from "../../components/Loading";
 import Error404 from "../Error404";
@@ -104,6 +104,7 @@ function WriteReview() {
         rating: rating,
         message: comment,
         userId: user!.id,
+        timestamp: Timestamp.now(),
       };
 
       const documentReference = await createFeedback(feedback, doctor!.id);
@@ -153,7 +154,7 @@ function WriteReview() {
         <img
           src={Profile}
           alt="doctor-profile-pic"
-          className="h-40 md:h-48 lg:h-64 rounded-full border-rose-300 border-8 mb-4 md:mb-6"
+          className="h-40 md:h-48 lg:h-64 rounded-full border-primary-normal border-8 mb-4 md:mb-6"
         />
 
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium text-center border-solid drop-shadow-md">
@@ -172,7 +173,7 @@ function WriteReview() {
           </h3>
           <textarea
             placeholder="Escribe tu comentario aqui..."
-            className="rounded-lg px-4 resize-none h-24 md:h-32 w-full border-2 border-rose-300 outline-none mt-4 md:mt-6"
+            className="rounded-lg px-4 resize-none h-24 md:h-32 w-full border-2 border-primary-normal outline-none mt-4 md:mt-6"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             required={true}

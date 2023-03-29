@@ -9,7 +9,7 @@ import Landing from "./pages/Landing";
 import Chat from "./pages/psico/Chat";
 import Checkout from "./pages/psico/Checkout";
 import Profile from "./pages/psico/Profile";
-import Reservations from "./pages/psico/DoctorReservation";
+import Reservations from "./pages/psico/Reservation";
 import Searcher from "./pages/psico/Searcher";
 import WriteReview from "./pages/psico/WriteReview";
 import Login from "./pages/users/Login";
@@ -41,18 +41,21 @@ function App() {
             <Route path="register" element={<Register />} />
             <Route path="completeRegister/:id" element={<CompleteRegister />} />
             <Route path="*" element={<Error404 />} />
-            <Route path="patientsreviews" element={<PatientsReviews />} />{" "}
-            {/* de mientras aqui*/}
+            <Route path="patientsreviews" element={<PatientsReviews />} /> {/* de mientras aqui*/}
             <Route path="checkout" element={<Checkout />} />
+            {/* <Route path="reviewcard" element={<ReviewCard doctor={undefined} feedback={undefined} userId={""} />} /> de mientras aqui */}
           </Route>
 
           <Route path="/psico" element={<ProtectedLayout />}>
             <Route index element={<Searcher />} />
             <Route path="profile/:id" element={<Profile />} />
-            <Route path="reservations" element={<Reservations />} />
+            <Route path="appointments" element={<Reservations />} />
             <Route path="schedule/:id" element={<ScheduleAppointment />} />
-            <Route path="chat" element={<Chat />} />
-            <Route path="chats" element={<Chat />} />
+
+            {["chat", "chats"].map((path, index) => (
+              <Route path={path} element={<Chat />} key={index} />
+            ))}
+
             <Route path="checkout" element={<Checkout />} />
             <Route
               path="writeReview/:chatId/:index"

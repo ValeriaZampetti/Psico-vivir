@@ -10,7 +10,7 @@ import {
 } from "../firebase/api/authService";
 import { getUserById } from "../firebase/api/UserService";
 import { auth } from "../firebase/config";
-import { Client, ClientCreate, DoctorCreate } from "../interfaces/Client";
+import { Client, ClientCreate, Doctor, DoctorCreate } from "../interfaces/Client";
 import { IAuthProvider } from "../interfaces/providers/IAuthProvider";
 
 interface IProps {
@@ -38,12 +38,17 @@ export const AuthContext = createContext<IAuthProvider>({
     console.log("no estas usando la funcion que es");
     return new Promise(() => {});
   },
+
   logOut: () => {
     console.log("no estas usando la funcion que es");
     return new Promise(() => {});
   },
 
   completeRegister: (client: ClientCreate | DoctorCreate, userId: string) => {
+    console.log("no estas usando la funcion que es");
+    return new Promise(() => {});
+  },
+  updateUser: (client: ClientCreate | DoctorCreate, userId: string) => {
     console.log("no estas usando la funcion que es");
     return new Promise(() => {});
   },
@@ -117,6 +122,18 @@ function AuthProvider({ children }: IProps) {
     setUser(null);
   }
 
+  async function updateCurrentUser(
+    client: ClientCreate | DoctorCreate | Doctor | Client,
+    userId: string
+  ): Promise<boolean> {
+    const result = await updateUser(client, userId);
+    if (result) {
+      setUser(client as Client | Doctor);
+    }
+
+    return result;
+  }
+
   const value: IAuthProvider = {
     user,
     loading,
@@ -126,6 +143,7 @@ function AuthProvider({ children }: IProps) {
     logInWithGithub,
     logOut,
     completeRegister,
+    updateUser: updateCurrentUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

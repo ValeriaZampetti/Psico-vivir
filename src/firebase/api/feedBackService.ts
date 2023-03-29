@@ -10,7 +10,7 @@ import {
 import { Chat } from "../../interfaces/Chat";
 import { Feedback, FeedbackCreate } from "../../interfaces/feedback";
 import { db } from "../config";
-import { updateRankingDoctor } from "./UserService";
+import { updateRankingDoctor } from "./userService";
 
 export async function createFeedback(
   feedback: FeedbackCreate,

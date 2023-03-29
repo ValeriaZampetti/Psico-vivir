@@ -13,7 +13,7 @@ import {
 import {
   getClientsByChats,
   getDoctorsByChats,
-} from "../firebase/api/UserService";
+} from "../firebase/api/userService";
 import { db } from "../firebase/config";
 import { useAuth } from "../hooks/useAuth";
 import { Chat } from "../interfaces/Chat";
@@ -74,6 +74,20 @@ function ChatProvider({ children }: IProps) {
         setUsersToChat(clients);
         setUsersActive(clientsActive);
         setUsersInactive(clientsInactive);
+
+        const chatId = params.get("chatId");
+        if (chatId !== null) {
+          const chat = chats.find((chat) => chat.id === chatId) ?? null;
+          setCurrentChat(chat);
+
+          const doctorToChat = clients.find(
+            (user) => user.id === chat?.clientId
+          );
+          console.log(clients);
+          setCurrentUserToChat(doctorToChat ?? null);
+
+          
+        }
         break;
 
       case UserType.CLIENT:
@@ -83,14 +97,20 @@ function ChatProvider({ children }: IProps) {
         setUsersToChat(doctors);
         setUsersActive(doctorsActive);
         setUsersInactive(doctorsInactive);
-        break;
-    }
 
-    const chatId = params.get("chatId");
-    if (chatId !== null) {
-      const chat = chats.find((chat) => chat.id === chatId) ?? null;
-      console.log(chatId);
-      setCurrentChat(chat);
+        const chatId2 = params.get("chatId");
+        if (chatId2 !== null) {
+          const chat = chats.find((chat) => chat.id === chatId2) ?? null;
+          console.log(chatId2);
+          setCurrentChat(chat);
+
+          const doctorToChat = doctors.find(
+            (user) => user.id === chat?.doctorId
+          );
+
+          setCurrentUserToChat(doctorToChat ?? null);
+        }
+        break;
     }
   }
 

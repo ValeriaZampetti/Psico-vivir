@@ -10,7 +10,6 @@ function LandingHeader() {
     { name: "Sobre nosotros", link: "#AboutUs" },
     { name: "Servicios", link: "#Services" },
     { name: "Opiniones", link: "#Opinions" },
-    { name: "Contacto", link: "#Contact" },
   ];
 
   const [open, setOpen] = useState(false);
@@ -91,6 +90,11 @@ function LandingHeader() {
               </a>
             </li>
           ))}
+          {user != null? <li key="Perfil" className="md:my-0 my-7">
+            <Link to={`/psico/profile/${user?.id}`} className="text-black hover:text-primary-strong duration-500">
+              Perfil
+            </Link>
+          </li>: <></>}
           {user ? buttonLogOut : buttonsNotLogIn}
         </ul>
       </header>

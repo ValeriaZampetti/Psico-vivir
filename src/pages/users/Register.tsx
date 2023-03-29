@@ -3,6 +3,9 @@ import { Navigate, useNavigate, Link } from "react-router-dom";
 import registerImage from "../../assets/images/Register.jpg";
 import arrow from "../../assets/icons/arrow.svg";
 import xImage from "../../assets/icons/x.svg";
+import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-input";
+
 import {
   Client,
   ClientCreate,
@@ -15,8 +18,9 @@ import facebookIcon from "../../assets/icons/facebook.svg";
 import { Dropdown } from "../../components/forms/Dropdown";
 import { ToastContainer, toast } from "react-toastify";
 import { useAuth } from "../../hooks/useAuth";
-import { getSpecialties } from "../../firebase/api/UserService";
+import { getSpecialties } from "../../firebase/api/userService";
 import { Specialty } from "../../interfaces/Specialty";
+import githubIcon from "../../assets/icons/github.svg";
 
 const STEP_VIEW_CLIENT = 1;
 const STEP_VIEW_DOCTOR = 2;
@@ -53,25 +57,50 @@ export const Register = (prop: any) => {
   // FIXME - Hacer que el form se resetee cuando se cambia el tipo de usuario
   // FIXME - Utilizar esto en el submit
 
-  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
+  function handleContinue() {
+    if (!validForm()) return;
 
+    setStep(STEP_VIEW_DOCTOR);
+  }
+
+  function validForm() {
     if (password.length <= 7) {
       toast.warning("La contraseña debe tener al menos 8 caracteres");
-      return;
+      return false;
     }
 
     if (!email || !password || !nombre || !phone || !confirmarcontraseña) {
       toast.warning("No puedes dejar espacios en blanco", {
         position: "top-right",
       });
-      return;
+      return false;
     }
 
     if (password !== confirmarcontraseña) {
       toast.warning("Las contraseñas no coinciden");
-      return;
+      return false;
     }
+
+    //Estas validaciones son cuando eres doctor y estas en el segundo formulario
+
+    if (step === STEP_VIEW_DOCTOR) {
+      if (biography.length < 40) {
+        toast.warning("La biografía debe tener al menos 40 caracteres");
+        return false;
+      }
+
+      if (selectedSpecialties.length < 2) {
+        toast.warning("Debes seleccionar al menos 2 especialidades");
+        return false;
+      }
+    }
+    return true;
+  }
+
+  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+
+    if (!validForm()) return;
 
     try {
       if (tipoUsuario === UserType.DOCTOR) {
@@ -86,8 +115,13 @@ export const Register = (prop: any) => {
           specialties: selectedSpecialties,
           numberOfReviews: 0,
           completed: true,
+          img: "gs://psico-vivir.appspot.com/imagesUsers/default.png"
         };
+        console.log("FUNCIONAAAA");
+
         const userCredential = await register(doctor, password);
+        console.log("AAAAA");
+
         if (userCredential) {
           toast.success("Usuario creado exitosamente", {
             position: "top-right",
@@ -110,6 +144,7 @@ export const Register = (prop: any) => {
         countryCode,
         type: tipoUsuario,
         completed: true,
+        img: "gs://psico-vivir.appspot.com/imagesUsers/default.png"
       };
 
       const userCredential = await register(client, password);
@@ -181,15 +216,24 @@ export const Register = (prop: any) => {
   const handleGoogleSignIn = async () => {
     try {
       const userCredential = await logInWithGoogle();
-      navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+      if (userCredential) {
+        navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+        return;
+      }
+      navigate("/psico");
     } catch (error: any) {
       toast.error(error.message);
     }
   };
+
   const handleGithubSignIn = async () => {
     try {
       const userCredential = await logInWithGithub();
-      navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+      if (userCredential) {
+        navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+        return;
+      }
+      navigate("/psico");
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -236,15 +280,11 @@ export const Register = (prop: any) => {
 
         <div className="flex flex-col gap-5 w-full">
           {/* <div> */}
-          <input
+          <PhoneInput
             className="rounded-lg p-4 border-2 border-primary-strong outline-none w-full"
             placeholder="Número de teléfono"
-            type="number"
-            pattern="[0-9]*"
             value={phone}
-            onChange={(e) =>
-              setPhone((v) => (e.target.validity.valid ? e.target.value : v))
-            }
+            onChange={(value) => setPhone(value || "")}
           />
           {/* </div> */}
           <input
@@ -268,7 +308,7 @@ export const Register = (prop: any) => {
       {/* TODO - Cambiar bg-green */}
       {tipoUsuario == UserType.DOCTOR ? (
         <button
-          onClick={() => setStep(STEP_VIEW_DOCTOR)}
+          onClick={handleContinue}
           className="w-full py-3 text-black font-bold rounded-lg shadow-lg flex flex-row justify-evenly duration-300 bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90 hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100"
         >
           <p className="ml-2">CONTINUAR</p>
@@ -295,6 +335,7 @@ export const Register = (prop: any) => {
         <div className="flex flex-col gap-5">
           <Dropdown
             title="Especialidades"
+            changeTitle={false}
             options={
               specialties
                 ? specialties.map((specialty) => {
@@ -302,6 +343,12 @@ export const Register = (prop: any) => {
                       value: specialty.id,
                       label: specialty.name,
                       onClick: () => {
+                        if (selectedSpecialties.length === 5) {
+                          toast.error(
+                            "No puedes seleccionar más de 5 especialidades"
+                          );
+                          return;
+                        }
                         setSelectedSpecialties([
                           ...selectedSpecialties,
                           specialty.id,
@@ -318,15 +365,16 @@ export const Register = (prop: any) => {
 
           {selectedSpecialties.length > 0 && (
             <div className="flex flex-row flex-wrap gap-2">
-              {selectedSpecialties.map((specialty) => (
+              {selectedSpecialties.map((specialty, index) => (
                 <div
+                  key={index}
                   className="bg-quaternary-normal px-4 py-1 rounded-xl
                   flex flex-row justify-center items-center gap-2"
                 >
                   <p className="text-black">{specialty}</p>
                   <img
                     src={xImage}
-                    className="h-4"
+                    className="h-4 cursor-pointer"
                     onClick={() => {
                       setSelectedSpecialties(
                         selectedSpecialties.filter((item) => item !== specialty)
@@ -393,6 +441,7 @@ export const Register = (prop: any) => {
             </Link>
           </p>
           <h1 className="text-2xl font-bold text-center">Bienvenido!</h1>
+
           <h2 className="text-center text-xl font-medium">
             Registrate ingresando los siguientes datos
           </h2>
@@ -400,6 +449,7 @@ export const Register = (prop: any) => {
 
           {step === STEP_VIEW_CLIENT && clientForm}
           {step === STEP_VIEW_DOCTOR && doctorForm}
+
           <footer className="mb-5">
             <p className="text-center">O inicia sesión con</p>
             <div className="flex justify-center gap-5 mt-5">
@@ -408,7 +458,7 @@ export const Register = (prop: any) => {
                 drop-shadow-md hover:drop-shadow-lg"
                 onClick={handleGithubSignIn}
               >
-                <img src={facebookIcon} />
+                <img src={githubIcon} className="h-[33px]"/>
               </button>
               <button
                 className="bg-white hover:bg-gray-100 active:ring-1 ring-black font-bold py-2 px-4 rounded-full 

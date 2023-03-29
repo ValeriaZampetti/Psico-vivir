@@ -1,24 +1,27 @@
 import { DocumentData, DocumentSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import ReservationCard from "../../components/ReservationCard";
-import { getChatsDoctorPaginated } from "../../firebase/api/chatService";
+import {
+  getChatsClientPaginated,
+  getChatsDoctorPaginated,
+} from "../../firebase/api/chatService";
 import { useAuth } from "../../hooks/useAuth";
 import useInfiniteLoading from "../../hooks/useInfiniteLoading";
 import { Appointment } from "../../interfaces/Appointment";
 import { Chat } from "../../interfaces/Chat";
+import { UserType } from "../../interfaces/Client";
 
-function DoctorReservation() {
+function Reservation() {
   const { user } = useAuth();
 
-  const {
-    items,
-    lastItemRef,
-  }: {
-    items: Chat[];
-    loadItems: () => Promise<DocumentSnapshot<DocumentData>[]>;
-    lastItemRef: (node: any) => void;
-  } = useInfiniteLoading({
-    getItemsWithId: getChatsDoctorPaginated,
+  const userType = user?.type as UserType;
+  const getItemsWithId =
+    userType === UserType.DOCTOR
+      ? getChatsDoctorPaginated
+      : getChatsClientPaginated;
+
+  const { items, lastItemRef } = useInfiniteLoading({
+    getItemsWithId: getItemsWithId,
     idToPass: user?.id ?? "",
   });
 
@@ -68,4 +71,4 @@ function DoctorReservation() {
   );
 }
 
-export default DoctorReservation;
+export default Reservation;

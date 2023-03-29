@@ -76,14 +76,6 @@ export const ReservationCard = (props: ReservationCardProps) => {
             className="h-8"
           />
         </Link>
-
-        <button className="h-full aspect-square rounded-2xl  border-rose-400 border-4 flex items-center justify-center hover:scale-110">
-          <img
-            src="../../src/assets/icons/check.svg"
-            alt="check-icon"
-            className="h-12"
-          />
-        </button>
       </footer>
     </main>
   );

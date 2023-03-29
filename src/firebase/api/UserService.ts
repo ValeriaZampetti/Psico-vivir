@@ -1,4 +1,3 @@
-import { UserCredential, createUserWithEmailAndPassword } from "firebase/auth";
 import {
   collection,
   query,
@@ -16,21 +15,20 @@ import {
   setDoc,
   addDoc,
   updateDoc,
+  WhereFilterOp,
+  QueryFieldFilterConstraint,
+  Timestamp,
 } from "firebase/firestore";
 import { Chat } from "../../interfaces/Chat";
-import {
-  Doctor,
-  Client,
-  ClientCreate,
-  DoctorCreate,
-} from "../../interfaces/Client";
+import { Doctor, Client } from "../../interfaces/Client";
 import { Specialty } from "../../interfaces/Specialty";
-import { auth, db } from "../config";
+import { db } from "../config";
 
 export async function getUserById(userId: string): Promise<Client | Doctor> {
   const collectionRef = collection(db, "users");
 
   const document = await getDoc(doc(collectionRef, userId));
+
   const client = document.data()!;
   client.id = document.id;
   return client.type === 1 ? (client as Client) : (client as Doctor);
@@ -39,15 +37,6 @@ export async function getUserById(userId: string): Promise<Client | Doctor> {
 export async function getDoctors(): Promise<Doctor[]> {
   const collectionRef = collection(db, "users");
   const q = query(collectionRef, where("type", "==", 2));
-
-  // REVIEW - Para Sergio ver si lo hago en tiempo real
-  // const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  //   const cities = [];
-  //   querySnapshot.forEach((doc) => {
-  //       cities.push(doc.data().name);
-  //   });
-  //   console.log("Current cities in CA: ", cities.join(", "));
-  // });
 
   const querySnapshot = await getDocs(q);
   const doctors: Doctor[] = [];
@@ -60,18 +49,22 @@ export async function getDoctors(): Promise<Doctor[]> {
 }
 
 export async function getDoctorsPaginated(
-  docDoctorToStart?: DocumentSnapshot<DocumentData> | null
+  docDoctorToStart?: DocumentSnapshot<DocumentData> | null,
+  optionalWheres?: QueryFieldFilterConstraint[]
 ): Promise<{
   snapShot: QuerySnapshot<DocumentData>;
   lastVisible: DocumentSnapshot<DocumentData> | null;
 }> {
   const collectionRef = collection(db, "users");
 
+  optionalWheres = optionalWheres || [];
+
   const numerOfEntitiesByPage = 10;
   const q = docDoctorToStart
     ? query(
         collectionRef,
         where("type", "==", 2),
+        ...optionalWheres,
         orderBy("ranking", "desc"),
         startAfter(docDoctorToStart),
         limit(numerOfEntitiesByPage)
@@ -79,20 +72,13 @@ export async function getDoctorsPaginated(
     : query(
         collectionRef,
         where("type", "==", 2),
+        ...optionalWheres,
         orderBy("ranking", "desc"),
         limit(numerOfEntitiesByPage)
       );
 
-  // REVIEW - Para Sergio ver si lo hago en tiempo real
-  // const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  //   const cities = [];
-  //   querySnapshot.forEach((doc) => {
-  //       cities.push(doc.data().name);
-  //   });
-  //   console.log("Current cities in CA: ", cities.join(", "));
-  // });
-
   const querySnapshot = await getDocs(q);
+
   const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
 
   return { snapShot: querySnapshot, lastVisible };
@@ -110,7 +96,7 @@ export async function getClients(): Promise<Client[]> {
   try {
     const collectionRef = collection(db, "users");
     const q = query(collectionRef, where("type", "==", 1));
-  
+
     const querySnapshot = await getDocs(q);
     const clients: Client[] = [];
 
@@ -124,16 +110,13 @@ export async function getClients(): Promise<Client[]> {
   }
 }
 
-
 export async function getSpecialties(): Promise<Specialty[]> {
   const collectionRef = collection(db, "specialties");
   const snapShot = await getDocs(collectionRef);
-  console.log({snapShot});
-  return snapShot.docs.map((doc) => { 
+  
+  return snapShot.docs.map((doc) => {
     return { id: doc.id, ...doc.data() } as Specialty;
   });
-
-
 }
 
 export async function getClientById(clientId: string): Promise<Client | null> {
@@ -177,7 +160,6 @@ export async function getDoctorsByChats(chats: Chat[]): Promise<{
   const doctorsActive: Doctor[] = [];
   const doctorsInactive: Doctor[] = [];
 
-  console.log(chats);
   for (const chat of chats) {
     const doctorRef = doc(userCollectionRef, chat.doctorId);
 
@@ -214,7 +196,7 @@ export async function updateRankingDoctor(
     (doctorData.numberOfReviews + 1);
 
   await updateDoc(doctorRef, {
-    ranking: (Math.round(newRanking * 100) / 100),
+    ranking: Math.round(newRanking * 100) / 100,
     numberOfReviews: doctorData.numberOfReviews + 1,
   });
 }

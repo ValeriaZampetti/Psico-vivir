@@ -27,12 +27,12 @@ export interface ClientCreate extends UserNotAuthCreate {
   type: UserType;
   phone: number;
   countryCode: number;
+  img: string;
 }
 
 export interface Client extends ClientCreate {
   id: string;
   createdAt: Timestamp;
-  img: string;
 }
 
 /**
@@ -43,11 +43,10 @@ export interface DoctorCreate extends ClientCreate {
   ranking: number;
   numberOfReviews: number;
   biography: string;
-  
+  img: string;
 }
 
 export interface Doctor extends DoctorCreate {
   id: string;
   createdAt: Timestamp;
-  img: string;
 }

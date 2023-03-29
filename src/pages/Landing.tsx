@@ -3,8 +3,12 @@ import Landing1 from "../assets/images/Landing1.jpg";
 import Google from "../assets/icons/google.svg";
 import Arrow from "../assets/icons/arrow.svg";
 import Opinion from "../assets/images/opinion.png";
-import { Link } from "react-router-dom";
-import image from "../assets/images/psicoLogin.png";
+import { Link, useNavigate } from "react-router-dom";
+import image2 from "../assets/images/3673211.jpg";
+import image1 from "../assets/images/3918491.jpg";
+import image3 from "../assets/images/psicoLogin.png";
+import { useAuth } from "../hooks/useAuth";
+import { toast } from "react-toastify";
 
 function Landing() {
   const circleSteps = [
@@ -30,7 +34,7 @@ function Landing() {
     {
       id: 1,
       title:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitati",
+        "Una plataforma increible y facil de usar. Me encanta que puedo ayudar a mis pacientes desde la comdidad de mi casa",
       user: {
         name: "Juan Perez",
         rol: "Psicologo",
@@ -39,22 +43,34 @@ function Landing() {
     {
       id: 2,
       title:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitati",
+        "Me facilita la vida con su metodo de pago de Paypal. Ya no tengo que preocuparme por cobrar a mis pacientes",
       user: {
-        name: "Juan Perez",
+        name: "Maria Lopez",
         rol: "Psicologo",
       },
     },
     {
       id: 3,
       title:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitati",
+        "No tengo que preocuparme por la logistica de la cita. Todo se hace de forma automatica. Me encanta",
       user: {
-        name: "Juan Perez",
+        name: "Andres Gomez",
         rol: "Psicologo",
       },
     },
   ];
+
+  const { logInWithGoogle } = useAuth();
+  const navigate = useNavigate();
+
+  async function handleGoogleLogin() {
+    try {
+      const userCredential = await logInWithGoogle();
+      navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  }
 
   return (
     <div className="flex flex-col justify-center pt-10">
@@ -88,7 +104,7 @@ function Landing() {
                 Registrarse con email
               </Link>
 
-              <button
+              <Link to="/users/register"
                 className="flex gap-1 bg-white hover:bg-gray-100 active:ring-1 drop-shadow-md duration-300 
                 border-2 border-secondary-normal hover:border-primary-strong
                 hover:scale-95 active:scale-90 hover:ring-4 ring-secondary-normal ring-offset-2 ring-offset-white
@@ -96,7 +112,7 @@ function Landing() {
               >
                 <img src={Google} />
                 <span className="font-bold">Registrarse con Google</span>
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -137,7 +153,7 @@ function Landing() {
             className="md:h-[496px] w-11/12 flex flex-col max-w-sm mt-6 md:mt-0 md:max-w-xs
            bg-white border-2 border-gray-200 p-4 shadow-md rounded-3xl hover:scale-110 transition-all"
           >
-            <img src={image} alt="img-a" className="h-auto" />
+            <img src={image1} alt="img-a" className="h-auto" />
             <h1 className="text-4xl flex justify-center font-extrabold">
               Psicologos
             </h1>
@@ -150,26 +166,25 @@ function Landing() {
             className="md:h-[496px] w-11/12 flex flex-col max-w-sm mt-6 md:mt-0 md:max-w-xs
            bg-white border-2 border-gray-200 p-4 shadow-md rounded-3xl hover:scale-110 transition-all"
           >
-            <img src={image} alt="img-a" className="h-auto" />
+            <img src={image2} alt="img-a" className="h-auto" />
             <h1 className="text-3xl flex justify-center font-extrabold lg:text-3xl md:text-2xl">
-              Online/presencial
+              Online
             </h1>
             <p className="text-3xl my-5 md:text-xl">
-              Elige como realizar la terapia, ya sea online (chat, teléfono,
-              videoconferencia) o presencial.
+              Una terapia online por medio de chat, para que te sientas cómodo.
             </p>
           </div>
           <div
             className="md:h-[496px] w-11/12 flex flex-col max-w-sm mt-6 md:mt-0 md:max-w-xs
            bg-white border-2 border-gray-200 p-4 shadow-md rounded-3xl hover:scale-110 transition-all"
           >
-            <img src={image} alt="img-a" className="h-auto" />
+            <img src={image3} alt="img-a" className="h-auto" />
             <h1 className="text-4xl flex justify-center font-extrabold">
               Comodidad
             </h1>
             <p className="text-3xl my-5 md:text-xl">
               Todo desde tu navegador: calendario de citas, gestión segura de
-              pagos, mensajería con el psicólogo, materiales
+              pagos, mensajería con el psicólogo, materiales.
             </p>
           </div>
         </div>
@@ -193,7 +208,7 @@ function Landing() {
             {opinions.map((opinion) => (
               <div
                 key={opinion.id}
-                className="bg-quaternary-normal/50 h-72 w-72 p-8 rounded-2xl"
+                className="bg-quaternary-normal/50 h-72 w-72 p-8 rounded-2xl flex flex-col items-center justify-center"
               >
                 <p className="text-gray-700">"{opinion.title}".</p>
 

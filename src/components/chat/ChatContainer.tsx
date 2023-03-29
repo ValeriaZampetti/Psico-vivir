@@ -17,7 +17,6 @@ function ChatContainer() {
     const listMessages = appointment.messages.map((message, index) => (
       <ol
         key={index}
-        className={`${index === appointment.messages.length - 1 && "mb-10"}`}
       >
         <MessageComponent message={message} />
       </ol>
@@ -47,7 +46,7 @@ function ChatContainer() {
       {currentChat && <ChatHeader />}
       <div
         id="messages"
-        className="bg-quaternary-normal px-8 py-6 h-full overflow-y-scroll"
+        className="bg-quaternary-normal px-8 py-6 h-[94.5%] overflow-y-scroll"
       >
         {appointmentsList}
       </div>

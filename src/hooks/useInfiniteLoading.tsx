@@ -1,6 +1,7 @@
 import {
   DocumentData,
   DocumentSnapshot,
+  QueryFieldFilterConstraint,
   QuerySnapshot,
 } from "firebase/firestore";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -8,14 +9,16 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 type Props =
   | {
       getItems?: (
-        docToStart?: DocumentSnapshot<DocumentData> | null
+        docToStart?: DocumentSnapshot<DocumentData> | null,
+        optionalWheres?: QueryFieldFilterConstraint[]
       ) => Promise<{
         snapShot: QuerySnapshot<DocumentData>;
         lastVisible: DocumentSnapshot<DocumentData> | null;
       }>;
 
-      idToPass?: never;
+      optionalWheres?: QueryFieldFilterConstraint[];
 
+      idToPass?: never;
       getItemsWithId?: never;
     }
   | {
@@ -26,9 +29,20 @@ type Props =
         snapShot: QuerySnapshot<DocumentData>;
         lastVisible: DocumentSnapshot<DocumentData> | null;
       }>;
+
+      optionalWheres?: QueryFieldFilterConstraint[];
+
       idToPass: string;
       getItems?: never;
     };
+
+interface InfiniteLoading {
+  items: any[];
+  hasMore: boolean;
+  loadItems: () => Promise<DocumentSnapshot<DocumentData>[]>;
+  lastItemRef: (node: any) => void;
+  resetItems: () => void;
+}
 
 function useInfiniteLoading(props: Props) {
   const { getItems, getItemsWithId } = props;
@@ -51,7 +65,6 @@ function useInfiniteLoading(props: Props) {
 
   // TODO - Mejorar manera de mostrar que se esta cargando
   // TODO - Tener una manera de mostrar algo cuando ya no hay mas items
-  // TODO - Considerar crear un segundo batch para que el tiempo de carga sea menor
   async function loadItems(): Promise<DocumentSnapshot<DocumentData>[]> {
     if (!hasMore || isLoading) {
       return items;
@@ -60,7 +73,7 @@ function useInfiniteLoading(props: Props) {
 
     const { snapShot, lastVisible } = props.idToPass
       ? await getItemsWithId!(props.idToPass, lastItem)
-      : await getItems!(lastItem);
+      : await getItems!(lastItem, props.optionalWheres);
     setHasMore(lastVisible != null);
 
     const data = snapShot.docs.map((doc) => ({
@@ -73,6 +86,13 @@ function useInfiniteLoading(props: Props) {
     setIsLoading(false);
 
     return items;
+  }
+
+  async function resetItems() {
+    setItems([]);
+    setLastItem(null);
+    setHasMore(true);
+    await loadItems();
   }
 
   const intersectionObserver = useRef<IntersectionObserver | null>(null);
@@ -94,12 +114,14 @@ function useInfiniteLoading(props: Props) {
     [isLoading, hasMore]
   );
 
-  return {
+  const value: InfiniteLoading = {
     items,
     hasMore,
     loadItems,
     lastItemRef,
-  };
+    resetItems,
+  }
+  return value
 }
 
 export default useInfiniteLoading;

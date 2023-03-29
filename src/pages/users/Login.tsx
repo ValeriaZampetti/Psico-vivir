@@ -7,6 +7,7 @@ import googleIcon from "../../assets/icons/google.svg";
 import facebookIcon from "../../assets/icons/facebook.svg";
 import { useAuth } from "../../hooks/useAuth";
 import { ToastContainer, toast } from "react-toastify";
+import githubIcon from "../../assets/icons/github.svg";
 
 //import { Context } from "../store/appContext";
 //import Swal from "sweetalert2";\
@@ -14,14 +15,14 @@ import { ToastContainer, toast } from "react-toastify";
 export const LogIn = (props: any) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { logIn: login } = useAuth();
+  const { logIn, logInWithGithub, logInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
 
     try {
-      const userCredential = await login(email, password);
+      const userCredential = await logIn(email, password);
       console.log(userCredential);
       if (userCredential) {
         toast.success("Inicio exitoso!", {
@@ -70,6 +71,32 @@ export const LogIn = (props: any) => {
       }
     }
   }
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const userCredential = await logInWithGoogle();
+      if (userCredential) {
+        navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+        return;
+      }
+      navigate("/psico");
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleGithubSignIn = async () => {
+    try {
+      const userCredential = await logInWithGithub();
+      if (userCredential) {
+        navigate(`/users/completeRegister/${userCredential?.user?.uid}`);
+        return;
+      }
+      navigate("/psico");
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
 
   return (
     <>
@@ -135,18 +162,18 @@ export const LogIn = (props: any) => {
 
             <footer className="mb-5">
               <p className="text-center">O inicia sesión con</p>
-
               <div className="flex justify-center gap-5 mt-5">
                 <button
                   className="bg-white hover:bg-gray-100 active:ring-1 ring-black font-bold py-2 px-4 rounded-full 
                 drop-shadow-md hover:drop-shadow-lg"
+                  onClick={handleGithubSignIn}
                 >
-                  <img src={facebookIcon} />
+                  <img src={githubIcon} className="h-[33px]"/>
                 </button>
-
                 <button
                   className="bg-white hover:bg-gray-100 active:ring-1 ring-black font-bold py-2 px-4 rounded-full 
                 drop-shadow-md hover:drop-shadow-lg"
+                  onClick={handleGoogleSignIn}
                 >
                   <img src={googleIcon} />
                 </button>

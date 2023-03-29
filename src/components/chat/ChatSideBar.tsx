@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { useChat } from "../../hooks/useChat";
 import { Client, Doctor } from "../../interfaces/Client";
-import SearchBar from "../forms/SearchBar";
 import UsersToChat from "./UsersToChat";
 import List from "../../assets/icons/list.svg";
 import ListCheck from "../../assets/icons/list-check.svg";
@@ -13,10 +12,14 @@ function ChatSideBar() {
   const [activeChatsDisplay, setActiveChatsDisplay] = useState<boolean>(true);
 
   const [activeChats, setActiveChats] = useState<Client[] | Doctor[]>([]);
-  const [activeFilteredChats, setActiveFilteredChats] = useState<Client[] | Doctor[]>([]);
+  const [activeFilteredChats, setActiveFilteredChats] = useState<
+    Client[] | Doctor[]
+  >([]);
 
   const [inactiveChats, setInactiveChats] = useState<Client[] | Doctor[]>([]);
-  const [inactiveFilteredChats, setInactiveFilteredChats] = useState<Client[] | Doctor[]>([]);
+  const [inactiveFilteredChats, setInactiveFilteredChats] = useState<
+    Client[] | Doctor[]
+  >([]);
 
   const { usersActive, usersInactive } = useChat();
   const { user } = useAuth();
@@ -80,9 +83,9 @@ function ChatSideBar() {
           <button
             className={`${
               !activeChatsDisplay
-              ? "bg-primary-normal border-[3px]"
-              : "bg-secondary-normal hover:border-[1px] active:scale-95 "
-          } self-center flex justify-center  basis-1/2 border-primary-strong `}
+                ? "bg-primary-normal border-[3px]"
+                : "bg-secondary-normal hover:border-[1px] active:scale-95 "
+            } self-center flex justify-center  basis-1/2 border-primary-strong `}
             onClick={() => setActiveChatsDisplay(false)}
           >
             <img src={ListCheck} alt="" className="h-10 " />
@@ -90,8 +93,42 @@ function ChatSideBar() {
         </div>
       </section>
 
-      <SearchBar value={search} onChange={handleSearchChange} />
-      <UsersToChat users={activeChatsDisplay ? activeFilteredChats : inactiveFilteredChats} />
+      <section id="searchBar" className="border-b-2 border-gray-400 flex justify-center relative ">
+        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+          <svg
+            aria-hidden="true"
+            className="w-5 h-5 text-gray-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            ></path>
+          </svg>
+        </div>
+
+        <input
+          className="w-full p-4 pl-10  text-gray-900  rounded-lg bg-transparent
+          placeholder:text-gray-500 outline-none focus:border-2 border-primary-strong"
+          type="text"
+          placeholder="Buscar"
+          value={search}
+          onChange={(e) => handleSearchChange(e.target.value)}
+        />
+      </section>
+
+
+
+      {/* bg-transparent text-black  placeholder:text-gray-500 text-ellipsis
+        border-none outline-none w-[70%]  md:w-[90%] self-center flex py-1 text-center */}
+      <UsersToChat
+        users={activeChatsDisplay ? activeFilteredChats : inactiveFilteredChats}
+      />
     </div>
   );
 }
