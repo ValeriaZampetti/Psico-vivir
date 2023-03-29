@@ -1,11 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import paypalLogo from "../../assets/images/logo-Paypal.png";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import { Chat } from "../../interfaces/Chat";
+import { getChatById, updateChat } from "../../firebase/api/chatService";
 
 function Checkout() {
   const navigate = useNavigate();
+  const { chatId } = useParams<string>();
+  const [chat, setChat] = useState<Chat | null>(null);
+
+  async function inicializeChat() {
+    const chat = await getChatById(chatId!);
+    setChat(chat);
+  }
+
+  useEffect(() => {
+    if (!chatId) {
+      navigate("/psico/appointments");
+    }
+    inicializeChat();
+  }, [chatId, navigate]);
 
   return (
     <div className="flex flex-col items-center mb-10 h-">
@@ -60,12 +76,22 @@ function Checkout() {
                 }}
                 onApprove={(data: any, actions: any) => {
                   return actions.order?.capture().then(function (details: any) {
+                    const lastAppointment = chat?.appointments.at(-1);
+                    const paidmentData = {
+                      paymentId: data.orderID,
+                      payerId: data.payerID,
+                      paymentToken: data.paymentToken,
+                      paymentMethod: data.paymentMethod,
+                      paymentStatus: data.status,
+                      paymentAmount: details.purchase_units[0].amount.value,
+                      paymentCurrency:
+                        details.purchase_units[0].amount.currency_code,
+                      paymentDate: details.create_time,
+                    };
+                    lastAppointment!.paymentData = paidmentData;
+                    lastAppointment!.paid = true;
+                    updateChat(chat!);
                     toast.success("Pago realizado con éxito");
-                    console.log(details.payer.name?.given_name);
-                    alert(
-                      "Transaction completed by " +
-                        details.payer.name?.given_name
-                    );
                     navigate("/psico/chat");
                   });
                 }}

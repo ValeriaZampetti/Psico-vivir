@@ -10,7 +10,12 @@ import {
 } from "../firebase/api/authService";
 import { getUserById } from "../firebase/api/userService";
 import { auth } from "../firebase/config";
-import { Client, ClientCreate, Doctor, DoctorCreate } from "../interfaces/Client";
+import {
+  Client,
+  ClientCreate,
+  Doctor,
+  DoctorCreate,
+} from "../interfaces/Client";
 import { IAuthProvider } from "../interfaces/providers/IAuthProvider";
 
 interface IProps {

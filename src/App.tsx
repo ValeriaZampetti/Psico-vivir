@@ -54,7 +54,7 @@ function App() {
               <Route path={path} element={<Chat />} key={index} />
             ))}
 
-            <Route path="checkout" element={<Checkout />} />
+            <Route path="checkout/:chatId" element={<Checkout />} />
             <Route
               path="writeReview/:chatId/:index"
               element={<WriteReview />}

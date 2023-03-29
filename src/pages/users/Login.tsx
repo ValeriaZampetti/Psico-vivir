@@ -65,6 +65,27 @@ export const LogIn = (props: any) => {
         case "auth/operation-not-allowed":
           toast.error("Operación no permitida");
           break;
+
+        case "auth/email-already-in-use":
+          toast.error("El email ya está en uso");
+          break;
+
+        case "auth/weak-password":
+          toast.error("La contraseña debe tener al menos 8 caracteres");
+          break;
+
+        case "auth/invalid-credential":
+          toast.error("Credenciales inválidas");
+          break;
+
+        case "auth/invalid-verification-code":
+          toast.error("Código de verificación inválido");
+          break;
+
+        case "auth/invalid-verification-id":
+          toast.error("ID de verificación inválido");
+          break;
+
         default:
           toast.error("No se pudo iniciar sesión");
           break;
