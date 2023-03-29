@@ -34,7 +34,7 @@ function StarRating(props: StarRatingProps) {
             />
             <StarIcon
               fill={
-                ratingValue <= (hover || props.currentRating) ? "#49a3a2" : "#e4e5e9"
+                ratingValue <= (hover || props.currentRating) ? "#5db9ba" : "#e4e5e9"
               }
               className={`w-auto ${props.svgClass} ${
                 props.readonly ? "cursor-default" : "cursor-pointer"
