@@ -56,8 +56,6 @@ export const Register = (prop: any) => {
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
 
-    console.log("FUNCIONAAAA");
-
     if (password.length <= 7) {
       toast.warning("La contraseña debe tener al menos 8 caracteres");
       return;

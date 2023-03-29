@@ -39,7 +39,6 @@ function CompleteRegister() {
   const [userFromUrl, setUserFromUrl] = useState<UserNotAuth | null>(null);
 
   async function getUser() {
-    console.log({ id });
     const user = await getUserById(id ?? "");
 
     if (user) {
