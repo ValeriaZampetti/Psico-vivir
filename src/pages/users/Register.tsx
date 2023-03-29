@@ -190,6 +190,7 @@ export const Register = (prop: any) => {
       toast.error(error.message);
     }
   };
+
   const handleGithubSignIn = async () => {
     try {
       const userCredential = await logInWithGithub();
@@ -398,6 +399,7 @@ export const Register = (prop: any) => {
             </Link>
           </p>
           <h1 className="text-2xl font-bold text-center">Bienvenido!</h1>
+          
           <h2 className="text-center text-xl font-medium">
             Registrate ingresando los siguientes datos
           </h2>
@@ -405,6 +407,7 @@ export const Register = (prop: any) => {
 
           {step === STEP_VIEW_CLIENT && clientForm}
           {step === STEP_VIEW_DOCTOR && doctorForm}
+
           <footer className="mb-5">
             <p className="text-center">O inicia sesión con</p>
             <div className="flex justify-center gap-5 mt-5">
