@@ -90,7 +90,7 @@ function ChatHeader() {
           src="../../src/assets/mock/pic.jpg"
         />
         <span className="font-semibold text-lg text-black text-ellipsis overflow-hidden">
-          {currentUserToChat!.name}
+          {currentUserToChat?.name ?? ""}
         </span>
       </div>
       {user!.type === UserType.DOCTOR && cancelChatButton}
