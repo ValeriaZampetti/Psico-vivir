@@ -7,6 +7,7 @@ import { db, storage } from "../firebase/config";
 import { useTimestampToString } from "../hooks/useTimestampToString";
 import { Client, Doctor } from "../interfaces/Client";
 import { Feedback } from "../interfaces/feedback";
+import Profile from "../assets/mock/pic.jpg";
 
 interface ReviewCardProps {
   doctor: Doctor;
@@ -30,8 +31,8 @@ function ReviewCard(props: ReviewCardProps) {
   const dateString = useTimestampToString(props.feedback.timestamp.seconds);
   
 
-  // const [timestamp, setTimestamp] = useState("");
-  // const [message, setMessage] = useState("");
+  // // const [timestamp, setTimestamp] = useState("");
+  // // const [message, setMessage] = useState("");
 
   // const getComments = async () => {
   //   const feedbackCollection = collection(db, "feedback");
@@ -50,9 +51,9 @@ function ReviewCard(props: ReviewCardProps) {
   //   }
   // };
 
-  // useEffect(() => {
-  //   getComments();
-  // }, []);
+  // // useEffect(() => {
+  // //   getComments();
+  // // }, []);
 
   // const getTimeStamp = getComments().then((comments) => {
   //   console.log(comments[2]["timestamp"]["seconds"]);
@@ -75,9 +76,9 @@ function ReviewCard(props: ReviewCardProps) {
   return (
     <main className="h-48 m-0 flex justify-around items-center max-[900px]:h-auto max-[900px]:flex-col max-[900px]:gap-4 max-[900px]:p-8">
       <img
-        id="profile-pic"
-        src="../../src/assets/mock/pic.jpg"
-        alt="user-profile-pic"
+        // id="profile-pic"
+        src={Profile}
+        alt="client-profile-pic"
         className="h-32 aspect-square rounded-full border-primary-normal border-8 max-[900px]:h-52"
       />
 
