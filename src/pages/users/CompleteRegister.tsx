@@ -107,11 +107,8 @@ function CompleteRegister() {
           img: "gs://psico-vivir.appspot.com/imagesUsers/default.png",
         };
 
-        console.log(userFromUrl?.id);
-
         const completed = await completeRegister(doctor, userFromUrl?.id ?? "");
 
-        console.log(completed);
         if (completed) {
           toast.success("Usuario creado exitosamente", {
             position: "top-right",
@@ -137,6 +134,7 @@ function CompleteRegister() {
       };
 
       const completed = await completeRegister(client, userFromUrl?.id ?? "");
+
       if (completed) {
         toast.success("Usuario creado exitosamente");
         setTimeout(() => {
