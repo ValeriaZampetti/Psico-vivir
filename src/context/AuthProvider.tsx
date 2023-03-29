@@ -8,7 +8,7 @@ import {
   logOutAuth,
   updateUser,
 } from "../firebase/api/authService";
-import { getUserById } from "../firebase/api/userService";
+import { getUserById } from "../firebase/api/UserService";
 import { auth } from "../firebase/config";
 import { Client, ClientCreate, Doctor, DoctorCreate } from "../interfaces/Client";
 import { IAuthProvider } from "../interfaces/providers/IAuthProvider";

@@ -161,7 +161,7 @@ function Profile() {
           </div>:<></>}
 
           <div className="flex justify-center max-w-md mt-5">
-            <button onClick={saveChanges} className="w-auto h-12 p-2 rounded-xl bg-secondary-normal hover:scale-105 
+            <button className="w-auto h-12 p-2 rounded-xl bg-secondary-normal hover:scale-105 
             font-bold hover:drop-shadow-md transition-all">Guardar cambios</button>
           </div>
 

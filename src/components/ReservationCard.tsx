@@ -5,7 +5,7 @@ import { Client } from "../interfaces/Client";
 import { storage } from "../firebase/config";
 import { ref, getDownloadURL } from "firebase/storage";
 import { Link } from "react-router-dom";
-import { getUserById } from "../firebase/api/userService";
+import { getUserById } from "../firebase/api/UserService";
 
 interface ReservationCardProps {
   appointment: Appointment;

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import  k  from "../../assets/mock/pic.jpg"
 import { getDoctorById } from "../../firebase/api/UserService";
 import { Doctor } from "../../interfaces/Client";
+import StarRating from "../../components/forms/StarRating";
 
 function ProfileDoctor() {
     const { id } = useParams();
@@ -24,6 +25,10 @@ function ProfileDoctor() {
         console.log("Reservar")
     }
 
+    function setRanking(rating: number) {
+        throw new Error("Function not implemented.");
+    }
+
     return (
             <div className="py-5 md:flex">
                 <div className="flex justify-center w-full md:w-1/3">
@@ -37,9 +42,18 @@ function ProfileDoctor() {
                         <div className="w-full flex flex-col md:justify-between 
                         items-center md:flex-row mb-5">
                             <h1 className="font-bold text-4xl md:text-5xl">Dr. {doctor?.name}</h1>
-                        <h1 className="font-bold">Ranking en la pagina <span className="font-medium">{doctor?.ranking}</span></h1>
+
                         </div>
-                        <div className="h-24 bg-yellow-500 w-full">Rating</div>
+                        <div className="h-24 flex justify-center items-center">
+                                <StarRating        
+                                    svgClass="md:h-[100px] p-2 h-16"
+                                    currentRating={doctor!.ranking}
+                                    handleCurrentRating={(rating: number) => {
+                                        setRanking(rating);
+                                    }}
+                                    readonly={true}
+                                />
+                        </div>
                     </div>
                     <div>
                         <div className="p-2">
