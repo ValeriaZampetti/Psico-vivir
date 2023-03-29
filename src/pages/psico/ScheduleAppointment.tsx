@@ -4,7 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate, useParams } from "react-router-dom";
 import a from "../../assets/mock/profile.png";
 import  k  from "../../assets/mock/pic.jpg"
-import { getDoctorById } from "../../firebase/api/UserService";
+import { getDoctorById } from "../../firebase/api/userService";
 import { Doctor } from "../../interfaces/Client";
 import { Chat, ChatCreate } from "../../interfaces/Chat";
 import { getChatsByDoctorId } from "../../firebase/api/chatService";

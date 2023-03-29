@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import  k  from "../../assets/mock/pic.jpg"
-import { getDoctorById } from "../../firebase/api/UserService";
+import { getDoctorById } from "../../firebase/api/userService";
 import { Doctor } from "../../interfaces/Client";
 import StarRating from "../../components/forms/StarRating";
 
