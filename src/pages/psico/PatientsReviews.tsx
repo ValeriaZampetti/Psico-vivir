@@ -10,9 +10,9 @@ import { Feedback } from "../../interfaces/feedback";
 
 function PatientsReviews() {
   const { user } = useAuth();
-  const [message, setMessage] = useState<DocumentData[]>([]);
+  const [message, setMessage] = useState<Feedback[]>([]);
   const [doctor, setDoctor] = useState<Doctor | null>(null);
-  const [feedback, setFeedback] = useState<Feedback>();
+  // const [feedback, setFeedback] = useState<Feedback | null>(null);
 
   // const [timestamp, setTimestamp] = useState("");
 
@@ -23,7 +23,7 @@ function PatientsReviews() {
 
     console.log(comments);
 
-    setMessage(comments);
+    // setMessage(comments);
 
     //   if (feedbackSnapshot) {
     //     console.log(comments[0]["rating"])
@@ -39,7 +39,7 @@ function PatientsReviews() {
 
   useEffect(() => {
     getComments();
-  }, []);
+  }, [message]);
 
   return (
     <div className="p-5 lg:p-10">
@@ -52,8 +52,10 @@ function PatientsReviews() {
           <div key={comment.id}>
             <ReviewCard
               doctor={doctor!}
-              feedback={feedback!}
+              feedback={comment}
               userId={comment.userId}
+
+
             />
             {/* <p>{comment.rating}</p>
             <p>{comment.message}</p>
