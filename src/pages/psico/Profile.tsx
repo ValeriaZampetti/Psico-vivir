@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import k from "../../assets/images/register.jpg";
+import k from "../../assets/images/Register.jpg";
 import iconEdit from "../../assets/icons/edit.svg";
 import { useAuth } from "../../hooks/useAuth";
 import { storage } from "../../firebase/config";

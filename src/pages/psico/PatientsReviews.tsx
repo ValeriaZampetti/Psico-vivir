@@ -1,4 +1,4 @@
-import { collection, DocumentData, getDocs } from "firebase/firestore";
+import { collection, DocumentData, getDocs, query, where } from "firebase/firestore";
 import { comment } from "postcss";
 import React, { useEffect, useRef, useState } from "react";
 import StarRating from "../../components/forms/StarRating";
@@ -16,30 +16,56 @@ function PatientsReviews() {
 
   // const [timestamp, setTimestamp] = useState("");
 
+  // const getComments = async () => {
+  //   const feedbackCollection = collection(db, "feedback");
+  //   const feedbackSnapshot = await getDocs(feedbackCollection);
+  //   const comments = feedbackSnapshot.docs.map((doc) => doc.data());
+
+    // console.log(comments);
+
+  //   setMessage(comments);
+
+  //   //   if (feedbackSnapshot) {
+  //   //     console.log(comments[0]["rating"])
+  //   //     for (let index = 0; index < comments.length; index++) { // aqui hay que usar la funcion map no un ciclo for
+  //   //       const commentsDate = comments[index]["timestamp"]["seconds"];
+  //   //       const commentsMessage = comments[index]["message"];
+  //   //       console.log(commentsDate)
+  //   //       setTimestamp(commentsDate);
+  //   //       setMessage(commentsMessage);
+  //   //     }
+  //   //   }
+  // };
+
   const getComments = async () => {
     const feedbackCollection = collection(db, "feedback");
-    const feedbackSnapshot = await getDocs(feedbackCollection);
-    const comments = feedbackSnapshot.docs.map((doc) => doc.data());
-
-    console.log(comments);
-
-    // setMessage(comments);
-
-    //   if (feedbackSnapshot) {
-    //     console.log(comments[0]["rating"])
-    //     for (let index = 0; index < comments.length; index++) { // aqui hay que usar la funcion map no un ciclo for
-    //       const commentsDate = comments[index]["timestamp"]["seconds"];
-    //       const commentsMessage = comments[index]["message"];
-    //       console.log(commentsDate)
-    //       setTimestamp(commentsDate);
-    //       setMessage(commentsMessage);
-    //     }
-    //   }
+    const q = query(feedbackCollection, where("doctorId", "==", user?.id));
+    const feedbackSnapshot = await getDocs(q);
+    const comments = feedbackSnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        chatId: data.chatId,
+        appointmentIndex: data.appointmentIndex,
+        rating: data.rating,
+        message: data.message,
+        timestamp: data.timestamp,
+        userId: data.userId,
+        doctorId: data.doctorId,
+      } as Feedback;
+    });
+  
+    setMessage(comments);
+    
+    // if(user?.id == data.doctorId){
+    // }
   };
 
   useEffect(() => {
     getComments();
-  }, [message]);
+  }, []);
+
+
 
   return (
     <div className="p-5 lg:p-10">

@@ -41,13 +41,13 @@ function App() {
             <Route path="register" element={<Register />} />
             <Route path="completeRegister/:id" element={<CompleteRegister />} />
             <Route path="*" element={<Error404 />} />
-            <Route path="patientsreviews" element={<PatientsReviews />} /> {/* de mientras aqui*/}
             <Route path="checkout" element={<Checkout />} />
             {/* <Route path="reviewcard" element={<ReviewCard doctor={undefined} feedback={undefined} userId={""} />} /> de mientras aqui */}
           </Route>
 
           <Route path="/psico" element={<ProtectedLayout />}>
             <Route index element={<Searcher />} />
+            <Route path="patientsreviews" element={<PatientsReviews />} /> {/* de mientras aqui*/}
             <Route path="profile/:id" element={<Profile />} />
             <Route path="appointments" element={<Reservations />} />
             <Route path="schedule/:id" element={<ScheduleAppointment />} />
