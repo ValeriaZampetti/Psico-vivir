@@ -9,23 +9,25 @@ function InputMessage() {
   const [message, setMessage] = useState<string>("");
   const [img, setImg] = useState<File | null>(null);
   const [canTalk, setCanTalk] = useState<boolean>(true);
+  const [placeholder, setPlaceholder] = useState<string>("Escribe un mensaje");
 
-  const { currentUserToChat, sendMessage, currentChat } = useChat();
+  const {  sendMessage, currentChat } = useChat();
   const { user } = useAuth();
 
   useEffect(() => {
     if (!currentChat) {
+      setPlaceholder("Selecciona un usuario");
       setCanTalk(false);
       return;
     }
 
     const lastAppointment = currentChat?.appointments.at(-1)!;
     if (user?.type === 1 && !lastAppointment.clientCanTalk) {
+      setPlaceholder("Necesita que el doctor le escriba primero");
       setCanTalk(false);
       return;
     }
     setCanTalk(true);
-    
   }, [currentChat]);
 
   function handleSendMessage() {
@@ -42,7 +44,6 @@ function InputMessage() {
         }
       });
       setMessage("");
-
     }
   }
 
@@ -53,7 +54,7 @@ function InputMessage() {
         className="w-full border-none outline-none text-lg placeholder:text-gray-400 
         disabled:cursor-not-allowed disabled:bg-white"
         placeholder={
-          currentUserToChat ? "Escribe un mensaje" : "Selecciona un usuario"
+          placeholder
         }
         value={message}
         onChange={(e) => setMessage(e.target.value)}
@@ -66,25 +67,11 @@ function InputMessage() {
       />
 
       <section id="send" className="ml-2  flex items-center gap-2">
-        {/* REVIEW - Considerar poner imagenes */}
-        {/* <img src={Image} alt="sendImage" className="cursor-pointer h-6 " />
-        <input
-          type="file"
-          style={{ display: "none" }}
-          className="w-full border-none outline-none text-lg placeholder:text-gray-400 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
-          id="file"
-          disabled={!currentUserToChat}
-          onChange={(e) => setImg(e.target.files![0])}
-        />
-        <label htmlFor="file" className="h-6 w-6 flex-shrink-0">
-          <img src={Attach} className="cursor-pointer h-6 w-6 " alt="" />
-        </label> */}
-
         <button
           className="bg-quaternary-normal text-black font-semibold rounded-full px-5 py-3 hover:scale-95 active:scale-90 transition-all duration-300
           disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleSendMessage}
-          disabled={!canTalk  || !currentChat?.lastAppointmentActive}
+          disabled={!canTalk || !currentChat?.lastAppointmentActive}
         >
           Enviar
         </button>
@@ -94,4 +81,3 @@ function InputMessage() {
 }
 
 export default InputMessage;
-

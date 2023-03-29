@@ -3,7 +3,7 @@ import { ReactComponent as StarIcon } from "../../assets/icons/star.svg";
 
 interface StarRatingProps {
   currentRating: number;
-  handleCurrentRating: (rating: number) => void;
+  handleCurrentRating?: (rating: number) => void;
   /**
    * It is necessary to pass at least the width or height of the svg
    */
@@ -28,7 +28,7 @@ function StarRating(props: StarRatingProps) {
               value={ratingValue}
               onClick={() => {
                 if (!props.readonly) {
-                  props.handleCurrentRating(ratingValue);
+                  props.handleCurrentRating!(ratingValue);
                 }
               }}
             />

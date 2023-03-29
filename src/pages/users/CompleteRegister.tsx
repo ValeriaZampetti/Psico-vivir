@@ -25,7 +25,6 @@ function CompleteRegister() {
   const [nombre, setNombre] = useState("");
 
   const [phone, setPhone] = useState("");
-  const [countryCode, setCountryCode] = useState<number>(58);
 
   const [biography, setBiography] = useState("");
   const [specialties, setSpecialties] = useState<Specialty[]>([]);
@@ -60,32 +59,52 @@ function CompleteRegister() {
     getUser();
   }, []);
 
-  // FIXME - Hacer que el form se resetee cuando se cambia el tipo de usuario
-  // FIXME - Utilizar esto en el submit
-
-  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-
+  function validForm() {
     if (!nombre || !phone) {
       toast.warning("No puedes dejar espacios en blanco", {
         position: "top-right",
       });
-      return;
+      return false;
     }
+
+    if (phone.length !== 13) {
+      toast.warning("El número de teléfono debe tener 13 dígitos");
+      return false;
+    }
+
+    //Estas validaciones son cuando eres doctor y estas en el segundo formulario
+    if (step === STEP_VIEW_DOCTOR) {
+      if (biography.length < 40) {
+        toast.warning("La biografía debe tener al menos 40 caracteres");
+        return false;
+      }
+
+      if (selectedSpecialties.length < 2 || selectedSpecialties.length > 5) {
+        toast.warning("Debes seleccionar de 2 a 5 especialidades");
+        return false;
+      }
+    }
+    return true;
+  }
+
+  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+
+    if (!validForm()) return;
 
     try {
       if (tipoUsuario === UserType.DOCTOR) {
         const doctor: DoctorCreate = {
           name: nombre,
           email: userFromUrl?.email ?? "",
-          phone: parseInt(phone),
-          countryCode,
+          phone: phone,
           type: tipoUsuario,
           biography,
           ranking: 3,
           specialties: selectedSpecialties,
           numberOfReviews: 0,
           completed: true,
+          img: "gs://psico-vivir.appspot.com/imagesUsers/default.png",
         };
 
         console.log(userFromUrl?.id);
@@ -111,10 +130,10 @@ function CompleteRegister() {
       const client: ClientCreate = {
         name: nombre,
         email: userFromUrl?.email ?? "",
-        phone: parseInt(phone),
-        countryCode,
+        phone: phone,
         type: tipoUsuario,
         completed: true,
+        img: "gs://psico-vivir.appspot.com/imagesUsers/default.png",
       };
 
       const completed = await completeRegister(client, userFromUrl?.id ?? "");
