@@ -5,23 +5,44 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { Chat } from "../../interfaces/Chat";
 import { getChatById, updateChat } from "../../firebase/api/chatService";
+import { Doctor } from "../../interfaces/Client";
+import { getDoctorById } from "../../firebase/api/userService";
 
 function Checkout() {
   const navigate = useNavigate();
   const { chatId } = useParams<string>();
-  const [chat, setChat] = useState<Chat | null>(null);
 
-  async function inicializeChat() {
+  const [chat, setChat] = useState<Chat | null>(null);
+  const [doctor, setDoctor] = useState<Doctor | null>(null);
+
+  async function initializeChat() {
     const chat = await getChatById(chatId!);
     setChat(chat);
+
+    if (chat !== null) {
+      initializeDoctor(chat);
+    }
+  }
+
+  async function initializeDoctor(chat: Chat) {
+    const doctor = await getDoctorById(chat!.doctorId);
+    setDoctor(doctor);
   }
 
   useEffect(() => {
     if (!chatId) {
       navigate("/psico/appointments");
     }
-    inicializeChat();
-  }, [chatId, navigate]);
+    initializeChat();
+  }, []);
+
+  const startDate = chat?.appointments.at(-1)?.date.toDate() ?? new Date();
+
+  const startHour = startDate.toLocaleTimeString(navigator.language, {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
 
   return (
     <div className="flex flex-col items-center mb-10 h-">
@@ -33,13 +54,13 @@ function Checkout() {
           Información de la cita
         </div>
         <div className="h-6 w-full flex items-center font-medium text-md px-4 smin1:px-9">
-          <span className="font-bold">Doctor:</span>&nbsp; Dra. Soprano
+          <span className="font-bold">Doctor:</span>&nbsp; {doctor?.name}
         </div>
         <div className="h-6 w-full flex items-center font-medium text-md px-4 smin1:px-9">
-          <span className="font-bold">Hora de incio:</span>&nbsp; 4:30pm
+          <span className="font-bold">Hora de incio:</span>&nbsp; {startHour}
         </div>
         <div className="h-6 w-full flex items-center font-medium text-md px-4 smin1:px-9">
-          <span className="font-bold">Hora de cierre:</span>&nbsp; 6:30pm
+          <span className="font-bold">Hora de cierre:</span>&nbsp; 2 horas
         </div>
         <div className="h-6 w-full flex items-center font-medium text-md px-4 smin1:px-9">
           <span className="font-bold">Tiempo de consulta:</span>&nbsp; 2 horas
