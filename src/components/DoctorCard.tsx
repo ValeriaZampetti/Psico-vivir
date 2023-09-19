@@ -39,12 +39,12 @@ function DoctorCard(props: DoctorCardProps) {
         readonly={true}
       />
       {/* TODO - Poner máximo de lineas */}
-      <p className="text-gray-700 text-center mt-2 text-lg line-clamp-3">{props.doctor.biography}</p>
+      <p className="text-gray-700 text-center mb-2 text-lg line-clamp-3">{props.doctor.biography}</p>
       <button
         className="w-full py-3 text-black font-bold uppercase rounded-lg shadow-lg duration-300
         bg-primary-light hover:bg-primary-normal hover:scale-95 active:scale-90
         hover:ring-4 ring-primary-strong ring-offset-2 ring-offset-gray-100
-          mt-4" onClick={() => navigate(`/psico/doctor/${props.doctor.id}`)}
+          mt-auto" onClick={() => navigate(`/psico/doctor/${props.doctor.id}`)}
       >
         Ver perfil
       </button>

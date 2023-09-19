@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+}
 .TitleWithLine {
   width: 100%;
   line-height: 0.1em;

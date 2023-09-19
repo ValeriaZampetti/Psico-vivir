@@ -8,7 +8,6 @@ import { useAuth } from "../../hooks/useAuth";
 function LandingHeader() {
   const links = [
     { name: "Sobre nosotros", link: "#AboutUs" },
-    { name: "Servicios", link: "#Services" },
     { name: "Opiniones", link: "#Opinions" },
   ];
 
@@ -95,14 +94,24 @@ function LandingHeader() {
             </li>
           ))}
           {user != null ? (
-            <li key="Perfil" className="md:my-0 my-7">
-              <Link
-                to={`/psico/profile/${user?.id}`}
-                className="text-black hover:text-primary-strong duration-500"
-              >
-                Perfil
-              </Link>
-            </li>
+            <>
+              <li key="Chat" className="md:my-0 my-7">
+                <Link
+                  to={`/psico/chat/`}
+                  className="text-black hover:text-primary-strong duration-500"
+                >
+                  Chat
+                </Link>
+              </li>
+              <li key="Perfil" className="md:my-0 my-7">
+                <Link
+                  to={`/psico/profile/${user?.id}`}
+                  className="text-black hover:text-primary-strong duration-500"
+                >
+                  Perfil
+                </Link>
+              </li>
+            </>
           ) : (
             <></>
           )}
