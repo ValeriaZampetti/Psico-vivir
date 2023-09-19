@@ -35,7 +35,10 @@ export const Dropdown = (props: Props) => {
   return (
     <div className="relative inline-block w-full">
       <button
-        onClick={() => setShowOptions(!showOptions)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setShowOptions(!showOptions);
+        }}
         className={`inline-flex w-full justify-between gap-x-1.5 rounded-md outline-none
             bg-white px-3 py-3 ${
               optionSelected ? "font-semibold text-gray-900" : "text-gray-500"
@@ -59,7 +62,7 @@ export const Dropdown = (props: Props) => {
 
       {showOptions && (
         <section
-          className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg 
+          className="absolute z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg 
             ring-1 ring-secondary-normal ring-opacity-5  "
           role="menu"
           aria-orientation="vertical"
@@ -75,7 +78,7 @@ export const Dropdown = (props: Props) => {
                     e.preventDefault();
                     option.onClick();
                     setOptionSelected(option.value);
-                    setShowOptions(false)
+                    setShowOptions(false);
                   }
                 }}
                 onClick={(e) => {
